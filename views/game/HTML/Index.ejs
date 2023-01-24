@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- CSS -->
         <%- include("../CSS/Animations.html") %>
-        <%- include("../CSS/Main-CSS.html") %>
+        <%- include("../CSS/Main_CSS.html") %>
+
+        <!-- JavaScript -->
+        <%- include("../JavaScript/Load_Event.html") %>
+        <%- include("global_scripts/LCF.html") %>
+        <%- include("../JavaScript/Main_Script.html") %>
     </head>
-    <body>
+    <body onload="OnLoad();">
         <canvas id="DrawPieceCanvas" hidden></canvas>
         <div id="Game" class="no-select">
           <div id="SideDiv">
