@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include("../CSS/Animations.html") %>
+        <%- include("../CSS/Main-CSS.html") %>
+    </head>
+    <body>
+        <canvas id="DrawPieceCanvas" hidden></canvas>
+        <div id="Game" class="no-select">
+          <div id="SideDiv">
+            <div class="timer white" id="WhiteTimer">
+              <div id="WhiteTimerText"></div>
+            </div>
+            <div class="timer black" id="BlackTimer">
+              <div id="BlackTimerText"></div>
+            </div>
+      
+            <div id="BlackCapturedPieces" class="capturedPieces white"></div> <!--Reverse because black captured pieces means the black pieces white has captured-->
+            <div id="WhiteCapturedPieces"  class="capturedPieces black"></div>
+      
+            <div id="MaterialBar" class="materialBar" style="opacity: 1;" onclick="this.style.opacity = 1 - this.style.opacity;">
+              <div id="MaterialBarPercentage" class="percentage"></div>
+              <span id="WhiteMaterialDiffrence" class="diffrence white">0</span>
+              <span id="BlackMaterialDiffrence" class="diffrence black">0</span>
+            </div>
+          </div>
+          <div id="CanvasWrapper">
+            <canvas id="PromoteCanvas" class="promoteCanvas" onclick="Chess.Functions.ChoosePromotion(event);" hidden></canvas>
+            <div id="ChessBoard" class="chessBoard">
+              <div id="GameOver" class="gameOver" hidden>
+                <div id="GameOverTopBar" class="topBar draw">
+                  Draw by<br>Insufficient Material
+                </div>
+                <div id="GameGraphDiv" class="graph">
+                  <canvas id="GameGraph" class="canvas"></canvas>
+                </div>
+                <div id="GameOverButtons" class="buttons no-select">
+                  <div id="HomeButton" class="homeButton">
+                    Home
+                  </div>
+                  <div id="RematchButton" class="rematchButton">
+                    Rematch
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="ToggleDebug" class="no-select" onclick="document.getElementById('Debug').hidden = !document.getElementById('Debug').hidden;">Toggle Debug</div>
+        <div id="Debug" hidden></div>
+      </body>
+</html>

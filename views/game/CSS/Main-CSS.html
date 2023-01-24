@@ -1,0 +1,373 @@
+<style>
+    :root {
+      --startX: "0px";
+      --startY: "0px";
+      --endX: "0px";
+      --endY: "0px";
+  
+      --startXRook: "0px";
+      --startYRook: "0px";
+      --endXRook: "0px";
+      --endYRook: "0px";
+    }
+  
+    body {
+      font-family: "Sans-serif", "Helvetica";
+      background-color: #131313;
+    }
+  
+    #Game {
+      position: absolute;
+      width: 70%;
+      height: 98%;
+      left: 10%;
+    }
+  
+    .gameOver {
+      position: absolute;
+      left: 27.5%;
+      top: 25%;
+      height: 50%;
+      width: 45%;
+      background-color: #c9c9c9; //very light gray
+      z-index: 10;
+    }
+  
+    .gameOver .topBar {
+      position: absolute;
+      padding-top: 5%;
+      left: 0px;
+      top: 0px;
+      height: 40%;
+      width: 100%;
+      color: #393939;  //very dark gray
+      font-weight: bold;
+      text-align: center;
+    }
+  
+    .gameOver .topBar.white {
+      background-image: linear-gradient(white, #c9c9c9); //white to light gray
+    }
+  
+    .gameOver .topBar.draw {
+      background-image: linear-gradient(#909090, #c9c9c9); //gray to light gray
+    }
+  
+    .gameOver .topBar.black {
+      background-image: linear-gradient(#393939, #c9c9c9); //very dark gray to light gray
+    }
+  
+    .gameOver .graph {
+      position: absolute;
+      left: 5%;
+      top: 40%;
+      height: 30%;
+      width: 90%;
+      border: 1px solid black;
+    }
+  
+    .gameOver .graph .canvas {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      height: 100%;
+      width: 100%;
+      border: 1px solid black;
+      border-radius: inherit; 
+    }
+  
+    .gameOver .graph .tooltip {
+      position: absolute;
+      z-index: 99;
+      display: inline-block;
+      cursor: pointer;
+      background-color: #131313;
+      border-radius: 50%;
+      color: #00000000;
+      opacity: 0;
+    }
+  
+    .gameOver .graph .tooltip .tooltipText {
+      visibility: hidden;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      border-radius: 6px;
+      width: 50px;
+      bottom: 100%;
+      left: 50%;
+      margin-left: -25px;
+      position: absolute;
+      z-index: 100;
+      text-align: center;
+    }
+  
+    .gameOver .graph .tooltip:hover {
+      width: 10px;
+      height: 10px;
+      margin-top: -5px;
+      margin-left: -5px;
+      opacity: 1;
+    }
+  
+    .gameOver .graph .tooltip:hover .tooltipText {
+      visibility: visible;
+    }
+  
+    .gameOver .buttons {
+      position: absolute;
+      left: 5%;
+      top: 80%;
+      height: 10%;
+      width: 90%;
+    }
+  
+    .gameOver .buttons .homeButton {
+      position: absolute;
+      left: 5%;
+      top: 0%;
+      height: 100%;
+      width: 40%;
+      border: 1px solid black;
+      cursor: pointer;
+      text-align: center;
+      background-color: #90cf66; //green
+    }
+  
+    .gameOver .buttons .homeButton:hover {
+      background-color: #5c8d3b; //dark green
+    }
+  
+    .gameOver .buttons .rematchButton {
+      position: absolute;
+      left: 55%;
+      top: 0%;
+      height: 100%;
+      width: 40%;
+      border: 1px solid black;
+      cursor: pointer;
+      text-align: center;
+      background-color: #f5554a; //red
+    }
+  
+    .gameOver .buttons .rematchButton:hover {
+      background-color: #5c8d3b; //dark green
+    }
+  
+    .gameOver .buttons .rematchButton.suggested {
+      background-color: #90cf66; //green
+    }
+  
+    .gameOver .buttons .rematchButton.suggested:hover {
+      background-color: #7a211b; //dark red
+    }
+  
+    #CanvasWrapper {
+      position: relative;
+    }
+  
+    .chessBoard {
+      left: 5%;
+      position: absolute;
+    }
+  
+    .chessBoard .piece {
+      pointer-events: none;
+      position: absolute;
+      z-index: 6;
+    }
+  
+    .chessBoard .tile {
+      position: absolute;
+    }
+  
+    .chessBoard .tile.can-click {
+      cursor: pointer;
+    }
+  
+    .chessBoard .tile.can-click:hover {
+      outline: 2px outset white;
+      box-shadow: 10px 10px 10px 0px black;
+      z-index: 1;
+    }
+  
+    .chessBoard .tile.light {
+      background-color: #C4A484; //light brown
+    }
+  
+    .chessBoard .tile.dark {
+      background-color: #5C4033; //dark brown
+    }
+  
+    .chessBoard .tile.light.highlighted {
+      cursor: pointer !important;
+      background-color: #A48464; //light brown with black shade
+    }
+  
+    .chessBoard .tile.dark.highlighted {
+      cursor: pointer !important;
+      background-color: #3C2013; //dark brown with black shade
+    }
+  
+    .chessBoard .tile.highlighted.containsWhitePiece {
+      outline: 2px outset red;
+      box-shadow: 10px 10px 10px 0px black;
+      z-index: 3;
+    }
+  
+    .chessBoard .tile.highlighted.containsBlackPiece {
+      outline: 2px outset red;
+      box-shadow: 10px 10px 10px 0px black;
+      z-index: 3;
+    }
+  
+    .chessBoard .tile.highlighted.containsWhitePiece.can-click {
+      outline: 0px outset black;
+      box-shadow: 0px 0px 0px 0px black;
+      z-index: 0;
+    }
+  
+    .chessBoard .tile.highlighted.containsBlackPiece.can-click {
+      outline: 0px outset black;
+      box-shadow: 0px 0px 0px 0px black;
+      z-index: 0;
+    }
+  
+    .chessBoard .tile.highlighted.containsWhitePiece.can-click:hover {
+      outline: 2px outset white;
+      box-shadow: 10px 10px 10px 0px black;
+      z-index: 5;
+    }
+  
+    .chessBoard .tile.highlighted.containsBlackPiece.can-click:hover {
+      outline: 2px outset white;
+      box-shadow: 10px 10px 10px 0px black;
+      z-index: 5;
+    }
+  
+    .chessBoard .tile.highlighted:hover {
+      outline: 2px outset white;
+      box-shadow: 10px 10px 10px 0px black;
+      z-index: 4;
+    }
+  
+    .promoteCanvas {
+      z-index: 7;
+      position: absolute;
+      outline: 2px solid black;
+      cursor: pointer;
+    }
+  
+    .promoteCanvas .active {
+      
+    }
+  
+    #SideDiv {
+      height: 100%;
+      position: absolute;
+    }
+  
+    .timer {
+      position: absolute;
+      right: 0px;
+      left: 0px;
+      opacity: 0.75;
+    }
+  
+    .timer.white {
+      color: #393939;  //very dark gray
+      background-color: #d3d3d3; //very light gray
+    }
+  
+    .timer.black {
+      color: #d3d3d3; //very light gray
+      background-color: #393939; //very dark gray
+    }
+  
+    .timer > div {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+    }
+  
+    .capturedPieces {
+      position: absolute;
+    }
+  
+    .capturedPieces.white {
+      background-color: #d3d3d3; //very light gray
+    }
+  
+    .capturedPieces.black {
+      background-color: #393939; //very dark gray
+    }
+  
+    .capturedPieces .capturedPiece {
+      position: absolute;
+      opacity: 0.9;
+    }
+  
+    .materialBar {
+      position: absolute;
+      background-color: #393939;
+      overflow: hidden;
+    }
+  
+    .materialBar .percentage {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      height: 100%;
+      background-color: #d3d3d3;
+    }
+  
+    .materialBar .diffrence {
+      position: absolute;
+      top: 0px;
+      width: 50%;
+      height: 100%;
+    }
+  
+    .materialBar .diffrence.white {
+      left: 10px;
+      text-align: left;
+      color: #393939;
+    }
+  
+    .materialBar .diffrence.black {
+      right: 10px;
+      text-align: right;
+      color: #d3d3d3;
+    }
+  
+    #Debug {
+      position: absolute;
+      top: 101%;
+      color: white;
+    }
+  
+    #ToggleDebug {
+      position: absolute;
+      bottom: 0px;
+      color: white;
+      cursor: pointer;
+    }
+  
+    .textWidth {
+      color: #00000000;
+      position: absolute;
+      height: auto; 
+      width: auto;
+      white-space: no-wrap;
+    }
+  
+    .no-select {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+  </style>
