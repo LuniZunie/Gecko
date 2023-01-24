@@ -16,8 +16,5 @@ console.log("Listening on port 8080. Check code for more info.");
 // *** GET Routes - display pages ***
 // Root Route
 app.get('/', function (req, res) {
-    res.redirect('/home');
-});
-app.use((req, res, next) => {
-    res.status(404).redirect('/');
+    res.redirect('game/index.ejs');
 });
