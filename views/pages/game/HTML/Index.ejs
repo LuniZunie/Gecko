@@ -7,8 +7,9 @@
 
         <!-- JavaScript -->
         <%- include("../JavaScript/Load_Event.html") %>
-        <%- include("/workspace/Gecko/global_scripts/LCF.html") %>
+        <%- include("../JavaScript/Resize_Elements.html") %> 
         <%- include("../JavaScript/Main_Script.html") %>
+        <%- include("/workspace/Gecko/global_scripts/LCF.html") %>
     </head>
     <body onload="OnLoad();">
         <canvas id="DrawPieceCanvas" hidden></canvas>

@@ -3,9 +3,8 @@ const ejs = require('ejs');
 // Initialise Express
 var app = express();
 // Render static files
-app.use(express.static('pages'));
+app.use(express.static('views/partials'));
 
-app.use('/pages', express.static('pages'));
 // Set the view engine to ejs
 app.set('view engine', 'ejs');
 // Port website will run on
@@ -19,7 +18,7 @@ app.get('/', function (req, res) {
     res.redirect('/game');
 });
 app.get('/game', function (req, res) {
-    res.render('game/HTML/Index.ejs');
+    res.render('pages/game/HTML/Index.ejs');
 });
 app.use((req, res, next) => {
     res.status(404).redirect('/');
