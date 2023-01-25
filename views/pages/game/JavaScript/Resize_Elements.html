@@ -155,9 +155,11 @@
           const gameOverGraphDiv = document.getElementById("GameGraphDiv");
   
           const gameOverElementHidden = gameOverElement.hidden;
-  
+
           gameOverElement.style.opacity = Number(!gameOverElementHidden);
           gameOverElement.hidden = false;
+
+          gameOverElement.style.borderRadius = Chess.Functions.GetBorderRadius(gameOverElement, 10);
   
           const gameOverMaxWidth = Chess.Functions.GetTextWidth("Draw: Insufficient Material", document.body.style.fontFamily, gameOverTopBar.clientWidth + "px") * 1.25;
   

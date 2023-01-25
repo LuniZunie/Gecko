@@ -1651,6 +1651,9 @@
         },
   
         GameOver: function(code) {
+          const gameOver = new Audio("audio/game_over.mp3");
+          gameOver.play();
+
           Chess.gameOver = true;
   
           const gameOverElement = document.getElementById("GameOver");
@@ -1712,7 +1715,10 @@
           } else
             gaemOverText.classList.add("drew");
   
+          gameOverElement.style.opacity = 0;
           gameOverElement.hidden = false;
+
+          gameOverElement.classList.add("show");
   
           LCF.Update.RemoveFunction(this.UpdateTimers);
           LCF.Update.SetSpeed(100);

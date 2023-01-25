@@ -30,7 +30,14 @@
       height: 50%;
       width: 45%;
       background-color: #c9c9c9; /* very light gray */
+      overflow: hidden;
       z-index: 10;
+    }
+
+    .gameOver.show {
+      animation-name: showGameOver;
+      animation-duration: 500ms;
+      animation-fill-mode: forwards;
     }
   
     .gameOver .topBar {
@@ -257,10 +264,6 @@
       position: absolute;
       outline: 2px solid black;
       cursor: pointer;
-    }
-  
-    .promoteCanvas .active {
-      
     }
   
     #SideDiv {
