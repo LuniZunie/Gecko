@@ -594,8 +594,7 @@
               }
             } else  {
               //play move sound and play an animation
-              const moveSound = new Audio();
-              moveSound.src = Sounds.Move;
+              const moveSound = new Audio("public/assets/audio/move.mp3");
               moveSound.play();
   
               Chess.Position[newY][newX] = piece;
@@ -743,7 +742,7 @@
               Chess.blackCapturedPieces.push(`1x${piece[2]}`);
           }
   
-          const moveSound = new Audio();
+          const moveSound = new Audio("/workspace/Gecko/public/assets/audio/capture.mp3");
           moveSound.src = Sounds.Capture;
           moveSound.play();
   
