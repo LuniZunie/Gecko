@@ -1,7 +1,7 @@
-var express = require('express');
+const express = require('express');
 const ejs = require('ejs');
 // Initialise Express
-var app = express();
+const app = express();
 // Render static files
 app.use(express.static('views/partials'));
 
