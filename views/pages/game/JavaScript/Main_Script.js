@@ -51,7 +51,7 @@ const Chess = {
   blackClockColor: "Green",
 
   timeDetails: {
-    startTime: 300000, //5 minutes - 300000
+    startTime: 600000, //5 minutes - 300000
     increment: 1000 //1 second
   },
 
@@ -114,12 +114,12 @@ const Chess = {
   ],
   PositionDebug: [
     ["1x2.0","1x4","1x3","1x1","1x0.0","1x3","1x4","1x2.0"],
-    ["1x5.0","0x5.0","1x5.0","1x5.0","1x5.0","1x5.0","1x5.0","1x5.0"],
+    ["1x1","1x1","1x1","1x1","1x1","1x1","1x1","1x1"],
     [null,null,null,null,null,null,null,null],
     [null,null,null,null,null,null,null,null],
     [null,null,null,null,null,null,null,null],
     [null,null,null,null,null,null,null,null],
-    ["0x5.0","0x5.0","0x5.0","0x5.0","1x5.0","0x5.0","0x5.0","0x5.0"],
+    ["0x5.0","0x5.0","0x5.0","0x5.0","0x5.0","0x5.0","0x5.0","0x5.0"],
     ["0x2.0","0x4","0x3","0x1","0x0.0","0x3","0x4","0x2.0"]
   ],
 
@@ -408,64 +408,66 @@ const Chess = {
 
       Chess.promotionTileOffsetHeight = offsetHeight;
 
-      if (whitesTurn) {
-        context.strokeStyle = "#000000"; //black
-        context.fillStyle = "#FFFFFF"; //white
-      } else {
-        context.strokeStyle = "#FFFFFF"; //white
-        context.fillStyle = "#000000"; //black
-      }
-
-      context.lineWidth = 2;
+      context.lineWidth = tileSize * 0.02;
       for (const pieceNumber in drawOrder) {
         const piece = drawOrder[pieceNumber];
 
-        let drawInstructions = structuredClone(Chess.DrawInstructions[piece]);
-        if (!drawInstructions)
+        let layers = structuredClone(Chess.DrawInstructions[piece]);
+        if (!layers)
           continue;
 
-        context.beginPath();
-
-        let readOptions = false;
-
-        let mirror = false;
-
-        let mirroring = false;
-        for (let index = 0;index < mirror + 1;index++) {
-          if (mirroring)
-            drawInstructions = drawInstructions.reverse();
-
-          for (const instruction of drawInstructions) {
-            if (!readOptions) {
-              mirror = instruction.mirror;
-              readOptions = true;
-
-              continue;
-            }
-
-            const path = instruction.path;
-            if (!path)
-              continue;
-
-            if (instruction.overrideMirror)
-              if (!mirroring && instruction.overrideMirror === -1)
-                continue;
-              else if (mirroring && instruction.overrideMirror === 1)
-                continue;
-            if (mirroring)
-              path[0] = 100 - path[0];
-
-            if (instruction.action === "move")
-              context.moveTo((path[0] / 100 * tileSize) + 4, (path[1] / 100 * tileSize) + pieceNumber * tileSize + 4 + offsetHeight);
-            else
-              context.lineTo((path[0] / 100 * tileSize) + 4, (path[1] / 100 * tileSize) + pieceNumber * tileSize + 4 + offsetHeight);
+        for (let drawInstructions of layers) {
+          if (((!whitesTurn + drawInstructions[0].sameColor) % 2)) {
+            context.strokeStyle = "#171717"; //very dark gray
+            context.fillStyle = "#e1e1e1"; //very light gray
+          } else {
+            context.strokeStyle = "#e1e1e1"; //very light gray
+            context.fillStyle = "#171717"; //very dark gray
           }
 
-          mirroring = true;
-        }
+          context.beginPath();
 
-        context.fill();
-        context.stroke();
+          let readOptions = false;
+
+          let mirror = false;
+
+          let mirroring = false;
+          for (let index = 0;index < mirror + 1;index++) {
+            if (mirroring)
+              drawInstructions = drawInstructions.reverse();
+
+            for (const instruction of drawInstructions) {
+              if (!readOptions) {
+                mirror = instruction.mirror;
+                readOptions = true;
+
+                continue;
+              }
+
+              const path = instruction.path;
+              if (!path)
+                continue;
+
+              if (instruction.overrideMirror)
+                if (!mirroring && instruction.overrideMirror === -1)
+                  continue;
+                else if (mirroring && instruction.overrideMirror === 1)
+                  continue;
+              if (mirroring)
+                path[0] = 100 - path[0];
+
+              if (instruction.action === "move")
+                context.moveTo((path[0] / 100 * tileSize) + 4, (path[1] / 100 * tileSize) + pieceNumber * tileSize + 4 + offsetHeight);
+              else
+                context.lineTo((path[0] / 100 * tileSize) + 4, (path[1] / 100 * tileSize) + pieceNumber * tileSize + 4 + offsetHeight);
+            }
+
+            mirroring = true;
+          }
+
+          context.fill();
+          context.stroke();
+        }
       }
 
       if (this.whiteOnBottom == whitesTurn) {
