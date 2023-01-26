@@ -17,10 +17,17 @@ console.log("Listening on port 3030. Check code for more info.");
 // *** GET Routes - display pages ***
 // Root Route
 app.get("/", function (req, res) {
-    res.redirect("/game");
+    //res.redirect("/home");
+    res.redirect("/live-game");
 }); 
-app.get("/game", function (req, res) {
-    res.render("pages/game/HTML/Index.ejs");
+/*app.get("/home", function (req, res) {
+    res.render("pages/home/HTML/Index.ejs");
+});*/
+/*app.get("/find-games", function (req, res) {
+    res.render("pages/find-games/HTML/Index.ejs");
+});*/
+app.get("/live-game", function (req, res) {
+    res.render("pages/live-game/HTML/Index.ejs");
 });
 app.get("/connect/game", function (req, res) {
     const id = req.query.id;
