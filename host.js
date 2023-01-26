@@ -1,6 +1,7 @@
 const express = require("express");
 const ejs = require("ejs");
-const test = require("/workspace/Gecko/connect.js");
+
+const connection = require("/workspace/Gecko/connect.js");
 // Initialise Express
 const app = express();
 // Render static files
@@ -21,9 +22,17 @@ app.get("/", function (req, res) {
 app.get("/game", function (req, res) {
     res.render("pages/game/HTML/Index.ejs");
 });
-app.get("/connect", function (req, res) {
-    test.testFunction();
-    res.sendFile("/workspace/Gecko/connect.js");
+app.get("/connect/game", function (req, res) {
+    const id = req.query.id;
+    const game = connection.getLiveGame(id);
+
+    res.send(game);
+});
+app.post("/connect/game", function (req, res) {
+    const data = req.query.data;
+    const gameId = connection.createLiveGame(data);
+
+    res.send(gameId);
 });
 app.use((req, res, next) => {
     res.status(404).redirect("/");

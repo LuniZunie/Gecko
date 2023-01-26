@@ -4,7 +4,7 @@
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             alert(xmlHttp.responseText);
     }
-    xmlHttp.open("GET", "connect", true); // true for asynchronous 
+    xmlHttp.open("GET", "connect/game?id=1674752973733", true); // true for asynchronous 
     xmlHttp.send(null);
 
 const Chess = {
