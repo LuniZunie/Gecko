@@ -10,11 +10,6 @@
   --endYRook: "0px";
 }
 
-body {
-  font-family: "Sans-serif", "Helvetica";
-  background-color: #131313;
-}
-
 #Game {
   position: absolute;
   width: 70%;
