@@ -70,12 +70,12 @@ function ResizeElements() {
     whiteTimerText.style.lineHeight = timerHeight + "px";
     blackTimerText.style.lineHeight = timerHeight + "px";
 
-    const timerBorderRadius = Chess.Functions.GetBorderRadius(whiteTimerElement, 10);
+    const timerBorderRadius = LCF.Elements.GetBorderRadius(whiteTimerElement, 10);
 
     whiteTimerElement.style.borderRadius = timerBorderRadius;
     blackTimerElement.style.borderRadius = timerBorderRadius;
 
-    const timerMaxWidth = Chess.Functions.GetTextWidth("00:00.0", document.body.style.fontFamily, timerHeight + "px") + 50;
+    const timerMaxWidth = LCF.Elements.GetTextWidth("00:00.0", document.body.style.fontFamily, timerHeight + "px") + 50;
 
     let timerFontSize = timerHeight;
     if (timerMaxWidth > timerWidth)
@@ -106,7 +106,7 @@ function ResizeElements() {
     whiteCapturedPiecesDiv.style.height = capturedPiecesDivHeight + "px";
     blackCapturedPiecesDiv.style.height = capturedPiecesDivHeight + "px";
 
-    const capturedPiecesBorderRadius = Chess.Functions.GetBorderRadius(whiteCapturedPiecesDiv, 10);
+    const capturedPiecesBorderRadius = LCF.Elements.GetBorderRadius(whiteCapturedPiecesDiv, 10);
 
     whiteCapturedPiecesDiv.style.borderRadius = capturedPiecesBorderRadius;
     blackCapturedPiecesDiv.style.borderRadius = capturedPiecesBorderRadius;
@@ -135,11 +135,11 @@ function ResizeElements() {
 
     materialBar.style.top = sideDiv.offsetHeight * 0.5 - (trueBarHeight / 2) + "px";
 
-    materialBar.style.borderRadius = Chess.Functions.GetBorderRadius(materialBar, 5);
+    materialBar.style.borderRadius = LCF.Elements.GetBorderRadius(materialBar, 5);
 
     materialBarPercentage.style.width = timerWidth / 2 + "px";
 
-    const materialMaxWidth = Chess.Functions.GetTextWidth("+00", document.body.style.fontFamily, trueBarHeight + "px");
+    const materialMaxWidth = LCF.Elements.GetTextWidth("+00", document.body.style.fontFamily, trueBarHeight + "px");
 
     let materialFontSize = trueBarHeight;
     if (materialMaxWidth > timerWidth)
@@ -158,9 +158,9 @@ function ResizeElements() {
     gameOverElement.style.opacity = Number(!gameOverElementHidden);
     gameOverElement.hidden = false;
 
-    gameOverElement.style.borderRadius = Chess.Functions.GetBorderRadius(gameOverElement, 10);
+    gameOverElement.style.borderRadius = LCF.Elements.GetBorderRadius(gameOverElement, 10);
 
-    const gameOverMaxWidth = Chess.Functions.GetTextWidth("Draw: Insufficient Material", document.body.style.fontFamily, gameOverTopBar.clientWidth + "px") * 1.25;
+    const gameOverMaxWidth = LCF.Elements.GetTextWidth("Draw: Insufficient Material", document.body.style.fontFamily, gameOverTopBar.clientWidth + "px") * 1.25;
 
     let gameOverFontSize = gameOverTopBar.clientHeight;
     if (gameOverMaxWidth > gameOverTopBar.clientWidth)
@@ -168,13 +168,13 @@ function ResizeElements() {
 
     gameOverTopBar.style.fontSize = `${gameOverFontSize}px`;
 
-    gameOverGraphDiv.style.borderRadius = Chess.Functions.GetBorderRadius(gameOverGraphDiv, 5);
+    gameOverGraphDiv.style.borderRadius = LCF.Elements.GetBorderRadius(gameOverGraphDiv, 5);
 
     //Game Over Buttons
     const gameOverButtons = document.getElementById("GameOverButtons");
     const buttonsWidth = gameOverButtons.clientWidth * 0.4;
 
-    const gameOverButtonsMaxWidth = Chess.Functions.GetTextWidth("Rematch (1)", document.body.style.fontFamily, buttonsWidth + "px");
+    const gameOverButtonsMaxWidth = LCF.Elements.GetTextWidth("Rematch (1)", document.body.style.fontFamily, buttonsWidth + "px");
 
     let gameOverButtonFontSize = gameOverButtons.clientHeight;
     if (gameOverButtonsMaxWidth > buttonsWidth)
@@ -185,7 +185,7 @@ function ResizeElements() {
 
     const gameOverButtonsChildren = gameOverButtons.children;
     for (const button of gameOverButtonsChildren)
-      button.style.borderRadius = Chess.Functions.GetBorderRadius(button, 10);
+      button.style.borderRadius = LCF.Elements.GetBorderRadius(button, 10);
 
     gameOverElement.style.opacity = 1;
     gameOverElement.hidden = gameOverElementHidden;

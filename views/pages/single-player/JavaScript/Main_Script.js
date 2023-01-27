@@ -1,12 +1,3 @@
-
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            alert(xmlHttp.responseText);
-    }
-    xmlHttp.open("GET", "connect/game?id=1674752973733", true); // true for asynchronous 
-    xmlHttp.send(null);
-
 const Chess = {
   //Global Variables
   game: true,
@@ -1503,10 +1494,6 @@ const Chess = {
       }
     },
 
-    GetBorderRadius: function(element, borderRadius) {
-      return `${borderRadius}% / ${borderRadius * (element.clientWidth / element.clientHeight)}%`;
-    },
-
     UpdateTimers: function() {
       if (!Chess.whiteTimer || !Chess.blackTimer)
         return;
@@ -1856,31 +1843,13 @@ const Chess = {
       let fontSize = timerElement.clientHeight;
       const timerWidth = timerElement.clientWidth;
 
-      const timerMaxWidth = this.GetTextWidth(text, document.body.style.fontFamily, fontSize + "px") + 50;
+      const timerMaxWidth = LCF.Elements.GetTextWidth(text, document.body.style.fontFamily, fontSize + "px") + 50;
       if (timerMaxWidth > timerWidth)
         fontSize = fontSize * (timerWidth / timerMaxWidth);
 
       timerElement.firstElementChild.style.fontSize = fontSize + "px";
 
       return;
-    },
-
-    GetTextWidth: function(text, font, size) {
-      const span = document.createElement("span");
-
-      span.innerHTML = text;
-
-      span.classList.add("textWidth");
-
-      span.style.fontFamily = font;
-      span.style.fontSize = size;
-
-      document.body.appendChild(span);
-    
-      const textWidth = span.clientWidth;
-      document.body.removeChild(span);
-
-      return textWidth;
     },
 
     ConvertGameToCode: function(game) {

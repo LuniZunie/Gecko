@@ -1,0 +1,10 @@
+@keyframes raiseTopBarElement {
+    from {
+        background-color: #4b4b4b;
+        box-shadow: none;
+    }
+    to {
+        background-color: #2a2a2a;
+        box-shadow: 10px 10px 10px 0px black;
+    }
+}

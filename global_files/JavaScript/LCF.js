@@ -776,6 +776,35 @@ const LCF = { //LuniZunie's Custom Functions
       return unicode;
     }
   },
+  Elements: {
+    GetBorderRadius: function(element, borderRadius) {
+      if (!LCF.IsType.Number(borderRadius))
+        throw "Invalid data type sent to function: LCF.Elements.GetBorderRadius";
+
+      return `${borderRadius}% / ${borderRadius * (element.clientWidth / element.clientHeight)}%`;
+    },
+
+    GetTextWidth: function(text, font, size) {
+      if (!LCF.IsType.String(text))
+        throw "Invalid data type sent to function: LCF.Elements.GetTextWidth";
+
+      const span = document.createElement("span");
+
+      span.innerHTML = text;
+
+      span.classList.add("textWidth");
+
+      span.style.fontFamily = font;
+      span.style.fontSize = size;
+
+      document.body.appendChild(span);
+    
+      const textWidth = span.clientWidth;
+      document.body.removeChild(span);
+
+      return textWidth;
+    },
+  },
   Timer: {
     Create: function(stopwatch) {
       if (stopwatch && !LCF.IsType.Boolean(stopwatch))

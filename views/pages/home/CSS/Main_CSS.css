@@ -1,0 +1,28 @@
+#SiteTitleContainer {
+    position: absolute;
+    top: 1%;
+    left: 1%;
+    width: 98%;
+    height: 10%;
+    background-color: #4b4b4b;
+    overflow: hidden;
+}
+
+#SiteTitle {
+    color: dodgerblue;
+    text-decoration: none;
+    text-align: center;
+    position: absolute;
+    width: 10%;
+    height: 100%;
+}
+
+#SiteTitle:hover {
+    animation-name: raiseTopBarElement;
+    animation-duration: 250ms;
+    animation-fill-mode: forwards;
+}
+
+#SinglePlayer: {
+    
+}

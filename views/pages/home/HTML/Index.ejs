@@ -5,12 +5,17 @@
 
         <!-- CSS -->
         <%- `<style>${include("/workspace/Gecko/global_files/CSS/WebSite.css")}</style>` %>
+        <%- `<style>${include("../CSS/Animations.css")}</style>` %>
         <%- `<style>${include("../CSS/Main_CSS.css")}</style>` %>
         
         <!-- JavaScript -->
         <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/LCF.js")}</script>` %>
+        <%- `<script>${include("../JavaScript/Resize_Elements.js")}</script>` %>
     </head>
-    <body>
-        <h1 id="SiteTitle" href="single-player">Gecko</h1>
+    <body onload="ResizeElements();">
+        <div id="SiteTitleContainer">
+            <a id="SiteTitle" href="/home">Gecko</a>
+            <a id="SinglePlayer" href="/single-player">Single Player</a>
+        </div>
     </body>
 </html>
