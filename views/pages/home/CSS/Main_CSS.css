@@ -8,21 +8,35 @@
     overflow: hidden;
 }
 
-#SiteTitle {
+#SiteTitleContainer a {
     color: dodgerblue;
     text-decoration: none;
     text-align: center;
     position: absolute;
-    width: 10%;
     height: 100%;
 }
 
-#SiteTitle:hover {
+#SiteTitleContainer a:hover {
     animation-name: raiseTopBarElement;
     animation-duration: 250ms;
     animation-fill-mode: forwards;
 }
 
-#SinglePlayer: {
-    
+#SiteTitle {
+    width: 10%;
+}
+
+#SinglePlayer {
+    left: 10%;
+    width: 20%;
+}
+
+#FindGames {
+    left: 30%;
+    width: 20%;
+}
+
+#CreateGame {
+    left: 50%;
+    width: 20%;
 }

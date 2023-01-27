@@ -3,18 +3,28 @@ function ResizeElements() {
     const titleContainer = document.getElementById("SiteTitleContainer");
     titleContainer.style.borderRadius = LCF.Elements.GetBorderRadius(titleContainer, 10);
 
-    const title = document.getElementById("SiteTitle");
-    title.style.borderRadius = LCF.Elements.GetBorderRadius(title, titleContainer.clientWidth * 0.1);
+    let lowestFontSize = Infinity;
 
-    let titleFontSize = title.clientHeight;
-    
-    const titleMaxWidth = LCF.Elements.GetTextWidth("Gecko", document.body.style.fontFamily, `${titleFontSize}px`) + 50;
-    if (titleMaxWidth > title.clientWidth)
-        titleFontSize = titleFontSize * (title.clientWidth / titleMaxWidth);
+    const borderRadius = titleContainer.clientWidth * 0.1;
+    const fontFamily = document.body.style.fontFamily;
 
-    title.style.fontSize = `${titleFontSize}px`;
-    title.style.lineHeight = `${title.clientHeight}px`;
+    const titleButtons = titleContainer.children;
+    for (const button of titleButtons) {
+        button.style.borderRadius = LCF.Elements.GetBorderRadius(button, borderRadius);
 
-    const singlePlayer = document.getElementById("SinglePlayer");
-    singlePlayer.style.borderRadius = LCF.Elements.GetBorderRadius(singlePlayer, titleContainer.clientWidth * 0.1);
+        let fontSize = button.clientHeight;
+        const maxWidth = LCF.Elements.GetTextWidth(button.innerHTML, fontFamily, `${fontSize}px`) + 50;
+        if (maxWidth > button.clientWidth)
+            fontSize = fontSize * (button.clientWidth / maxWidth);
+
+        if (fontSize < lowestFontSize)
+            lowestFontSize = fontSize;
+    }
+
+    for (const button of titleButtons) {
+        button.style.fontSize = `${lowestFontSize}px`;
+        button.style.lineHeight = `${button.clientHeight}px`;
+    }
+
+    document.body.style.opacity = 1;
 }

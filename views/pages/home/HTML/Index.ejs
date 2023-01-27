@@ -12,10 +12,12 @@
         <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/LCF.js")}</script>` %>
         <%- `<script>${include("../JavaScript/Resize_Elements.js")}</script>` %>
     </head>
-    <body onload="ResizeElements();">
+    <body onload="ResizeElements();" style="opacity: 0;">
         <div id="SiteTitleContainer">
             <a id="SiteTitle" href="/home">Gecko</a>
             <a id="SinglePlayer" href="/single-player">Single Player</a>
+            <a id="FindGames" href="/find-games">Find Games</a>
+            <a id="CreateGame" href="/create-game">Create Game</a>
         </div>
     </body>
 </html>

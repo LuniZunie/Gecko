@@ -15,6 +15,9 @@
       <%- `<script>${include("../JavaScript/Main_Script.js")}</script>` %>
     </head>
     <body onload="OnLoad();">
+        <div id="HomeButtonContainer">
+          <a id="HomeButton" href="/home">Gecko</a>
+        </div>
         <canvas id="DrawPieceCanvas" hidden></canvas>
         <div id="Game" class="no-select">
           <div id="SideDiv">
@@ -45,10 +48,10 @@
                   <canvas id="GameGraph" class="canvas"></canvas>
                 </div>
                 <div id="GameOverButtons" class="buttons no-select">
-                  <div id="HomeButton" class="homeButton">
+                  <div id="GameOverHomeButton" class="gameOverHomeButton">
                     Home
                   </div>
-                  <div id="RematchButton" class="rematchButton">
+                  <div id="GameOverRematchButton" class="gameOverRematchButton">
                     Rematch
                   </div>
                 </div>
