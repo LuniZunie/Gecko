@@ -293,35 +293,38 @@ const LCF = { //LuniZunie's Custom Functions
     }
   },
   IsType: {
-    Function: function(thisFunction) {
-      return (typeof thisFunction === "function");
+    Function: function(value) {
+      return (typeof value === "function");
     },
-    Date: function(date) {
-      return (date instanceof Date);
+    Date: function(value) {
+      return (value instanceof Date);
     },
-    Object: function(object) {
-      return (typeof object === "object" && !Array.isArray(object) && object !== null);
+    Object: function(value) {
+      return (value === Object(value));
     },
-    Array: function(array) {
-      return Array.isArray(array);
+    Array: function(value) {
+      return (value instanceof Array);
     },
-    String: function(string) {
-      return (typeof string === "string");
+    String: function(value) {
+      return (typeof value === "string");
     },
-    Number: function(number) {
-      return ((Number(number) && (!LCF.IsType.String(number) || !LCF.IsType.Boolean(number))) || number === 0);
+    Number: function(value) {
+      return ((Number(value) && (!LCF.IsType.String(value) || !LCF.IsType.Boolean(value))) || value === 0);
     },
-    Boolean: function(boolean) {
-      return (typeof boolean === "boolean");
+    Boolean: function(value) {
+      return (typeof value === "boolean");
     },
-    Null: function(nullValue) {
-      return (nullValue === null);
+    Null: function(value) {
+      return (value === null);
     },
-    Undefined: function(undefinedValue) {
-      return (undefinedValue === undefined);
+    Undefined: function(value) {
+      return (value === undefined);
     },
     Empty: function(value) {
       return (LCF.IsType.Null(value) || LCF.IsType.Undefined(value))
+    },
+    HTMLElement: function(value) {
+      return (value instanceof HTMLElement);
     }
   },
   Array: {
@@ -804,6 +807,41 @@ const LCF = { //LuniZunie's Custom Functions
 
       return textWidth;
     },
+
+    Move: function(element, newParent) {
+      if (!LCF.IsType.HTMLElement(element) || !LCF.IsType.HTMLElement(newParent))
+        throw "Invalid data type sent to function: LCF.Elements.Move";
+
+      newParent.appendChild(structuredClone(element));
+      element.remove();
+    }
+  },
+  Page: {
+    FadeTo: function(newLocation, speed = 0.25) {
+      const screen = document.createElement("screen");
+      screen.classList.add("screen");
+      
+      document.body.appendChild(screen);
+
+      screen.style.animation = `fadeOut ${speed}s linear 0s 1 normal forwards`;
+      screen.addEventListener("animationend", function(event)  {
+        if (this === event.target)
+          location.href = newLocation;
+      });
+    },
+
+    FadeIn: function(speed = 0.25) {
+      const screen = document.createElement("screen");
+      screen.classList.add("screen");
+
+      document.body.appendChild(screen);
+
+      screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
+      screen.addEventListener("animationend", function(event)  {
+        if (this === event.target)
+          screen.remove();
+      });
+    }
   },
   Timer: {
     Create: function(stopwatch) {

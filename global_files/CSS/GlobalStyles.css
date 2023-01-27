@@ -1,0 +1,49 @@
+body {
+    font-family: "Sans-serif", "Helvetica";
+    background-color: #131313;
+}
+
+.screen {
+    position: absolute;
+    left: 0vw;
+    top: 0vh;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2147483647; /* 32-bit integer limit */
+    background-color: #131313;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.textWidth {
+    color: #00000000;
+    position: absolute;
+    height: auto; 
+    width: auto;
+    white-space: no-wrap;
+}
+  
+.no-select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.custom-button {
+    cursor: pointer;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

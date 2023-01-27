@@ -211,7 +211,6 @@ const Chess = {
 
     DrawBoard: function() {
       const canvas = document.getElementById("DrawPieceCanvas");
-      const context = canvas.getContext("2d");
 
       canvas.width = Chess.tileSize;
       canvas.height = Chess.tileSize;
@@ -1966,7 +1965,7 @@ const Chess = {
       }
 
       return newBoard;
-    }
+    },
   },
 
   Codes: {

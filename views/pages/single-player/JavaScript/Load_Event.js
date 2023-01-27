@@ -1,5 +1,7 @@
 function OnLoad() {
-  window.addEventListener("resize", ResizeElements);
-
   Chess.Functions.OnStartup();
+  LCF.Update.Call();
+
+  LCF.Page.FadeIn();
+  document.body.style.opacity = 1;
 }

@@ -178,7 +178,7 @@ function ResizeElements() {
 
   const gameOverButtonsMaxWidth = LCF.Elements.GetTextWidth("Rematch (1)", document.body.style.fontFamily, `${gameOverButtonFontSize}px`);
   if (gameOverButtonsMaxWidth > buttonsWidth)
-    gameOverButtonFontSize = gameOverButtonFontSize * (gameOverButtons.clientWidth / gameOverButtonsMaxWidth);
+    gameOverButtonFontSize = gameOverButtonFontSize * (buttonsWidth / gameOverButtonsMaxWidth);
 
   gameOverButtons.style.fontSize = `${gameOverButtonFontSize}px`;
   gameOverButtons.style.lineHeight = `${gameOverButtons.clientHeight}px`;

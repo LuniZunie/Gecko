@@ -1,4 +1,4 @@
-function ResizeElements() {
+function ResizeElements(event) {
     //Page Title
     const titleContainer = document.getElementById("SiteTitleContainer");
     titleContainer.style.borderRadius = LCF.Elements.GetBorderRadius(titleContainer, 10);
@@ -26,5 +26,8 @@ function ResizeElements() {
         button.style.lineHeight = `${button.clientHeight}px`;
     }
 
-    document.body.style.opacity = 1;
+    if (!event) {
+        LCF.Page.FadeIn();
+        document.body.style.opacity = 1;
+    }
 }

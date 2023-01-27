@@ -4,19 +4,21 @@
       <base target="_top">
 
       <!-- CSS -->
-      <%- `<style>${include("/workspace/Gecko/global_files/CSS/WebSite.css")}</style>` %>
+      <%- `<style>${include("/workspace/Gecko/global_files/CSS/GlobalAnimations.css")}</style>` %>
+      <%- `<style>${include("/workspace/Gecko/global_files/CSS/GlobalStyles.css")}</style>` %>
       <%- `<style>${include("../CSS/Animations.css")}</style>` %>
       <%- `<style>${include("../CSS/Main_CSS.css")}</style>` %>
         
       <!-- JavaScript -->
+      <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/Global_Load_Event.js")}</script>` %>
       <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/LCF.js")}</script>` %>
       <%- `<script>${include("../JavaScript/Load_Event.js")}</script>` %>
       <%- `<script>${include("../JavaScript/Resize_Elements.js")}</script>` %>
       <%- `<script>${include("../JavaScript/Main_Script.js")}</script>` %>
     </head>
-    <body onload="OnLoad();">
+    <body onload="OnLoad();" style="opacity: 0;">
         <div id="HomeButtonContainer">
-          <a id="HomeButton" href="/home">Gecko</a>
+          <a id="HomeButton" class="custom-button" onclick="LCF.Page.FadeTo('/home')">Gecko</a>
         </div>
         <canvas id="DrawPieceCanvas" hidden></canvas>
         <div id="Game" class="no-select">
@@ -48,7 +50,7 @@
                   <canvas id="GameGraph" class="canvas"></canvas>
                 </div>
                 <div id="GameOverButtons" class="buttons no-select">
-                  <div id="GameOverHomeButton" class="gameOverHomeButton">
+                  <div id="GameOverHomeButton" class="gameOverHomeButton" onclick="LCF.Page.FadeTo('/home')">
                     Home
                   </div>
                   <div id="GameOverRematchButton" class="gameOverRematchButton">
