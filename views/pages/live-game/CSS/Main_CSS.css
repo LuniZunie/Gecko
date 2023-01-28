@@ -17,6 +17,26 @@
   left: 10%;
 }
 
+#HomeButtonContainer {
+  position: absolute;
+  top: 1%;
+  left: 1%;
+  width: 9.8%;
+  height: 10%;
+  background-color: #4b4b4b;
+  overflow: hidden;
+}
+
+#HomeButton {
+  color: dodgerblue;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  text-decoration: none;
+  text-align: center;
+}
+
 .gameOver {
   position: absolute;
   left: 27.5%;
@@ -124,7 +144,7 @@
   width: 90%;
 }
 
-.gameOver .buttons .homeButton {
+.gameOver .buttons .gameOverHomeButton {
   position: absolute;
   left: 5%;
   top: 0%;
@@ -136,11 +156,11 @@
   background-color: #90cf66; /* green */
 }
 
-.gameOver .buttons .homeButton:hover {
+.gameOver .buttons .gameOverHomeButton:hover {
   background-color: #5c8d3b; /* dark green */
 }
 
-.gameOver .buttons .rematchButton {
+.gameOver .buttons .gameOverRematchButton {
   position: absolute;
   left: 55%;
   top: 0%;
@@ -152,15 +172,15 @@
   background-color: #f5554a; /* red */
 }
 
-.gameOver .buttons .rematchButton:hover {
+.gameOver .buttons .gameOverRematchButton:hover {
   background-color: #5c8d3b; /* dark green */
 }
 
-.gameOver .buttons .rematchButton.suggested {
+.gameOver .buttons .gameOverRematchButton.suggested {
   background-color: #90cf66; /* green */
 }
 
-.gameOver .buttons .rematchButton.suggested:hover {
+.gameOver .buttons .gameOverRematchButton.suggested:hover {
   background-color: #7a211b; /* dark red */
 }
 
@@ -349,21 +369,4 @@
   bottom: 0px;
   color: white;
   cursor: pointer;
-}
-
-.textWidth {
-  color: #00000000;
-  position: absolute;
-  height: auto; 
-  width: auto;
-  white-space: no-wrap;
-}
-
-.no-select {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }

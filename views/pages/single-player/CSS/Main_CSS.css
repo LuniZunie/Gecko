@@ -10,6 +10,23 @@
   --endYRook: "0px";
 }
 
+.page {
+  pointer-events: none;
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+#CreatePage {
+  opacity: 1;
+}
+
+#GamePage {
+  opacity: 0;
+}
+
 #Game {
   position: absolute;
   width: 70%;
