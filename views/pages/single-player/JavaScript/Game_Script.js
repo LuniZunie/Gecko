@@ -708,7 +708,7 @@ const Chess = {
             else
               Chess.blackTimer.play();
             
-            blackFirstMove &&= false
+            blackFirstMove &&= false;
 
             Chess.whiteTimerElement.style.animation = `timerOff${Chess.whiteClockColor} 1s ease-in-out 0s 1 normal forwards`;
             Chess.blackTimerElement.style.animation = `timerOn${Chess.blackClockColor} 1s ease-in-out 0s 1 normal forwards`;
@@ -812,8 +812,8 @@ const Chess = {
           newCapturedPieceElement.width = Chess.capturedPieceSize;
           newCapturedPieceElement.height = Chess.capturedPieceSize;
 
-          newCapturedPieceElement.style.top = y * Chess.capturedPieceSize + Chess.capturedPieceTopOffset + "px";
-          newCapturedPieceElement.style.left = x * Chess.capturedPieceSize + Chess.capturedPieceLeftOffset + "px";
+          newCapturedPieceElement.style.top = `${y * Chess.capturedPieceSize + Chess.capturedPieceTopOffset}px`;
+          newCapturedPieceElement.style.left = `${x * Chess.capturedPieceSize + Chess.capturedPieceLeftOffset}px`;
 
           x++;
           if (x >= 5) {
@@ -840,8 +840,8 @@ const Chess = {
           newCapturedPieceElement.width = Chess.capturedPieceSize;
           newCapturedPieceElement.height = Chess.capturedPieceSize;
 
-          newCapturedPieceElement.style.top = y * Chess.capturedPieceSize + Chess.capturedPieceTopOffset + "px";
-          newCapturedPieceElement.style.left = x * Chess.capturedPieceSize + Chess.capturedPieceLeftOffset + "px";
+          newCapturedPieceElement.style.top = `${y * Chess.capturedPieceSize + Chess.capturedPieceTopOffset}px`;
+          newCapturedPieceElement.style.left = `${x * Chess.capturedPieceSize + Chess.capturedPieceLeftOffset}px`;
 
           x++;
           if (x >= 5) {
@@ -879,7 +879,7 @@ const Chess = {
       canvas.style.borderRadius = trueBorderRadius;
 
       canvas.style.left = `${x * Chess.tileSize + Chess.board.offsetLeft - 6}px`;
-      if (this.whiteOnBottom == whitesTurn)
+      if (this.whiteOnBottom === +whitesTurn)
         canvas.style.top = `${y * Chess.tileSize + offsetHeight}px`;
       else
         canvas.style.top = `${Chess.gameDiv.offsetHeight - ((7 - y) * Chess.tileSize + offsetHeight + height)}px`;
@@ -901,7 +901,7 @@ const Chess = {
         canvas.hidden = true;
         canvas.classList.remove("active");
 
-        if (this.whiteOnBottom != whitesTurn)
+        if (this.whiteOnBottom !== +whitesTurn)
           Chess.promotionChose = `x${Chess.promotionOptions.length + 1 - Number(Chess.promotionChose[1])}`;
 
         Chess.material.total.x5--;
@@ -950,7 +950,7 @@ const Chess = {
         if (!Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]])
           continue;
 
-        if (Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]][0] === +!whitesTurn)
+        if (Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]][0] === !+whitesTurn)
           continue;
 
         if (Object.keys(pieceLegalMoves).includes(kingTileId)) {
@@ -970,7 +970,7 @@ const Chess = {
     PutsOwnKingInCheck: function (startX, startY, moveX, moveY, checkLegalMove) {
       const startTileId = `${startX}-${startY}`;
 
-      [startX, startY, moveX, moveY] = [Number(startX), Number(startY), Number(moveX), Number(moveY)];
+      [startX, startY, moveX, moveY] = [+startX, +startY, +moveX, +moveY];
 
       let kingTileId;
       if (Chess.whitesTurn)
@@ -1009,7 +1009,7 @@ const Chess = {
     GetsOutOfCheck: function (startX, startY, moveX, moveY, checkLegalMove, checksFrom) {
       const moveTileId = `${moveX}-${moveY}`;
 
-      [startX, startY, moveX, moveY] = [Number(startX), Number(startY), Number(moveX), Number(moveY)];
+      [startX, startY, moveX, moveY] = [+startX, +startY, +moveX, +moveY];
 
       const kingMove = (!+Chess.Position[startY][startX][2]);
 
@@ -1085,9 +1085,7 @@ const Chess = {
       for (let y in Chess.Position) {
         for (let x in Chess.Position[y]) {
           if (onePieceCheck)
-            [x, y] = [onlyX, onlyY];
-
-          [x, y] = [+x, +y];
+            [x, y] = [+onlyX, +onlyY];
 
           const piece = Chess.Position[y][x];
           if (!piece)
@@ -1132,25 +1130,23 @@ const Chess = {
                 }
               }
 
-              if (extraInfo === "0") {
+              if (!+extraInfo) {
                 castleMoves[tileId] = {};
 
-                if (color === "0") {
-                  if (Chess.Position[7][0] === "0x2.0") //queenside
-                    if (!Chess.Position[7][1] && !Chess.Position[7][2] && !Chess.Position[7][3])
-                      castleMoves[tileId]["2-7"] = { piece: "0x0.1", specialMove: "queenside castle" };
-
-                  if (Chess.Position[7][7] === "0x2.0") //kingside
-                    if (!Chess.Position[7][5] && !Chess.Position[7][6])
-                      castleMoves[tileId]["6-7"] = { piece: "0x0.1", specialMove: "kingside castle" };
-                } else {
+                if (+color) {
                   if (Chess.Position[0][0] === "1x2.0") //queenside
                     if (!Chess.Position[0][1] && !Chess.Position[0][2] && !Chess.Position[0][3])
                       castleMoves[tileId]["2-0"] = { piece: "1x0.1", specialMove: "queenside castle" };
-
                   if (Chess.Position[0][7] === "1x2.0") //kingside
                     if (!Chess.Position[0][5] && !Chess.Position[0][6])
                       castleMoves[tileId]["6-0"] = { piece: "1x0.1", specialMove: "kingside castle" };
+                } else {
+                  if (Chess.Position[7][0] === "0x2.0") //queenside
+                    if (!Chess.Position[7][1] && !Chess.Position[7][2] && !Chess.Position[7][3])
+                      castleMoves[tileId]["2-7"] = { piece: "0x0.1", specialMove: "queenside castle" };
+                  if (Chess.Position[7][7] === "0x2.0") //kingside
+                    if (!Chess.Position[7][5] && !Chess.Position[7][6])
+                      castleMoves[tileId]["6-7"] = { piece: "0x0.1", specialMove: "kingside castle" };
                 }
               }
               break;
@@ -1193,7 +1189,7 @@ const Chess = {
               ];
 
               newPiece = piece;
-              if (extraInfo === "0")
+              if (!+extraInfo)
                 newPiece = `${color}x2.1`;
 
               for (const rookMove of rookMoves) {
@@ -1273,7 +1269,7 @@ const Chess = {
               if (!Chess.Position[y + direction][x]) {//move 1
                 legalMoves[tileId][`${x}-${y + direction}`] = { piece: newPiece };
 
-                if (extraInfo === "0" && Chess.Position[y + direction * 2] && !Chess.Position[y + direction * 2][x]) //start move 2
+                if (!+extraInfo && Chess.Position[y + direction * 2] && !Chess.Position[y + direction * 2][x]) //start move 2
                   legalMoves[tileId][`${x}-${y + direction * 2}`] = { piece: `${color}x5.1-1` };
               }
 
@@ -1315,7 +1311,7 @@ const Chess = {
 
             const piece = Chess.Position[y][x];
 
-            const whiteKing = (piece[0] === "0");
+            const whiteKing = (!+piece[0]);
 
             if (whiteKing != Chess.whitesTurn)
               continue;
@@ -1354,7 +1350,7 @@ const Chess = {
                 trueLegalMoves[tileId] = {};
 
               for (const [legalMovesKey, currentLegalMove] of Object.entries(legalMoves[tileId])) {
-                if (tile[2] === "0") {
+                if (!+tile[2]) {
                   if (this.GetsOutOfCheck(x, y, ...legalMovesKey.split("-"), currentLegalMove, kingInCheckFrom))
                     trueLegalMoves[tileId][legalMovesKey] = currentLegalMove;
 
@@ -1609,7 +1605,7 @@ const Chess = {
       const whiteTime = (Chess.whiteTimer) ? Chess.whiteTimer.time : Infinity;
       const blackTime = (Chess.blackTimer) ? Chess.blackTimer.time : Infinity;
 
-      if (totalLegalMoves === 0) {
+      if (!totalLegalMoves) {
         if (inCheck) {
           if (whitesTurn)
             return "0x0.1"; //black won by checkmate
