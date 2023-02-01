@@ -878,11 +878,11 @@ const Chess = {
 
       canvas.style.borderRadius = trueBorderRadius;
 
-      canvas.style.left = x * Chess.tileSize + Chess.board.offsetLeft - 6 + "px";
+      canvas.style.left = `${x * Chess.tileSize + Chess.board.offsetLeft - 6}px`;
       if (this.whiteOnBottom == whitesTurn)
-        canvas.style.top = y * Chess.tileSize + offsetHeight + "px";
+        canvas.style.top = `${y * Chess.tileSize + offsetHeight}px`;
       else
-        canvas.style.top = Chess.gameDiv.offsetHeight - ((7 - y) * Chess.tileSize + offsetHeight + height) + "px";
+        canvas.style.top = `${Chess.gameDiv.offsetHeight - ((7 - y) * Chess.tileSize + offsetHeight + height)}px`;
 
       this.DrawPromoteCanvas(whitesTurn);
 
@@ -950,7 +950,7 @@ const Chess = {
         if (!Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]])
           continue;
 
-        if (Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]][0] == Number(!whitesTurn))
+        if (Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]][0] === +!whitesTurn)
           continue;
 
         if (Object.keys(pieceLegalMoves).includes(kingTileId)) {
@@ -979,7 +979,6 @@ const Chess = {
         kingTileId = Chess.blackKingPosition.join("-");
 
       if (checkLegalMove)
-
         for (const [piecesLegalMovesKey, pieceLegalMoves] of Object.entries(Chess.legalMoves)) {
           if (piecesLegalMovesKey === startTileId)
             continue;
@@ -1012,7 +1011,7 @@ const Chess = {
 
       [startX, startY, moveX, moveY] = [Number(startX), Number(startY), Number(moveX), Number(moveY)];
 
-      const kingMove = (Chess.Position[startY][startX][2] === "0");
+      const kingMove = (!+Chess.Position[startY][startX][2]);
 
       let kingTileId;
       if (Chess.whitesTurn)
@@ -1025,7 +1024,7 @@ const Chess = {
       if (kingMove) {
         for (const piecesLegalMovesKey of Object.keys(Chess.legalMoves)) { //CHANGED
           const piecePosition = piecesLegalMovesKey.split("-");
-          if (Chess.Position[Number(piecePosition[1])][Number(piecePosition[0])][0] != Chess.whitesTurn)
+          if (+Chess.Position[+piecePosition[1]][+piecePosition[0]][0] !== Chess.whitesTurn)
             continue;
 
           const positionSave = structuredClone(Chess.Position);
@@ -1076,7 +1075,7 @@ const Chess = {
 
       let onePieceCheck = false;
       if (onlyX && onlyY) {
-        [onlyX, onlyY] = [Number(onlyX), Number(onlyY)];
+        [onlyX, onlyY] = [+onlyX, +onlyY];
 
         onePieceCheck = true;
       }
@@ -1088,7 +1087,7 @@ const Chess = {
           if (onePieceCheck)
             [x, y] = [onlyX, onlyY];
 
-          [x, y] = [Number(x), Number(y)];
+          [x, y] = [+x, +y];
 
           const piece = Chess.Position[y][x];
           if (!piece)
