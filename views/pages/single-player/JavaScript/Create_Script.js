@@ -1,4 +1,6 @@
 const CreateGame = {
+   selectedCustomInput: null,
+  
   timeDetails: {
     white: {
       startTime: 600000, //5 minutes - 300000
@@ -29,15 +31,18 @@ const CreateGame = {
 
       element.classList.add("selected");
       element.focus();
-      element.addEventListener("click", function(event) {
-        CreateGame.Functions.WroteInCustomInput(this, event);
+      window.addEventListener("click", function(event) {
+         if (LCF.IsType.HTMLElement(CreateGame.selectedCustomInput) && event.target === CreateGame.selectedCustomInput)
+          CreateGame.Functions.WroteInCustomInput(this, event);
       });
-      element.addEventListener("focusout", function(event) {
-        const theNextInput = document.getElementById(this.dataset.nextInput);
-        if (LCF.IsType.HTMLElement(theNextInput))
-          CreateGame.Functions.SetCustomInputCursor(theNextInput);
-        else
-          CreateGame.Functions.RemoveCustomInputCursor(this);
+      window.addEventListener("focusout", function(event) {
+        if (LCF.IsType.HTMLElement(CreateGame.selectedCustomInput) && event.target === CreateGame.selectedCustomInput) {
+            const theNextInput = document.getElementById(this.dataset.nextInput);
+          if (LCF.IsType.HTMLElement(theNextInput))
+            CreateGame.Functions.SetCustomInputCursor(theNextInput);
+          else
+            CreateGame.Functions.RemoveCustomInputCursor(this);
+        }
       });
     },
     RemoveCustomInputCursor: function(element) {
