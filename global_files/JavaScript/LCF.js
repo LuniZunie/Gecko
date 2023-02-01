@@ -205,7 +205,7 @@ const LCF = { //LuniZunie's Custom Functions
         if (!Array.isArray(dimension) || dimension.length !== 2)
           throw "Invalid data type sent to function: LCF.Math.RandomCoordinates";
 
-        if (!LCF.IsType.Number(dimension[0]) || !LCF.IsType.Number(dimension[1]))
+        if (!LCF.IsType.Number(dimension[0], dimension[1]))
           throw "Invalid data type sent to function: LCF.Math.RandomCoordinates";
 
         const coords = LCF.Math.Random(...dimension);
@@ -220,13 +220,13 @@ const LCF = { //LuniZunie's Custom Functions
       return returnCoords;
     },
     Distance: function(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
-      if (!LCF.IsType.Number(x1) || !LCF.IsType.Number(y1) || !LCF.IsType.Number(x2) || !LCF.IsType.Number(y2))
+      if (!LCF.IsType.Number(x1, y1, x2, y2))
         throw "Invalid data type sent to function: LCF.Math.Distance";
 
       return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
     },
     CoordinatesInArea: function(x1 = 0, y1 = 0, x2 = 0, y2 = 0, range = 0, type = "square", inclusive = true) {
-      if (!LCF.IsType.Number(x1) || !LCF.IsType.Number(y1) || !LCF.IsType.Number(x2) || !LCF.IsType.Number(y2) || !LCF.IsType.Number(range) || !LCF.IsType.Boolean(inclusive))
+      if (!LCF.IsType.Number(x1, y1, x2, y2, range) || !LCF.IsType.Boolean(inclusive))
         throw "Invalid data type sent to function: LCF.Math.CoordinatesInArea";
 
       if (type === "square")
@@ -243,13 +243,12 @@ const LCF = { //LuniZunie's Custom Functions
         throw "Area type was not correctly defined for function: LCF.Math.CoordinatesInArea";
     },
     Slope: function(x1 = 0, y1 = 0, x2 = 0, y2 = 0) {
-      if (!LCF.IsType.Number(x1) || !LCF.IsType.Number(y1) || !LCF.IsType.Number(x2) || !LCF.IsType.Number(y2))
+      if (!LCF.IsType.Number(x1, y1, x2, y2))
         throw "Invalid data type sent to function: LCF.Math.Slope";
 
       let slope = Math.abs((y2 - y1) / (x2 - x1));
 
-      if (!slope)
-        slope = 0;
+      slope ||= 0;
 
       let rise = 1;
       let run = 1;
@@ -265,7 +264,7 @@ const LCF = { //LuniZunie's Custom Functions
       };
     },
     SlopeToAngle: function(rise, run, degrees = true) {
-      if (!LCF.IsType.Number(rise) || !LCF.IsType.Number(run) || !LCF.IsType.Boolean(degrees))
+      if (!LCF.IsType.Number(rise, rise) || !LCF.IsType.Boolean(degrees))
         throw "Invalid data type sent to function: LCF.Math.SlopeToAngle";
 
       if (degrees)
@@ -293,38 +292,82 @@ const LCF = { //LuniZunie's Custom Functions
     }
   },
   IsType: {
-    Function: function(value) {
-      return (typeof value === "function");
+    Function: function(...values) {
+      for (const value of values)
+        if (typeof value !== "function")
+          return false;
+      
+      return true;
     },
-    Date: function(value) {
-      return (value instanceof Date);
+    Date: function(...values) {
+      for (const value of values)
+        if (!(value instanceof Date))
+          return false;
+      
+      return true;
     },
-    Object: function(value) {
-      return (value === Object(value));
+    Object: function(...values) {
+      for (const value of values)
+        if (value !== Object(value))
+          return false;
+      
+      return true;
     },
-    Array: function(value) {
-      return (value instanceof Array);
+    Array: function(...values) {
+      for (const value of values)
+        if (!(value instanceof Array))
+          return false;
+      
+      return true;
     },
-    String: function(value) {
-      return (typeof value === "string");
+    String: function(...values) {
+      for (const value of values)
+        if (typeof value !== "string")
+          return false;
+      
+      return true;
     },
-    Number: function(value) {
-      return ((Number(value) && (!LCF.IsType.String(value) || !LCF.IsType.Boolean(value))) || value === 0);
+    Number: function(...values) {
+      for (const value of values)
+        if (typeof value !== "number")
+          return false;
+      
+      return true;
     },
-    Boolean: function(value) {
-      return (typeof value === "boolean");
+    Boolean: function(...values) {
+      for (const value of values)
+        if (typeof value !== "boolean")
+          return false;
+      
+      return true;
     },
-    Null: function(value) {
-      return (value === null);
+    Null: function(...values) {
+      for (const value of values)
+        if (value !== null)
+          return false;
+      
+      return true;
     },
-    Undefined: function(value) {
-      return (value === undefined);
+    Undefined: function(...values) {
+      for (const value of values)
+        if (value !== undefined)
+          return false;
+      
+      return true;
     },
-    Empty: function(value) {
-      return (LCF.IsType.Null(value) || LCF.IsType.Undefined(value))
+    Empty: function(...values) {
+      for (const value of values)
+        if (!LCF.IsType.Null(value) && !LCF.IsType.Undefined(value))
+          return false;
+      
+      return true;
     },
-    HTMLElement: function(value) {
-      return (value instanceof HTMLElement);
+    HTMLElement: function(...values) {
+      for (const value of values)
+        if (!(value instanceof HTMLElement))
+          return false;
+      
+      return true;
     }
   },
   Array: {
@@ -714,7 +757,7 @@ const LCF = { //LuniZunie's Custom Functions
   },
   Characters: {
     Number: function(start = 0, end = 100) {
-      if (!LCF.IsType.Number(start) || !LCF.IsType.Number(end))
+      if (!LCF.IsType.Number(start, end))
         throw "Invalid data type sent to function: LCF.Characters.Number";
       else if (start > end)
         throw "Invalid data sent to function: LCF.Characters.Number";
@@ -727,7 +770,7 @@ const LCF = { //LuniZunie's Custom Functions
       return numbers;
     },
     Alphabet: function(start = 1, end = 26) {
-      if (!LCF.IsType.Number(start) || !LCF.IsType.Number(end))
+      if (!LCF.IsType.Number(start, end))
         throw "Invalid data type sent to function: LCF.Characters.Alphabet";
       else if (start < 1 || end > 26 || start > end)
         throw "Invalid data sent to function: LCF.Characters.Alphabet";
@@ -740,7 +783,7 @@ const LCF = { //LuniZunie's Custom Functions
       return alphabet;
     },
     Ascii: function(start = 0, end = 127) {
-      if (!LCF.IsType.Number(start) || !LCF.IsType.Number(end))
+      if (!LCF.IsType.Number(start, end))
         throw "Invalid data type sent to function: LCF.Characters.Ascii";
       else if (start < 0 || end > 127 || start > end)
         throw "Invalid data sent to function: LCF.Characters.Ascii";
@@ -753,7 +796,7 @@ const LCF = { //LuniZunie's Custom Functions
       return ascii;
     },
     ExtendedAscii: function(start = 0, end = 255) {
-      if (!LCF.IsType.Number(start) || !LCF.IsType.Number(end))
+      if (!LCF.IsType.Number(start, end))
         throw "Invalid data type sent to function: LCF.Characters.ExtendedAscii";
       else if (start < 0 || end > 255 || start > end)
         throw "Invalid data sent to function: LCF.Characters.ExtendedAscii";
@@ -766,7 +809,7 @@ const LCF = { //LuniZunie's Custom Functions
       return extendedAscii;
     },
     Unicode: function(start = 0, end = 100) {
-      if (!LCF.IsType.Number(start) || !LCF.IsType.Number(end))
+      if (!LCF.IsType.Number(start, end))
         throw "Invalid data type sent to function: LCF.Characters.Unicode";
       else if (start < 0 || end > 149186 || start > end)
         throw "Invalid data sent to function: LCF.Characters.Unicode";
@@ -809,7 +852,7 @@ const LCF = { //LuniZunie's Custom Functions
     },
 
     Move: function(element, newParent) {
-      if (!LCF.IsType.HTMLElement(element) || !LCF.IsType.HTMLElement(newParent))
+      if (!LCF.IsType.HTMLElement(element, newParent))
         throw "Invalid data type sent to function: LCF.Elements.Move";
 
       newParent.appendChild(structuredClone(element));
