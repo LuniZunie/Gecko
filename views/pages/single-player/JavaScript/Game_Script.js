@@ -169,18 +169,18 @@ const Chess = {
         for (const x in Chess.Position[y]) {
           const piece = Chess.Position[y][x];
           if (piece) {
-            if (piece[2] === "0") {
-              if (piece[0] === "0")
-                Chess.whiteKingPosition = [x, y];
-              else
-                Chess.blackKingPosition = [x, y];
-            } else { //everything except king
+            if (+piece[2]) { //everything except king
               Chess.material.total[`x${piece[2]}`]++;
 
-              if (piece[0] === "0")
-                Chess.material.white[`x${piece[2]}`]++;
-              else
+              if (+piece[0])
                 Chess.material.black[`x${piece[2]}`]++;
+              else
+                Chess.material.white[`x${piece[2]}`]++;
+            } else { //king
+              if (+piece[0])
+                Chess.blackKingPosition = [x, y];
+              else
+                Chess.whiteKingPosition = [x, y];
             }
           }
         }
@@ -381,10 +381,10 @@ const Chess = {
           newPiece.style.top = Chess.tileSize * rowNumber + "px";
           newPiece.style.left = Chess.tileSize * tileNumber + "px";
 
-          if (pieceColor === "0")
-            document.getElementById(`tile_${tileId}`).classList.add("containsWhitePiece", "can-click");
-          else
+          if (+pieceColor)
             document.getElementById(`tile_${tileId}`).classList.add("containsBlackPiece");
+          else
+            document.getElementById(`tile_${tileId}`).classList.add("containsWhitePiece", "can-click");
         }
       }
     },
@@ -396,14 +396,14 @@ const Chess = {
       const tileSize = Chess.tileSize;
 
       let drawOrder = structuredClone(Chess.promotionOptions);
-      if (this.whiteOnBottom != whitesTurn)
+      if (this.whiteOnBottom !== +whitesTurn)
         drawOrder = drawOrder.reverse();
 
       context.fillStyle = "#EBEBEB";
       context.fillRect(0, 0, canvas.width, canvas.height);
 
       let offsetHeight = 0;
-      if (this.whiteOnBottom != whitesTurn) {
+      if (this.whiteOnBottom !== +whitesTurn) {
         offsetHeight = tileSize / 2 - 8;
 
         context.fillStyle = "#DD000066";
@@ -474,7 +474,7 @@ const Chess = {
         }
       }
 
-      if (this.whiteOnBottom == whitesTurn) {
+      if (this.whiteOnBottom === +whitesTurn) {
         context.fillStyle = "#DD000066";
         context.fillRect(0, drawOrder.length * tileSize + 16, tileSize + 12, tileSize / 2 - 8);
       }
@@ -487,7 +487,7 @@ const Chess = {
         return;
 
       if (!simulate) {
-        if (piece[2] === "5" || capture) {
+        if (+piece[2] === 5 || capture) {
           Chess.fiftyMoveRuleCount = 0;
 
           Chess.threefoldCache = [];
@@ -540,17 +540,17 @@ const Chess = {
       }
 
       if (!simulate) {
-        if (piece[2] === "0") {
-          if (piece[0] === "0")
-            Chess.whiteKingPosition = [newX, newY];
-          else
+        if (!+piece[2]) {
+          if (+piece[0])
             Chess.blackKingPosition = [newX, newY];
+          else
+            Chess.whiteKingPosition = [newX, newY];
         }
 
         if (piece === `${piece[0]}x5.1-1`)
           Chess.enPassantablePawns.push([newX, newY]);
 
-        if (piece[2] === "5" && (newY === 7 || newY === 0)) { //need to test if (newY % 7 === 0) is faster
+        if (+piece[2] === 5 && (newY === 7 || newY === 0)) { //need to test if (newY % 7 === 0) is faster
           piece = await this.Promote(newX, newY, 1 - Number(piece[0]));
           if (piece === -1)
             return -1;
@@ -562,10 +562,10 @@ const Chess = {
         if (capture) {
           Chess.material.total[capture]--;
 
-          if (piece[0] === "0")
-            Chess.material.black[capture]--;
-          else
+          if (+piece[0])
             Chess.material.white[capture]--;
+          else
+            Chess.material.black[capture]--;
         }
       }
 
@@ -703,12 +703,12 @@ const Chess = {
 
             Chess.whiteTimer.addTime(Chess.timeDetails.white.increment);
 
-            if (Chess.blackFirstMove) {
-              Chess.blackFirstMove = false;
-
+            if (Chess.blackFirstMove)
               Chess.blackFirstMoveTimeout = setTimeout(this.StartTimer, 10000);
-            } else
+            else
               Chess.blackTimer.play();
+            
+            blackFirstMove &&= false
 
             Chess.whiteTimerElement.style.animation = `timerOff${Chess.whiteClockColor} 1s ease-in-out 0s 1 normal forwards`;
             Chess.blackTimerElement.style.animation = `timerOn${Chess.blackClockColor} 1s ease-in-out 0s 1 normal forwards`;
@@ -740,7 +740,7 @@ const Chess = {
 
     Capture: function (x, y, pieceCapturing) {
       const piece = Chess.Position[y][x];
-      const white = (piece[0] === "0");
+      const white = !+piece[0];
 
       const promotedPiece = document.getElementById(`piece_${x}-${y}`).dataset.promoted;
 
