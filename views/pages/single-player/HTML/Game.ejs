@@ -7,24 +7,27 @@
     <%- `<style>${include("/workspace/Gecko/global_files/CSS/GlobalAnimations.css")}</style>` %>
     <%- `<style>${include("/workspace/Gecko/global_files/CSS/GlobalStyles.css")}</style>` %>
     <%- `<style>${include("../CSS/Animations.css")}</style>` %>
-    <%- `<style>${include("../CSS/Main_CSS.css")}</style>` %>
+    <%- `<style>${include("../CSS/Main.css")}</style>` %>
+    <%- `<style>${include("../CSS/Create.css")}</style>` %>
+    <%- `<style>${include("../CSS/Game.css")}</style>` %>
         
     <!-- JavaScript -->
     <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/Global_Load_Event.js")}</script>` %>
     <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/LCF.js")}</script>` %>
     <%- `<script>${include("../JavaScript/Load_Event.js")}</script>` %>
     <%- `<script>${include("../JavaScript/Resize_Elements.js")}</script>` %>
+    <%- `<script>${include("../JavaScript/Create_Script.js")}</script>` %>
     <%- `<script>${include("../JavaScript/Game_Script.js")}</script>` %>
   </head>
   <body onload="OnLoad();" style="opacity: 0;">
     <div id="HomeButtonContainer">
       <a id="HomeButton" class="custom-button" onclick="LCF.Page.FadeTo('/home')">Gecko</a>
     </div>
-    <div id="CreatePage" class="page">
-      <%- `<script>${include("../HTML/Create_Page.ejs")}</script>` %>
+    <div id="CreatePage" class="page" style="opacity: 1;">
+      <%- `${include("../HTML/Create_Page.ejs")}` %>
     </div>
 
-    <div id="GamePage" class="page">
+    <div id="GamePage" class="page" style="opacity: 0;">
       <canvas id="DrawPieceCanvas" hidden></canvas>
       <div id="Game" class="no-select">
         <div id="SideDiv">

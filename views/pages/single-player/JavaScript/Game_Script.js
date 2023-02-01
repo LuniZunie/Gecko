@@ -51,8 +51,14 @@ const Chess = {
   blackClockColor: "Green",
 
   timeDetails: {
-    startTime: 600000, //5 minutes - 300000
-    increment: 1000 //1 second
+    white: {
+      startTime: 600000, //5 minutes - 300000
+      increment: 1000 //1 second
+    },
+    black: {
+      startTime: 600000, //5 minutes - 300000
+      increment: 1000 //1 second
+    }
   },
 
   whiteKingPosition: [4, 7],
@@ -93,34 +99,34 @@ const Chess = {
   },
 
   StartPosition: [
-    ["1x2.0","1x4","1x3","1x1","1x0.0","1x3","1x4","1x2.0"],
-    ["1x5.0","1x5.0","1x5.0","1x5.0","1x5.0","1x5.0","1x5.0","1x5.0"],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    ["0x5.0","0x5.0","0x5.0","0x5.0","0x5.0","0x5.0","0x5.0","0x5.0"],
-    ["0x2.0","0x4","0x3","0x1","0x0.0","0x3","0x4","0x2.0"]
+    ["1x2.0", "1x4", "1x3", "1x1", "1x0.0", "1x3", "1x4", "1x2.0"],
+    ["1x5.0", "1x5.0", "1x5.0", "1x5.0", "1x5.0", "1x5.0", "1x5.0", "1x5.0"],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    ["0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0"],
+    ["0x2.0", "0x4", "0x3", "0x1", "0x0.0", "0x3", "0x4", "0x2.0"]
   ],
   Position: [
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null]
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null]
   ],
   PositionDebug: [
-    ["1x2.0","1x4","1x3","1x1","1x0.0","1x3","1x4","1x2.0"],
-    ["1x1","1x1","1x1","1x1","1x1","1x1","1x1","1x1"],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    [null,null,null,null,null,null,null,null],
-    ["0x5.0","0x5.0","0x5.0","0x5.0","0x5.0","0x5.0","0x5.0","0x5.0"],
-    ["0x2.0","0x4","0x3","0x1","0x0.0","0x3","0x4","0x2.0"]
+    ["1x2.0", "1x4", "1x3", "1x1", "1x0.0", "1x3", "1x4", "1x2.0"],
+    ["1x1", "1x1", "1x1", "1x1", "1x1", "1x1", "1x1", "1x1"],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    ["0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0"],
+    ["0x2.0", "0x4", "0x3", "0x1", "0x0.0", "0x3", "0x4", "0x2.0"]
   ],
 
   //Functions
@@ -132,7 +138,7 @@ const Chess = {
 
     //Functions
 
-    OnStartup: function() {
+    OnStartup: function () {
       Chess.gameDiv = document.getElementById("Game");
 
       Chess.board = document.getElementById("ChessBoard");
@@ -147,7 +153,7 @@ const Chess = {
       this.SetupPosition();
     },
 
-    SetupPosition: function() {//working on
+    SetupPosition: function () {//working on
       Chess.Position = structuredClone(Chess.StartPosition);
       //Chess.Position = structuredClone(Chess.PositionDebug);
       //Chess.Position = this.ConvertCodeToGame("rnbqkbnr/ppp1pppp/3p4/8/4P3/5N2/PPPP1PPP/RNBQKB1R");
@@ -157,7 +163,7 @@ const Chess = {
       Chess.whitesTurn = true;
 
       for (const y in Chess.Position) {
-        if (Chess.Position[y] === [null,null,null,null,null,null,null,null])
+        if (Chess.Position[y] === [null, null, null, null, null, null, null, null])
           continue;
 
         for (const x in Chess.Position[y]) {
@@ -183,12 +189,12 @@ const Chess = {
       this.GetLegalMoves();
 
       if (Chess.game) {
-        if (Chess.timeDetails.startTime > 0) {
+        if (Chess.timeDetails.whtie.startTime > 0 && Chess.timeDetails.black.startTime > 0) {
           Chess.whiteTimer = LCF.Timer.Create(false);
-          Chess.whiteTimer.time = Chess.timeDetails.startTime;
+          Chess.whiteTimer.time = Chess.timeDetails.white.startTime;
 
           Chess.blackTimer = LCF.Timer.Create(false);
-          Chess.blackTimer.time = Chess.timeDetails.startTime;
+          Chess.blackTimer.time = Chess.timeDetails.black.startTime;
 
           Chess.whiteFirstMove = false;
           Chess.blackFirstMove = true;
@@ -209,7 +215,7 @@ const Chess = {
       }
     },
 
-    DrawBoard: function() {
+    DrawBoard: function () {
       const canvas = document.getElementById("DrawPieceCanvas");
 
       canvas.width = Chess.tileSize;
@@ -220,7 +226,7 @@ const Chess = {
       let startDrawPosition = [-1, -1];
       let everyOtherRow = true;
 
-      for (let tileNumber = 0;tileNumber < 64;tileNumber++) {
+      for (let tileNumber = 0; tileNumber < 64; tileNumber++) {
         startDrawPosition[0]++;
 
         if (!(tileNumber % 8)) {
@@ -237,8 +243,8 @@ const Chess = {
         newTile.id = `tile_${tileId}`;
         newTile.src = Chess.blankImage;
 
-        newTile.addEventListener("click", function(event) {
-          const [x, y] = this.id.replace("tile_","").split("-");
+        newTile.addEventListener("click", function (event) {
+          const [x, y] = this.id.replace("tile_", "").split("-");
 
           Chess.Functions.ClickedBoard(event, [Number(x), Number(y)]);
         });
@@ -261,7 +267,7 @@ const Chess = {
       this.PlacePieces();
     },
 
-    CreatePieces: function() {
+    CreatePieces: function () {
       const canvas = document.getElementById("DrawPieceCanvas");
       const context = canvas.getContext("2d");
 
@@ -271,7 +277,7 @@ const Chess = {
       canvas.height = tileSize;
 
       context.lineWidth = tileSize * 0.02;
-      for (let color = 0;color < 2;color++) {
+      for (let color = 0; color < 2; color++) {
         for (let [piece, layersObject] of Object.entries(Chess.DrawInstructions)) {
           context.clearRect(0, 0, tileSize, tileSize);
 
@@ -294,7 +300,7 @@ const Chess = {
             let mirror = false;
 
             let mirroring = false;
-            for (let index = 0;index < mirror + 1;index++) {
+            for (let index = 0; index < mirror + 1; index++) {
               if (mirroring)
                 drawInstructions = drawInstructions.reverse();
 
@@ -310,11 +316,10 @@ const Chess = {
                 if (!path)
                   continue;
 
-                if (instruction.overrideMirror)
-                  if (!mirroring && instruction.overrideMirror === -1)
-                    continue;
-                  else if (mirroring && instruction.overrideMirror === 1)
-                    continue;
+                if (!mirroring && instruction.overrideMirror === -1)
+                  continue;
+                else if (mirroring && instruction.overrideMirror === 1)
+                  continue;
 
                 if (mirroring)
                   path[0] = 100 - path[0];
@@ -344,14 +349,14 @@ const Chess = {
       }
     },
 
-    PlacePieces: function() {
+    PlacePieces: function () {
       let localPosition = structuredClone(Chess.Position);
       if (!this.whiteOnBottom)
         localPosition = localPosition.reverse();
 
       for (const rowNumber in localPosition) {
         const row = localPosition[rowNumber];
-        if (row === [null,null,null,null,null,null,null,null])
+        if (row === [null, null, null, null, null, null, null, null])
           continue;
 
         for (const tileNumber in row) {
@@ -384,7 +389,7 @@ const Chess = {
       }
     },
 
-    DrawPromoteCanvas: function(whitesTurn) {
+    DrawPromoteCanvas: function (whitesTurn) {
       const canvas = document.getElementById("PromoteCanvas");
 
       const context = canvas.getContext("2d");
@@ -431,7 +436,7 @@ const Chess = {
           let mirror = false;
 
           let mirroring = false;
-          for (let index = 0;index < mirror + 1;index++) {
+          for (let index = 0; index < mirror + 1; index++) {
             if (mirroring)
               drawInstructions = drawInstructions.reverse();
 
@@ -447,11 +452,11 @@ const Chess = {
               if (!path)
                 continue;
 
-              if (instruction.overrideMirror)
-                if (!mirroring && instruction.overrideMirror === -1)
-                  continue;
-                else if (mirroring && instruction.overrideMirror === 1)
-                  continue;
+              if (!mirroring && instruction.overrideMirror === -1)
+                continue;
+              else if (mirroring && instruction.overrideMirror === 1)
+                continue;
+
               if (mirroring)
                 path[0] = 100 - path[0];
 
@@ -477,7 +482,7 @@ const Chess = {
       context.lineWidth = 1;
     },
 
-    MovePiece: async function(newX, newY, oldX, oldY, piece, capture, specialMove, simulate = false) { //working on
+    MovePiece: async function (newX, newY, oldX, oldY, piece, capture, specialMove, simulate = false) { //working on
       if (Chess.gameOver)
         return;
 
@@ -527,7 +532,7 @@ const Chess = {
       if (!simulate) {
         for (const enPassantablePawn of Chess.enPassantablePawns) {
           const [x, y] = enPassantablePawn;
-        
+
           Chess.Position[y][x] = `${Chess.Position[y][x][0]}x5.1-0`; //no longer en passantable
         }
 
@@ -575,7 +580,7 @@ const Chess = {
         document.documentElement.style.setProperty("--endY", `${newY * Chess.tileSize}px`);
 
         pieceElement.style.animation = `moveElement 0.1s ease-in-out 0s 1 normal forwards`;
-        
+
         document.getElementById(oldTileId).classList.remove(pieceClassName);
         document.getElementById(newTileId).classList.add(pieceClassName);
         if (capture) {
@@ -592,7 +597,7 @@ const Chess = {
 
             this.Capture(newX, newY, piece);
           }
-        } else  {
+        } else {
           //play move sound and play an animation
           const moveSound = new Audio("audio/move.mp3");
           moveSound.play();
@@ -684,6 +689,8 @@ const Chess = {
             if (!Chess.blackTimer.paused)
               Chess.blackTimer.pause();
 
+            Chess.blackTimer.addTime(Chess.timeDetails.black.increment);
+
             Chess.whiteTimer.play();
 
             Chess.whiteTimerElement.style.animation = `timerOn${Chess.whiteClockColor} 1s ease-in-out 0s 1 normal forwards`;
@@ -693,6 +700,8 @@ const Chess = {
 
             if (!Chess.whiteTimer.paused)
               Chess.whiteTimer.pause();
+
+            Chess.whiteTimer.addTime(Chess.timeDetails.white.increment);
 
             if (Chess.blackFirstMove) {
               Chess.blackFirstMove = false;
@@ -729,7 +738,7 @@ const Chess = {
       }
     },
 
-    Capture: function(x, y, pieceCapturing) {
+    Capture: function (x, y, pieceCapturing) {
       const piece = Chess.Position[y][x];
       const white = (piece[0] === "0");
 
@@ -783,7 +792,7 @@ const Chess = {
         this.OrganizeCapturedPieces(white);
     },
 
-    OrganizeCapturedPieces: function(white) {
+    OrganizeCapturedPieces: function (white) {
       if (white) {
         Chess.whiteCapturedPieces = Chess.whiteCapturedPieces.sort();
 
@@ -843,7 +852,7 @@ const Chess = {
       }
     },
 
-    GetMaterial: function(white) {
+    GetMaterial: function (white) {
       let material;
       if (white)
         material = Chess.material.white;
@@ -853,10 +862,10 @@ const Chess = {
       return material.x1 * 9 + material.x2 * 5 + (material.x3 + material.x4) * 3 + material.x5;
     },
 
-    Promote: async function(x, y, whitesTurn) {
+    Promote: async function (x, y, whitesTurn) {
       const canvas = document.getElementById("PromoteCanvas");
 
-      const offsetHeight = Number(Chess.board.style.top.replace("px",""));
+      const offsetHeight = Number(Chess.board.style.top.replace("px", ""));
 
       const width = Chess.tileSize + 8;
       const height = Chess.tileSize * (Chess.promotionOptions.length + 0.5) + 8;
@@ -924,7 +933,7 @@ const Chess = {
       }
     },
 
-    InCheck: function(whitesTurn, specificPosition, singleValue) {
+    InCheck: function (whitesTurn, specificPosition, singleValue) {
       const checkFromArray = [];
 
       let kingTileId;
@@ -958,7 +967,7 @@ const Chess = {
         return checkFromArray;
     },
 
-    PutsOwnKingInCheck: function(startX, startY, moveX, moveY, checkLegalMove) {
+    PutsOwnKingInCheck: function (startX, startY, moveX, moveY, checkLegalMove) {
       const startTileId = `${startX}-${startY}`;
 
       [startX, startY, moveX, moveY] = [Number(startX), Number(startY), Number(moveX), Number(moveY)];
@@ -971,21 +980,15 @@ const Chess = {
 
       if (checkLegalMove)
 
-      for (const [piecesLegalMovesKey, pieceLegalMoves] of Object.entries(Chess.legalMoves)) {
-        if (piecesLegalMovesKey === startTileId)
-          continue;
+        for (const [piecesLegalMovesKey, pieceLegalMoves] of Object.entries(Chess.legalMoves)) {
+          if (piecesLegalMovesKey === startTileId)
+            continue;
 
-          let minIndex = Object.keys(pieceLegalMoves).indexOf(startTileId);
+          const minIndex = Object.keys(pieceLegalMoves).indexOf(startTileId);
 
           if (minIndex > -1) {
-            let index = 0;
-
-            for (const [legalMoveKey, legalMove] of Object.entries(pieceLegalMoves)) {
-              index++;
-
-              if (index <= minIndex)
-                continue;
-
+            const loopAmount = Object.values(pieceLegalMoves).length; //CHANGED;
+            for (let index = minIndex;index < loopAmount;index++) {
               const positionSave = structuredClone(Chess.Position);
 
               this.MovePiece(moveX, moveY, startX, startY, checkLegalMove.piece, checkLegalMove.capture, checkLegalMove.specialMove, true);
@@ -998,13 +1001,13 @@ const Chess = {
                 return true;
             }
           }
-      }
+        }
 
 
       return false;
     },
 
-    GetsOutOfCheck: function(startX, startY, moveX, moveY, checkLegalMove, checksFrom) {
+    GetsOutOfCheck: function (startX, startY, moveX, moveY, checkLegalMove, checksFrom) {
       const moveTileId = `${moveX}-${moveY}`;
 
       [startX, startY, moveX, moveY] = [Number(startX), Number(startY), Number(moveX), Number(moveY)];
@@ -1020,7 +1023,7 @@ const Chess = {
       let gotOutOfChecks = 0;
 
       if (kingMove) {
-        for (const [piecesLegalMovesKey, piecesLegalMoves] of Object.entries(Chess.legalMoves)) {
+        for (const piecesLegalMovesKey of Object.keys(Chess.legalMoves)) { //CHANGED
           const piecePosition = piecesLegalMovesKey.split("-");
           if (Chess.Position[Number(piecePosition[1])][Number(piecePosition[0])][0] != Chess.whitesTurn)
             continue;
@@ -1068,7 +1071,7 @@ const Chess = {
       return (gotOutOfChecks === checksFrom.length);
     },
 
-    GetLegalMoves: function(onlyX, onlyY) { //working on
+    GetLegalMoves: function (onlyX, onlyY) { //working on
       const legalMoves = {};
 
       let onePieceCheck = false;
@@ -1124,9 +1127,9 @@ const Chess = {
                 if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                   const tile = Chess.Position[moveY][moveX];
                   if (!tile)
-                    legalMoves[tileId][`${moveX}-${moveY}`] = {piece: `${color}x0.1`};
+                    legalMoves[tileId][`${moveX}-${moveY}`] = { piece: `${color}x0.1` };
                   else if (tile[0] !== color)
-                    legalMoves[tileId][`${moveX}-${moveY}`] = {piece: `${color}x0.1`, capture: `x${tile[2]}`};
+                    legalMoves[tileId][`${moveX}-${moveY}`] = { piece: `${color}x0.1`, capture: `x${tile[2]}` };
                 }
               }
 
@@ -1136,19 +1139,19 @@ const Chess = {
                 if (color === "0") {
                   if (Chess.Position[7][0] === "0x2.0") //queenside
                     if (!Chess.Position[7][1] && !Chess.Position[7][2] && !Chess.Position[7][3])
-                      castleMoves[tileId]["2-7"] = {piece: "0x0.1", specialMove: "queenside castle"};
+                      castleMoves[tileId]["2-7"] = { piece: "0x0.1", specialMove: "queenside castle" };
 
                   if (Chess.Position[7][7] === "0x2.0") //kingside
                     if (!Chess.Position[7][5] && !Chess.Position[7][6])
-                      castleMoves[tileId]["6-7"] = {piece: "0x0.1", specialMove: "kingside castle"};
+                      castleMoves[tileId]["6-7"] = { piece: "0x0.1", specialMove: "kingside castle" };
                 } else {
                   if (Chess.Position[0][0] === "1x2.0") //queenside
                     if (!Chess.Position[0][1] && !Chess.Position[0][2] && !Chess.Position[0][3])
-                      castleMoves[tileId]["2-0"] = {piece: "1x0.1", specialMove: "queenside castle"};
+                      castleMoves[tileId]["2-0"] = { piece: "1x0.1", specialMove: "queenside castle" };
 
                   if (Chess.Position[0][7] === "1x2.0") //kingside
                     if (!Chess.Position[0][5] && !Chess.Position[0][6])
-                      castleMoves[tileId]["6-0"] = {piece: "1x0.1", specialMove: "kingside castle"};
+                      castleMoves[tileId]["6-0"] = { piece: "1x0.1", specialMove: "kingside castle" };
                 }
               }
               break;
@@ -1166,14 +1169,14 @@ const Chess = {
 
               for (const queenMove of queenMoves) {
                 let [moveX, moveY] = [x, y];
-                for (let distance = 0;distance < 8;distance++) {//max queen can move in 1 move
+                for (let distance = 0; distance < 8; distance++) {//max queen can move in 1 move
                   [moveX, moveY] = LCF.Array.Add([moveX, moveY], queenMove);
                   if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                     const tile = Chess.Position[moveY][moveX];
                     if (!tile)
-                      legalMoves[tileId][`${moveX}-${moveY}`] = {piece: piece};
+                      legalMoves[tileId][`${moveX}-${moveY}`] = { piece: piece };
                     else if (tile[0] !== color) {
-                      legalMoves[tileId][`${moveX}-${moveY}`] = {piece: piece, capture: `x${tile[2]}`};
+                      legalMoves[tileId][`${moveX}-${moveY}`] = { piece: piece, capture: `x${tile[2]}` };
                       break;
                     } else
                       break;
@@ -1196,14 +1199,14 @@ const Chess = {
 
               for (const rookMove of rookMoves) {
                 let [moveX, moveY] = [x, y];
-                for (let distance = 0;distance < 8;distance++) {//max rook can move in 1 move
+                for (let distance = 0; distance < 8; distance++) {//max rook can move in 1 move
                   [moveX, moveY] = LCF.Array.Add([moveX, moveY], rookMove);
                   if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                     const tile = Chess.Position[moveY][moveX];
                     if (!tile)
-                      legalMoves[tileId][`${moveX}-${moveY}`] = {piece: newPiece};
+                      legalMoves[tileId][`${moveX}-${moveY}`] = { piece: newPiece };
                     else if (tile[0] !== color) {
-                      legalMoves[tileId][`${moveX}-${moveY}`] = {piece: newPiece, capture: `x${tile[2]}`};
+                      legalMoves[tileId][`${moveX}-${moveY}`] = { piece: newPiece, capture: `x${tile[2]}` };
                       break;
                     } else
                       break;
@@ -1222,14 +1225,14 @@ const Chess = {
 
               for (const bishopMove of bishopMoves) {
                 let [moveX, moveY] = [x, y];
-                for (let distance = 0;distance < 8;distance++) {//max bishop can move in 1 move
+                for (let distance = 0; distance < 8; distance++) {//max bishop can move in 1 move
                   [moveX, moveY] = LCF.Array.Add([moveX, moveY], bishopMove);
                   if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                     const tile = Chess.Position[moveY][moveX];
                     if (!tile)
-                      legalMoves[tileId][`${moveX}-${moveY}`] = {piece: piece};
+                      legalMoves[tileId][`${moveX}-${moveY}`] = { piece: piece };
                     else if (tile[0] !== color) {
-                      legalMoves[tileId][`${moveX}-${moveY}`] = {piece: piece, capture: `x${tile[2]}`};
+                      legalMoves[tileId][`${moveX}-${moveY}`] = { piece: piece, capture: `x${tile[2]}` };
                       break;
                     } else
                       break;
@@ -1255,9 +1258,9 @@ const Chess = {
                 if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                   const tile = Chess.Position[moveY][moveX];
                   if (!tile)
-                    legalMoves[tileId][`${moveX}-${moveY}`] = {piece: piece};
+                    legalMoves[tileId][`${moveX}-${moveY}`] = { piece: piece };
                   else if (tile[0] !== color)
-                    legalMoves[tileId][`${moveX}-${moveY}`] = {piece: piece, capture: `x${tile[2]}`};
+                    legalMoves[tileId][`${moveX}-${moveY}`] = { piece: piece, capture: `x${tile[2]}` };
                 }
               }
               break;
@@ -1269,25 +1272,25 @@ const Chess = {
                 break;
 
               if (!Chess.Position[y + direction][x]) {//move 1
-                legalMoves[tileId][`${x}-${y + direction}`] = {piece: newPiece};
+                legalMoves[tileId][`${x}-${y + direction}`] = { piece: newPiece };
 
                 if (extraInfo === "0" && Chess.Position[y + direction * 2] && !Chess.Position[y + direction * 2][x]) //start move 2
-                  legalMoves[tileId][`${x}-${y + direction * 2}`] = {piece: `${color}x5.1-1`};
+                  legalMoves[tileId][`${x}-${y + direction * 2}`] = { piece: `${color}x5.1-1` };
               }
 
               const upAndLeft = Chess.Position[y + direction][x - 1];
               if (upAndLeft && upAndLeft[0] !== color) //take left
-                legalMoves[tileId][`${x - 1}-${y + direction}`] = {piece: newPiece, capture: `x${upAndLeft[2]}`};
+                legalMoves[tileId][`${x - 1}-${y + direction}`] = { piece: newPiece, capture: `x${upAndLeft[2]}` };
 
               const upAndRight = Chess.Position[y + direction][x + 1];
               if (upAndRight && upAndRight[0] !== color) //take right
-                legalMoves[tileId][`${x + 1}-${y + direction}`] = {piece: newPiece, capture: `x${upAndRight[2]}`};
+                legalMoves[tileId][`${x + 1}-${y + direction}`] = { piece: newPiece, capture: `x${upAndRight[2]}` };
 
               if (Chess.Position[y][x - 1] === `${1 - color}x5.1-1`) //en passant left
-                legalMoves[tileId][`${x - 1}-${y + direction}`] = {piece: newPiece, capture: "x5", specialMove: "en passant"};
+                legalMoves[tileId][`${x - 1}-${y + direction}`] = { piece: newPiece, capture: "x5", specialMove: "en passant" };
 
               if (Chess.Position[y][x + 1] === `${1 - color}x5.1-1`) //en passant right
-                legalMoves[tileId][`${x + 1}-${y + direction}`] = {piece: newPiece, capture: "x5", specialMove: "en passant"};
+                legalMoves[tileId][`${x + 1}-${y + direction}`] = { piece: newPiece, capture: "x5", specialMove: "en passant" };
               break;
           }
 
@@ -1317,7 +1320,7 @@ const Chess = {
 
             if (whiteKing != Chess.whitesTurn)
               continue;
-            
+
             if (!trueLegalMoves[kingTileId])
               trueLegalMoves[kingTileId] = {};
 
@@ -1384,25 +1387,25 @@ const Chess = {
         return legalMoves;
     },
 
-    ShowLegalMoves: function() {
+    ShowLegalMoves: function () {
       for (const move of Object.keys(Chess.clickedPieceLegalMoves))
         this.HighlightSquare(Number(move.split("-")[0]), Number(move.split("-")[1]));
     },
 
-    ClearLegalMoves: function() {
+    ClearLegalMoves: function () {
       for (const move of Object.keys(Chess.clickedPieceLegalMoves))
         this.UnHighlightSquare(Number(move.split("-")[0]), Number(move.split("-")[1]));
     },
 
-    HighlightSquare: function(x, y) {
+    HighlightSquare: function (x, y) {
       document.getElementById(`tile_${x}-${y}`).classList.add("highlighted");
     },
 
-    UnHighlightSquare: function(x, y) {
+    UnHighlightSquare: function (x, y) {
       document.getElementById(`tile_${x}-${y}`).classList.remove("highlighted");
     },
 
-    ChoosePromotion: function(event) {
+    ChoosePromotion: function (event) {
       if (Chess.gameOver)
         return;
 
@@ -1418,7 +1421,7 @@ const Chess = {
       Chess.waitingForPromotion = false;
     },
 
-    ClickedBoard: async function(event, clickCoords) {
+    ClickedBoard: async function (event, clickCoords) {
       if (Chess.gameOver)
         return;
 
@@ -1493,7 +1496,7 @@ const Chess = {
       }
     },
 
-    UpdateTimers: function() {
+    UpdateTimers: function () {
       if (!Chess.whiteTimer || !Chess.blackTimer)
         return;
 
@@ -1502,7 +1505,7 @@ const Chess = {
 
       if (whiteTime <= 0) {
         whiteTime = 0;
-        
+
         const code = Chess.Functions.IsGameOver(Infinity);
         if (code)
           Chess.Functions.GameOver(code);
@@ -1528,7 +1531,7 @@ const Chess = {
       let whiteTimeFormatted = "";
       if (whiteMinutes)
         whiteTimeFormatted += `${whiteMinutes}:`;
-      
+
       whiteTimeFormatted += whiteSeconds;
       if (whiteSeconds < 10 && !whiteMinutes)
         whiteTimeFormatted += `.${whiteMilliseconds}`;
@@ -1546,7 +1549,7 @@ const Chess = {
       let blackTimeFormatted = "";
       if (blackMinutes)
         blackTimeFormatted += `${blackMinutes}:`;
-      
+
       blackTimeFormatted += blackSeconds;
       if (blackSeconds < 10 && !blackMinutes)
         blackTimeFormatted += `.${blackMilliseconds}`;
@@ -1558,14 +1561,15 @@ const Chess = {
         Chess.lastBlackTimerUpdate = blackTimeFormatted.length;
       }
 
-      const startTime = Chess.timeDetails.startTime;
-      if (Chess.whiteClockColor === "Green" && whiteTime <= startTime * (2/5) + 1000) {
+      const whiteStartTime = Chess.timeDetails.white.startTime;
+      const blackStartTime = Chess.timeDetails.black.startTime;
+      if (Chess.whiteClockColor === "Green" && whiteTime <= whiteStartTime * (2 / 5) + 1000) {
         if (Chess.whiteTimer.lastPause > 1000) {
           Chess.whiteTimerElement.style.animation = "timerGreenToYellow 1s ease-in-out 0s 1 normal forwards";
 
           Chess.whiteClockColor = "Yellow";
         }
-      } else if (Chess.whiteClockColor === "Yellow" && whiteTime <= startTime * (1/4) + 1000) {
+      } else if (Chess.whiteClockColor === "Yellow" && whiteTime <= whiteStartTime * (1 / 4) + 1000) {
         if (Chess.whiteTimer.lastPause > 1000) {
           Chess.whiteTimerElement.style.animation = "timerYellowToRed 1s ease-in-out 0s 1 normal forwards";
 
@@ -1573,13 +1577,13 @@ const Chess = {
         }
       }
 
-      if (Chess.blackClockColor === "Green" && blackTime <= startTime * (2/5) + 1000) {
+      if (Chess.blackClockColor === "Green" && blackTime <= blackStartTime * (2 / 5) + 1000) {
         if (Chess.blackTimer.lastPause > 1000) {
           Chess.blackTimerElement.style.animation = "timerGreenToYellow 1s ease-in-out 0s 1 normal forwards";
 
           Chess.blackClockColor = "Yellow";
         }
-      } else if (Chess.blackClockColor === "Yellow" && blackTime <= startTime * (1/4) + 1000) {
+      } else if (Chess.blackClockColor === "Yellow" && blackTime <= blackStartTime * (1 / 4) + 1000) {
         if (Chess.blackTimer.lastPause > 1000) {
           Chess.blackTimerElement.style.animation = "timerYellowToRed 1s ease-in-out 0s 1 normal forwards";
 
@@ -1588,14 +1592,14 @@ const Chess = {
       }
     },
 
-    StartTimer: function() {
+    StartTimer: function () {
       if (Chess.whitesTurn)
         Chess.whiteTimer.play();
       else
         Chess.blackTimer.play();
     },
 
-    IsGameOver: function(totalLegalMoves = Object.keys(Chess.legalMoves).length) {
+    IsGameOver: function (totalLegalMoves = Object.keys(Chess.legalMoves).length) {
       const whitesTurn = Chess.whitesTurn;
       const inCheck = this.InCheck(whitesTurn, null, true);
 
@@ -1646,7 +1650,7 @@ const Chess = {
       return false;
     },
 
-    GameOver: function(code) {
+    GameOver: function (code) {
       const gameOver = new Audio("audio/game_over.mp3");
       gameOver.play();
 
@@ -1733,7 +1737,7 @@ const Chess = {
       this.DrawGameGraph();
     },
 
-    DrawGameGraph: function() {
+    DrawGameGraph: function () {
       const gameOverGraphDiv = document.getElementById("GameGraphDiv");
 
       let graphCanvas;
@@ -1795,7 +1799,7 @@ const Chess = {
       context.stroke();
 
       let imageData = context.getImageData(0, 0, width, height / 2);
-      for (let index = 0;index < imageData.data.length;index += 4) {
+      for (let index = 0; index < imageData.data.length; index += 4) {
         if (index / 4 / width >= height / 2) {
           imageData.data[index] = 0;
           imageData.data[index + 1] = 0;
@@ -1815,7 +1819,7 @@ const Chess = {
       context.putImageData(imageData, 0, 0);
 
       imageData = context.getImageData(0, height / 2, width, height);
-      for (let index = 0;index < imageData.data.length;index += 4) {
+      for (let index = 0; index < imageData.data.length; index += 4) {
         if (index / 4 / width <= 1) {
           imageData.data[index] = 0;
           imageData.data[index + 1] = 0;
@@ -1836,7 +1840,7 @@ const Chess = {
       context.putImageData(imageData, 0, height / 2);
     },
 
-    SetTimerFontSize: function(timerElement, text) {
+    SetTimerFontSize: function (timerElement, text) {
       const timerText = timerElement.firstElementChild;
 
       let fontSize = timerElement.clientHeight;
@@ -1851,7 +1855,7 @@ const Chess = {
       return;
     },
 
-    ConvertGameToCode: function(game) {
+    ConvertGameToCode: function (game) {
       let gameCode = "";
 
       for (const rowNumber in game) {
@@ -1872,7 +1876,7 @@ const Chess = {
             gapSize = 0;
           }
 
-          switch(`x${tile[2]}`) {
+          switch (`x${tile[2]}`) {
             case "x0":
               if (tile[0] === "0")
                 gameCode += "K";
@@ -1919,14 +1923,14 @@ const Chess = {
       return gameCode;
     },
 
-    ConvertCodeToGame: function(code) {
+    ConvertCodeToGame: function (code) {
       const newBoard = [[]];
 
       let rowNumber = 0;
       for (const character of code) {
         const number = Number(character);
         if (number)
-          for (let index = 0;index < number;index++)
+          for (let index = 0; index < number; index++)
             newBoard[rowNumber].push(null);
         else {
           if (character === "/") {
@@ -1935,11 +1939,11 @@ const Chess = {
 
             continue;
           }
-          
+
           const upperCaseCharacter = character.toUpperCase();
 
           let piece = (character === upperCaseCharacter) ? "0" : "1";
-          switch(upperCaseCharacter) {
+          switch (upperCaseCharacter) {
             case "K":
               piece += "x0";
               break;
@@ -2045,424 +2049,424 @@ const Chess = {
   DrawInstructions: {
     x0: [ //king
       [ //layer 1
-        {mirror: true, sameColor: true},
+        { mirror: true, sameColor: true },
 
         //base
-        {action:"move", path:[10, 95]},
-        {action:"line", path:[90, 95]},
-        {action:"line", path:[85, 84]},
-        {action:"line", path:[84, 82]},
-        {action:"line", path:[83, 81]},
-        {action:"line", path:[81, 80]},
-        {action:"line", path:[75, 80]}
+        { action: "move", path: [10, 95] },
+        { action: "line", path: [90, 95] },
+        { action: "line", path: [85, 84] },
+        { action: "line", path: [84, 82] },
+        { action: "line", path: [83, 81] },
+        { action: "line", path: [81, 80] },
+        { action: "line", path: [75, 80] }
       ],
       [ //layer 2
-        {mirror: true, sameColor: true}, //options
+        { mirror: true, sameColor: true }, //options
 
         //body
-        {action:"line", path:[75, 80]},
-        {action:"line", path:[90, 35]},
+        { action: "line", path: [75, 80] },
+        { action: "line", path: [90, 35] },
 
         //top
-        {action:"line", path:[80, 31]},
-        {action:"line", path:[70, 28]},
-        {action:"line", path:[54, 28]},
+        { action: "line", path: [80, 31] },
+        { action: "line", path: [70, 28] },
+        { action: "line", path: [54, 28] },
 
         //cross
-        {action:"line", path:[54, 20]},
-        {action:"line", path:[62, 20]},
-        {action:"line", path:[62, 12]},
-        {action:"line", path:[54, 12]},
-        {action:"line", path:[54, 4]}
+        { action: "line", path: [54, 20] },
+        { action: "line", path: [62, 20] },
+        { action: "line", path: [62, 12] },
+        { action: "line", path: [54, 12] },
+        { action: "line", path: [54, 4] }
       ]
     ],
     x1: [ //queen
       [ //layer 1
-        {mirror: true, sameColor: true},
+        { mirror: true, sameColor: true },
 
         //base
-        {action:"move", path:[10, 95]},
-        {action:"line", path:[90, 95]},
-        {action:"line", path:[85, 84]},
-        {action:"line", path:[84, 82]},
-        {action:"line", path:[83, 81]},
-        {action:"line", path:[81, 80]},
-        {action:"line", path:[75, 80]}
+        { action: "move", path: [10, 95] },
+        { action: "line", path: [90, 95] },
+        { action: "line", path: [85, 84] },
+        { action: "line", path: [84, 82] },
+        { action: "line", path: [83, 81] },
+        { action: "line", path: [81, 80] },
+        { action: "line", path: [75, 80] }
       ],
       [ //layer 2
-        {mirror: true, sameColor: true}, //options
+        { mirror: true, sameColor: true }, //options
 
         //point 1
-        {action:"move", path:[81, 80]},
-        {action:"line", path:[70, 80]},
-        {action:"line", path:[87, 37]},
+        { action: "move", path: [81, 80] },
+        { action: "line", path: [70, 80] },
+        { action: "line", path: [87, 37] },
 
         //ball lower right
-        {action:"line", path:[88.5, 36.5]},
-        {action:"line", path:[90, 35.5]},
-        {action:"line", path:[91, 34.5]},
-        {action:"line", path:[92, 33]},
-        {action:"line", path:[92.5, 31.5]},
-        {action:"line", path:[92.5, 30.5]},
+        { action: "line", path: [88.5, 36.5] },
+        { action: "line", path: [90, 35.5] },
+        { action: "line", path: [91, 34.5] },
+        { action: "line", path: [92, 33] },
+        { action: "line", path: [92.5, 31.5] },
+        { action: "line", path: [92.5, 30.5] },
 
         //ball upper right
-        {action:"line", path:[92.5, 30.5]},
-        {action:"line", path:[92.5, 29.5]},
-        {action:"line", path:[92, 28]},
-        {action:"line", path:[91, 26.5]},
-        {action:"line", path:[90, 25.5]},
-        {action:"line", path:[88.5, 24.5]},
-        {action:"line", path:[87, 24]},
-        {action:"line", path:[86, 24]},
+        { action: "line", path: [92.5, 30.5] },
+        { action: "line", path: [92.5, 29.5] },
+        { action: "line", path: [92, 28] },
+        { action: "line", path: [91, 26.5] },
+        { action: "line", path: [90, 25.5] },
+        { action: "line", path: [88.5, 24.5] },
+        { action: "line", path: [87, 24] },
+        { action: "line", path: [86, 24] },
 
         //ball upper left
-        {action:"line", path:[86, 24]},
-        {action:"line", path:[85, 24]},
-        {action:"line", path:[83.5, 24.5]},
-        {action:"line", path:[82, 25.5]},
-        {action:"line", path:[81, 26.5]},
-        {action:"line", path:[80, 28]},
-        {action:"line", path:[79.5, 29.5]},
-        {action:"line", path:[79.5, 30.5]},
+        { action: "line", path: [86, 24] },
+        { action: "line", path: [85, 24] },
+        { action: "line", path: [83.5, 24.5] },
+        { action: "line", path: [82, 25.5] },
+        { action: "line", path: [81, 26.5] },
+        { action: "line", path: [80, 28] },
+        { action: "line", path: [79.5, 29.5] },
+        { action: "line", path: [79.5, 30.5] },
 
         //ball lower left
-        {action:"line", path:[79.5, 30.5]},
-        {action:"line", path:[79.5, 31.5]},
-        {action:"line", path:[80, 33]},
-        {action:"line", path:[81, 34.5]},
-        {action:"line", path:[82, 35.5]},
-        {action:"line", path:[83.5, 36.5]},
-        {action:"line", path:[85, 37]},
-        {action:"line", path:[86, 37]},
-        {action:"line", path:[87, 37]},
+        { action: "line", path: [79.5, 30.5] },
+        { action: "line", path: [79.5, 31.5] },
+        { action: "line", path: [80, 33] },
+        { action: "line", path: [81, 34.5] },
+        { action: "line", path: [82, 35.5] },
+        { action: "line", path: [83.5, 36.5] },
+        { action: "line", path: [85, 37] },
+        { action: "line", path: [86, 37] },
+        { action: "line", path: [87, 37] },
 
         //end point
-        {action:"line", path:[87, 37]},
-        {action:"line", path:[86, 37]},
-        {action:"line", path:[85, 37]},
-        {action:"line", path:[83.5, 36.5]},
-        {action:"line", path:[82, 35.5]},
-        {action:"line", path:[81, 34.5]},
-        {action:"line", path:[71, 42]},
+        { action: "line", path: [87, 37] },
+        { action: "line", path: [86, 37] },
+        { action: "line", path: [85, 37] },
+        { action: "line", path: [83.5, 36.5] },
+        { action: "line", path: [82, 35.5] },
+        { action: "line", path: [81, 34.5] },
+        { action: "line", path: [71, 42] },
 
         //point 2
-        {action:"line", path:[63, 22]},
+        { action: "line", path: [63, 22] },
 
         //ball lower right
-        {action:"line", path:[64.5, 21.5]},
-        {action:"line", path:[66, 20.5]},
-        {action:"line", path:[67, 19.5]},
-        {action:"line", path:[68, 18]},
-        {action:"line", path:[68.5, 16.5]},
-        {action:"line", path:[68.5, 15.5]},
+        { action: "line", path: [64.5, 21.5] },
+        { action: "line", path: [66, 20.5] },
+        { action: "line", path: [67, 19.5] },
+        { action: "line", path: [68, 18] },
+        { action: "line", path: [68.5, 16.5] },
+        { action: "line", path: [68.5, 15.5] },
 
         //ball upper right
-        {action:"line", path:[68.5, 15.5]},
-        {action:"line", path:[68.5, 14.5]},
-        {action:"line", path:[68, 13]},
-        {action:"line", path:[67, 11.5]},
-        {action:"line", path:[66, 10.5]},
-        {action:"line", path:[64.5, 9.5]},
-        {action:"line", path:[63, 9]},
-        {action:"line", path:[62, 9]},
+        { action: "line", path: [68.5, 15.5] },
+        { action: "line", path: [68.5, 14.5] },
+        { action: "line", path: [68, 13] },
+        { action: "line", path: [67, 11.5] },
+        { action: "line", path: [66, 10.5] },
+        { action: "line", path: [64.5, 9.5] },
+        { action: "line", path: [63, 9] },
+        { action: "line", path: [62, 9] },
 
         //ball upper left
-        {action:"line", path:[62, 9]},
-        {action:"line", path:[61, 9]},
-        {action:"line", path:[59.5, 9.5]},
-        {action:"line", path:[58, 10.5]},
-        {action:"line", path:[57, 11.5]},
-        {action:"line", path:[56, 13]},
-        {action:"line", path:[55.5, 14.5]},
-        {action:"line", path:[55.5, 15.5]},
+        { action: "line", path: [62, 9] },
+        { action: "line", path: [61, 9] },
+        { action: "line", path: [59.5, 9.5] },
+        { action: "line", path: [58, 10.5] },
+        { action: "line", path: [57, 11.5] },
+        { action: "line", path: [56, 13] },
+        { action: "line", path: [55.5, 14.5] },
+        { action: "line", path: [55.5, 15.5] },
 
         //ball lower left
-        {action:"line", path:[55.5, 15.5]},
-        {action:"line", path:[55.5, 16.5]},
-        {action:"line", path:[56, 18]},
-        {action:"line", path:[57, 19.5]},
-        {action:"line", path:[58, 20.5]},
-        {action:"line", path:[59.5, 21.5]},
-        {action:"line", path:[61, 22]},
-        {action:"line", path:[62, 22]},
-        {action:"line", path:[63, 22]},
+        { action: "line", path: [55.5, 15.5] },
+        { action: "line", path: [55.5, 16.5] },
+        { action: "line", path: [56, 18] },
+        { action: "line", path: [57, 19.5] },
+        { action: "line", path: [58, 20.5] },
+        { action: "line", path: [59.5, 21.5] },
+        { action: "line", path: [61, 22] },
+        { action: "line", path: [62, 22] },
+        { action: "line", path: [63, 22] },
 
         //end point
-        {action:"line", path:[63, 22]},
-        {action:"line", path:[62, 22]},
-        {action:"line", path:[61, 22]},
-        {action:"line", path:[59.5, 21.5]},
+        { action: "line", path: [63, 22] },
+        { action: "line", path: [62, 22] },
+        { action: "line", path: [61, 22] },
+        { action: "line", path: [59.5, 21.5] },
 
         //center
-        {action:"line", path:[50, 38]}
+        { action: "line", path: [50, 38] }
       ]
     ],
     x2: [ //rook
       [ //layer 1
-        {mirror: true, sameColor: true},
+        { mirror: true, sameColor: true },
 
         //base
-        {action:"line", path:[10, 95]},
-        {action:"line", path:[90, 95]},
-        {action:"line", path:[85, 84]},
-        {action:"line", path:[84, 82]},
-        {action:"line", path:[83, 81]},
-        {action:"line", path:[81, 80]}
+        { action: "line", path: [10, 95] },
+        { action: "line", path: [90, 95] },
+        { action: "line", path: [85, 84] },
+        { action: "line", path: [84, 82] },
+        { action: "line", path: [83, 81] },
+        { action: "line", path: [81, 80] }
       ],
       [ //layer 2
-        {mirror: true, sameColor: true}, //options
+        { mirror: true, sameColor: true }, //options
 
         //pillar
-        {action:"line", path:[79, 80]},
-        {action:"line", path:[73, 69]},
-        {action:"line", path:[72, 68]},
-        {action:"line", path:[70, 65]},
-        {action:"line", path:[68, 55]},
-        {action:"line", path:[68, 45]},
-        {action:"line", path:[70, 35]},
-        {action:"line", path:[72, 32]},
-        {action:"line", path:[78, 25]},
+        { action: "line", path: [79, 80] },
+        { action: "line", path: [73, 69] },
+        { action: "line", path: [72, 68] },
+        { action: "line", path: [70, 65] },
+        { action: "line", path: [68, 55] },
+        { action: "line", path: [68, 45] },
+        { action: "line", path: [70, 35] },
+        { action: "line", path: [72, 32] },
+        { action: "line", path: [78, 25] },
 
         //merlon 1
-        {action:"line", path:[78, 10]},
-        {action:"line", path:[61.5, 10]},
+        { action: "line", path: [78, 10] },
+        { action: "line", path: [61.5, 10] },
 
         //crenel 1
-        {action:"line", path:[61.5, 20]},
-        {action:"line", path:[57.75, 20]},
+        { action: "line", path: [61.5, 20] },
+        { action: "line", path: [57.75, 20] },
 
         //merlon 2
-        {action:"line", path:[57.75, 10]},
-        {action:"line", path:[50, 10]}
+        { action: "line", path: [57.75, 10] },
+        { action: "line", path: [50, 10] }
       ]
     ],
     x3: [ //bishop
       [ //layer 1
-        {mirror: true, sameColor: true}, //options
+        { mirror: true, sameColor: true }, //options
 
         //base
-        {action:"line", path:[10, 95]},
-        {action:"line", path:[90, 95]},
-        {action:"line", path:[85, 84]},
-        {action:"line", path:[84, 82]},
-        {action:"line", path:[83, 81]},
-        {action:"line", path:[81, 80]},
-        {action:"line", path:[70, 80]}
+        { action: "line", path: [10, 95] },
+        { action: "line", path: [90, 95] },
+        { action: "line", path: [85, 84] },
+        { action: "line", path: [84, 82] },
+        { action: "line", path: [83, 81] },
+        { action: "line", path: [81, 80] },
+        { action: "line", path: [70, 80] }
       ],
       [ //layer 2
-        {mirror: true, sameColor: true},
-        
+        { mirror: true, sameColor: true },
+
         //curve bottom
-        {action:"line", path:[70, 80]},
-        {action:"line", path:[74, 74]},
-        {action:"line", path:[77, 65]},
-        {action:"line", path:[79, 58]},
-        {action:"line", path:[80, 53]},
-        {action:"line", path:[80, 50]},
+        { action: "line", path: [70, 80] },
+        { action: "line", path: [74, 74] },
+        { action: "line", path: [77, 65] },
+        { action: "line", path: [79, 58] },
+        { action: "line", path: [80, 53] },
+        { action: "line", path: [80, 50] },
 
         //curve top - bottom section
-        {action:"line", path:[80, 50]},
-        {action:"line", path:[80, 44]},
-        {action:"line", path:[79, 39]},
-        {action:"line", path:[77, 32]},
+        { action: "line", path: [80, 50] },
+        { action: "line", path: [80, 44] },
+        { action: "line", path: [79, 39] },
+        { action: "line", path: [77, 32] },
 
         //curve top - top section
-        {action:"line", path:[74, 26]},
-        {action:"line", path:[72, 23]},
-        {action:"line", path:[70, 21]},
-        {action:"line", path:[69, 20]},
-        {action:"line", path:[68, 19]},
-        {action:"line", path:[66, 18]},
-        {action:"line", path:[63, 16]},
-        {action:"line", path:[60, 15]},
-        {action:"line", path:[56, 14]},
-        {action:"line", path:[50, 14]},
+        { action: "line", path: [74, 26] },
+        { action: "line", path: [72, 23] },
+        { action: "line", path: [70, 21] },
+        { action: "line", path: [69, 20] },
+        { action: "line", path: [68, 19] },
+        { action: "line", path: [66, 18] },
+        { action: "line", path: [63, 16] },
+        { action: "line", path: [60, 15] },
+        { action: "line", path: [56, 14] },
+        { action: "line", path: [50, 14] },
 
         //top ball lower
-        {action:"line", path:[51, 14]}, //3-1
-        {action:"line", path:[52.5, 13.5]}, //3-1
-        {action:"line", path:[54, 12.5]}, //3-2
-        {action:"line", path:[55, 11.5]}, //2-2
-        {action:"line", path:[56, 10]}, //2-3
-        {action:"line", path:[56.5, 8.5]}, //1-3
-        {action:"line", path:[56.5, 7.5]}, //0-2
+        { action: "line", path: [51, 14] }, //3-1
+        { action: "line", path: [52.5, 13.5] }, //3-1
+        { action: "line", path: [54, 12.5] }, //3-2
+        { action: "line", path: [55, 11.5] }, //2-2
+        { action: "line", path: [56, 10] }, //2-3
+        { action: "line", path: [56.5, 8.5] }, //1-3
+        { action: "line", path: [56.5, 7.5] }, //0-2
 
         //top ball upper
-        {action:"line", path:[56.5, 7.5]}, //0-2
-        {action:"line", path:[56.5, 6.5]}, //1-3
-        {action:"line", path:[56, 5]}, //2-3
-        {action:"line", path:[55, 3.5]}, //2-2
-        {action:"line", path:[54, 2.5]}, //3-2
-        {action:"line", path:[52.5, 1.5]}, //3-1
-        {action:"line", path:[51, 1.5]}, //3-1
+        { action: "line", path: [56.5, 7.5] }, //0-2
+        { action: "line", path: [56.5, 6.5] }, //1-3
+        { action: "line", path: [56, 5] }, //2-3
+        { action: "line", path: [55, 3.5] }, //2-2
+        { action: "line", path: [54, 2.5] }, //3-2
+        { action: "line", path: [52.5, 1.5] }, //3-1
+        { action: "line", path: [51, 1.5] }, //3-1
       ],
       [ //layer 3
-        {mirror: true, sameColor: false},
+        { mirror: true, sameColor: false },
 
         //plus in center
-        {action:"line", path:[50, 30]},
-        {action:"line", path:[55, 30]},
-        {action:"line", path:[55, 40]},
-        {action:"line", path:[65, 40]},
-        {action:"line", path:[65, 50]},
-        {action:"line", path:[55, 50]},
-        {action:"line", path:[55, 60]}
+        { action: "line", path: [50, 30] },
+        { action: "line", path: [55, 30] },
+        { action: "line", path: [55, 40] },
+        { action: "line", path: [65, 40] },
+        { action: "line", path: [65, 50] },
+        { action: "line", path: [55, 50] },
+        { action: "line", path: [55, 60] }
       ]
     ],
     x4: [ //knight
       [ //layer 1
-        {mirror: true, sameColor: true},
+        { mirror: true, sameColor: true },
 
         //base
-        {action:"line", path:[10, 95]},
-        {action:"line", path:[90, 95]},
-        {action:"line", path:[85, 84]},
-        {action:"line", path:[84, 82]},
-        {action:"line", path:[83, 81]},
-        {action:"line", path:[81, 80]},
-        {action:"line", path:[75, 80]}
+        { action: "line", path: [10, 95] },
+        { action: "line", path: [90, 95] },
+        { action: "line", path: [85, 84] },
+        { action: "line", path: [84, 82] },
+        { action: "line", path: [83, 81] },
+        { action: "line", path: [81, 80] },
+        { action: "line", path: [75, 80] }
       ],
       [ //layer 2
-        {mirror: false, sameColor: true},
+        { mirror: false, sameColor: true },
 
         //back - bottom
-        {action:"line", path:[75, 80]},
-        {action:"line", path:[79, 74]},
-        {action:"line", path:[82, 65]},
-        {action:"line", path:[84, 58]},
-        {action:"line", path:[85, 53]},
-        {action:"line", path:[85, 50]},
+        { action: "line", path: [75, 80] },
+        { action: "line", path: [79, 74] },
+        { action: "line", path: [82, 65] },
+        { action: "line", path: [84, 58] },
+        { action: "line", path: [85, 53] },
+        { action: "line", path: [85, 50] },
 
         //back - top - bottom section
-        {action:"line", path:[85, 50]},
-        {action:"line", path:[85, 44]},
-        {action:"line", path:[84, 39]},
-        {action:"line", path:[82, 32]},
+        { action: "line", path: [85, 50] },
+        { action: "line", path: [85, 44] },
+        { action: "line", path: [84, 39] },
+        { action: "line", path: [82, 32] },
 
         //top of head
-        {action:"line", path:[79, 26]},
-        {action:"line", path:[77, 23]},
-        {action:"line", path:[75, 21]},
-        {action:"line", path:[74, 20]},
-        {action:"line", path:[73, 19]},
-        {action:"line", path:[71, 17]},
-        {action:"line", path:[68, 15]},
-        {action:"line", path:[66, 14]},
+        { action: "line", path: [79, 26] },
+        { action: "line", path: [77, 23] },
+        { action: "line", path: [75, 21] },
+        { action: "line", path: [74, 20] },
+        { action: "line", path: [73, 19] },
+        { action: "line", path: [71, 17] },
+        { action: "line", path: [68, 15] },
+        { action: "line", path: [66, 14] },
 
         //ear
-        {action:"line", path:[55, 4]},
-        {action:"line", path:[54, 15]},
+        { action: "line", path: [55, 4] },
+        { action: "line", path: [54, 15] },
 
         //mouth - upper left
-        {action:"line", path:[23, 27]}, //3-2
-        {action:"line", path:[21, 29]}, //2-2
-        {action:"line", path:[19, 32]}, //2-3
-        {action:"line", path:[18, 35]}, //1-3
-        {action:"line", path:[18, 37]}, //0-2
+        { action: "line", path: [23, 27] }, //3-2
+        { action: "line", path: [21, 29] }, //2-2
+        { action: "line", path: [19, 32] }, //2-3
+        { action: "line", path: [18, 35] }, //1-3
+        { action: "line", path: [18, 37] }, //0-2
 
         //mouth - lower left
-        {action:"line", path:[18, 37]}, //0-2
-        {action:"line", path:[19, 40]}, //1-3
+        { action: "line", path: [18, 37] }, //0-2
+        { action: "line", path: [19, 40] }, //1-3
 
         //mouth
-        {action:"line", path:[29, 37]},
-        {action:"line", path:[30, 39]},
+        { action: "line", path: [29, 37] },
+        { action: "line", path: [30, 39] },
 
         //mouth - lower left
-        {action:"line", path:[21, 43]}, //2-3
-        {action:"line", path:[23, 45]}, //2-2
-        {action:"line", path:[26, 47]}, //3-2
-        {action:"line", path:[29, 48]}, //3-1
-        {action:"line", path:[31, 48]}, //2-0
+        { action: "line", path: [21, 43] }, //2-3
+        { action: "line", path: [23, 45] }, //2-2
+        { action: "line", path: [26, 47] }, //3-2
+        { action: "line", path: [29, 48] }, //3-1
+        { action: "line", path: [31, 48] }, //2-0
 
         //under mouth
-        {action:"line", path:[31, 48]}, //2-0
-        {action:"line", path:[34, 47]}, //3-1
-        {action:"line", path:[37, 45]}, //3-2
-        {action:"line", path:[39, 44]}, //2-2
-        {action:"line", path:[41, 42.5]}, //2-3
-        {action:"line", path:[42, 41]}, //1-3
-        {action:"line", path:[49, 45]}, //5-3
+        { action: "line", path: [31, 48] }, //2-0
+        { action: "line", path: [34, 47] }, //3-1
+        { action: "line", path: [37, 45] }, //3-2
+        { action: "line", path: [39, 44] }, //2-2
+        { action: "line", path: [41, 42.5] }, //2-3
+        { action: "line", path: [42, 41] }, //1-3
+        { action: "line", path: [49, 45] }, //5-3
 
         //front of body - upper
-        {action:"line", path:[50, 46]}, //2-3
-        {action:"line", path:[49, 48]}, //2-2
-        {action:"line", path:[46.5, 49]}, //3-2
-        {action:"line", path:[45, 49.5]}, //3-1
+        { action: "line", path: [50, 46] }, //2-3
+        { action: "line", path: [49, 48] }, //2-2
+        { action: "line", path: [46.5, 49] }, //3-2
+        { action: "line", path: [45, 49.5] }, //3-1
 
         //front of body - lower
-        {action:"line", path:[41.5, 51]}, //3-1
-        {action:"line", path:[40, 52]}, //3-2
-        {action:"line", path:[38, 54]}, //2-2
-        {action:"line", path:[36, 57]}, //2-3
-        {action:"line", path:[34, 63]}, //1-3
-        {action:"line", path:[31, 72]},
+        { action: "line", path: [41.5, 51] }, //3-1
+        { action: "line", path: [40, 52] }, //3-2
+        { action: "line", path: [38, 54] }, //2-2
+        { action: "line", path: [36, 57] }, //2-3
+        { action: "line", path: [34, 63] }, //1-3
+        { action: "line", path: [31, 72] },
 
         //front of body ground connection
-        {action:"line", path:[31, 72]},
-        {action:"line", path:[30, 75]}, //1-3
-        {action:"line", path:[28, 78]}, //2-3
-        {action:"line", path:[27, 79]}, //2-2
-        {action:"line", path:[25, 80]} //3-2
+        { action: "line", path: [31, 72] },
+        { action: "line", path: [30, 75] }, //1-3
+        { action: "line", path: [28, 78] }, //2-3
+        { action: "line", path: [27, 79] }, //2-2
+        { action: "line", path: [25, 80] } //3-2
       ],
       [ //layer 2
-        {mirror: false, sameColor: false},
+        { mirror: false, sameColor: false },
 
         //eye
-        {action:"line", path:[40, 25]},
-        {action:"line", path:[50, 22]},
-        {action:"line", path:[55, 29]},
-        {action:"line", path:[40, 29]},
-        {action:"line", path:[40, 25]}
+        { action: "line", path: [40, 25] },
+        { action: "line", path: [50, 22] },
+        { action: "line", path: [55, 29] },
+        { action: "line", path: [40, 29] },
+        { action: "line", path: [40, 25] }
       ]
     ],
     x5: [ //pawn
       [ //layer 1
-        {mirror: true, sameColor: true},
+        { mirror: true, sameColor: true },
 
         //base
-        {action:"line", path:[15, 95]},
-        {action:"line", path:[85, 95]},
-        {action:"line", path:[80, 80]},
-        {action:"line", path:[78, 77]},
-        {action:"line", path:[76, 75]},
-        {action:"line", path:[73, 73]},
+        { action: "line", path: [15, 95] },
+        { action: "line", path: [85, 95] },
+        { action: "line", path: [80, 80] },
+        { action: "line", path: [78, 77] },
+        { action: "line", path: [76, 75] },
+        { action: "line", path: [73, 73] },
 
         //pillar
-        {action:"line", path:[70, 72]},
-        {action:"line", path:[68, 70]},
-        {action:"line", path:[67, 69]},
-        {action:"line", path:[66, 67]},
-        {action:"line", path:[65, 66]},
-        {action:"line", path:[64, 63]},
-        {action:"line", path:[60, 50]},
+        { action: "line", path: [70, 72] },
+        { action: "line", path: [68, 70] },
+        { action: "line", path: [67, 69] },
+        { action: "line", path: [66, 67] },
+        { action: "line", path: [65, 66] },
+        { action: "line", path: [64, 63] },
+        { action: "line", path: [60, 50] },
 
         //ring
-        {action:"line", path:[65, 50]},
-        {action:"line", path:[67, 49]},
-        {action:"line", path:[68, 48]},
-        {action:"line", path:[70, 47]},
-        {action:"line", path:[71, 46]},
-        {action:"line", path:[71, 43]},
-        {action:"line", path:[70, 42]},
-        {action:"line", path:[69, 41]},
-        {action:"line", path:[68, 40]},
-        {action:"line", path:[60, 40]},
+        { action: "line", path: [65, 50] },
+        { action: "line", path: [67, 49] },
+        { action: "line", path: [68, 48] },
+        { action: "line", path: [70, 47] },
+        { action: "line", path: [71, 46] },
+        { action: "line", path: [71, 43] },
+        { action: "line", path: [70, 42] },
+        { action: "line", path: [69, 41] },
+        { action: "line", path: [68, 40] },
+        { action: "line", path: [60, 40] },
 
         //top ball
-        {action:"line", path:[60, 40]},
-        {action:"line", path:[65, 35]},
-        {action:"line", path:[66, 33]},
-        {action:"line", path:[67, 30]},
-        {action:"line", path:[67, 22]},
-        {action:"line", path:[66, 19]},
-        {action:"line", path:[65, 16]},
-        {action:"line", path:[64, 15]},
-        {action:"line", path:[62, 14]},
-        {action:"line", path:[61, 13]},
-        {action:"line", path:[59, 12]},
-        {action:"line", path:[55, 11]},
-        {action:"line", path:[52, 10.5]}
+        { action: "line", path: [60, 40] },
+        { action: "line", path: [65, 35] },
+        { action: "line", path: [66, 33] },
+        { action: "line", path: [67, 30] },
+        { action: "line", path: [67, 22] },
+        { action: "line", path: [66, 19] },
+        { action: "line", path: [65, 16] },
+        { action: "line", path: [64, 15] },
+        { action: "line", path: [62, 14] },
+        { action: "line", path: [61, 13] },
+        { action: "line", path: [59, 12] },
+        { action: "line", path: [55, 11] },
+        { action: "line", path: [52, 10.5] }
       ]
     ]
   }

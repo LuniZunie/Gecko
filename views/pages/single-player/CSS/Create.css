@@ -1,0 +1,61 @@
+#SettingsSideDiv {
+  left: 70%;
+  width: 30%;
+  height: 100%;
+  position: absolute;
+}
+
+.timerInput {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  opacity: 0.75;
+}
+
+.timerInput.white {
+  top: 25%;
+  height: 20%;
+  color: #393939;  /* very dark gray */
+  background-color: #d3d3d3; /* very light gray */
+}
+
+.timerInput.black {
+  bottom: 25%;
+  height: 20%;
+  color: #d3d3d3; /* very light gray */
+  background-color: #393939; /* very dark gray */
+}
+
+.timerInput .customInput {
+  position: absolute;
+  top: 5%;
+  height: 90%;
+}
+
+.timerInput.white .customInput {
+  background-color: #f3f3f3;
+}
+
+.timerInput.black .customInput {
+  background-color: #595959;
+}
+
+.timerInput .customInput.selected {
+  opacity: 0.5;
+}
+
+.timerInput .customInput.minute {
+  left: 14%;
+  width: 30%;
+}
+
+.timerInput .customInput.second {
+  right: 14%;
+  width: 30%;
+}
+
+.customInput .cursor {
+  height: 100%;
+  width: 2%;
+  background-color: black;
+}

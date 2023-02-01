@@ -4,6 +4,8 @@ body {
 }
 
 .screen {
+    pointer-events: none;
+
     position: absolute;
     left: 0vw;
     top: 0vh;

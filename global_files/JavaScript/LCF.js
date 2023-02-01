@@ -721,8 +721,8 @@ const LCF = { //LuniZunie's Custom Functions
 
       const numbers = [];
 
-      for (let number = start;number < end;number++)
-        numbers.push(String.fromCharCode(number));
+      for (let number = start;number < end + 1;number++)
+        numbers.push(number);
 
       return numbers;
     },

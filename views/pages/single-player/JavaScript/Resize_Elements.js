@@ -18,12 +18,30 @@ function ResizeElements() {
   homeButton.style.lineHeight = `${homeButton.clientHeight}px`;
 
   //Create Page
-  if (createPage.style.opacity === 1) {
-    
+  if (createPage.style.opacity == 1) {
+    //Timer Containers
+    const whiteTimerContainer = document.getElementById("WhiteTimerInputContainer");
+    const blackTimerContainer = document.getElementById("BlackTimerInputContainer");
+
+    const timerContainerBorderRadius = LCF.Elements.GetBorderRadius(whiteTimerContainer, 10);
+
+    whiteTimerContainer.style.borderRadius = timerContainerBorderRadius;
+    blackTimerContainer.style.borderRadius = timerContainerBorderRadius;
+
+    //Timer Inputs
+    const whiteTimerInputs = whiteTimerContainer.children;
+    const blackTimerInputs = blackTimerContainer.children;
+
+    const timerInputBorderRadius = LCF.Elements.GetBorderRadius(whiteTimerInputs[0], 15);
+    for (const child of whiteTimerInputs)
+      child.style.borderRadius = timerInputBorderRadius;
+
+    for (const child of blackTimerInputs)
+      child.style.borderRadius = timerInputBorderRadius;
   }
 
   //Game Page
-  if (gamePage.style.opacity === 1) {
+  if (gamePage.style.opacity == 1) {
     const sideDiv = document.getElementById("SideDiv");
 
     const board = Chess.board;
@@ -36,8 +54,8 @@ function ResizeElements() {
     const blackTimerText = blackTimerElement.firstElementChild;
 
     //Board
-    const twoThirdsWidth = Math.floor(gameDiv.clientWidth * (2/3) / 8) * 8;
-    const nineTenthHeight = Math.floor(gameDiv.clientHeight * (9/10) / 8) * 8;
+    const twoThirdsWidth = Math.floor(gameDiv.clientWidth * (2 / 3) / 8) * 8;
+    const nineTenthHeight = Math.floor(gameDiv.clientHeight * (9 / 10) / 8) * 8;
 
     if (twoThirdsWidth > nineTenthHeight) {
       board.style.width = nineTenthHeight + "px";
@@ -113,7 +131,7 @@ function ResizeElements() {
     const whiteCapturedPiecesDiv = document.getElementById("WhiteCapturedPieces");
     const blackCapturedPiecesDiv = document.getElementById("BlackCapturedPieces");
 
-    const offsetHeight = Number(board.style.top.replace("px",""));
+    const offsetHeight = Number(board.style.top.replace("px", ""));
 
     if (Chess.Functions.whiteOnBottom) {
       whiteCapturedPiecesDiv.style.top = `${offsetHeight}px`;
@@ -221,7 +239,7 @@ function ResizeElements() {
       if (child.tagName !== "IMG")
         continue;
 
-      const position = child.id.replace("tile_","").replace("piece_","").split("-");
+      const position = child.id.replace("tile_", "").replace("piece_", "").split("-");
       const [x, y] = [Number(position[0]), Number(position[1])];
 
       const piece = Chess.Position[y][x];

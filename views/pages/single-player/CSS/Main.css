@@ -1,0 +1,28 @@
+.page {
+    pointer-events: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+}
+
+#HomeButtonContainer {
+    position: absolute;
+    top: 1%;
+    left: 1%;
+    width: 9.8%;
+    height: 10%;
+    background-color: #4b4b4b;
+    overflow: hidden;
+}
+
+#HomeButton {
+    color: dodgerblue;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    text-decoration: none;
+    text-align: center;
+}
