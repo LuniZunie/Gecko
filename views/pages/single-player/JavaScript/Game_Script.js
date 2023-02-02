@@ -216,12 +216,12 @@ const Chess = {
     },
 
     DrawBoard: function () {
-      const canvas = document.getElementById("DrawPieceCanvas");
+      const canvas = document.getElementById(`DrawPieceCanvas`);
 
       canvas.width = Chess.tileSize;
       canvas.height = Chess.tileSize;
 
-      Chess.blankImage = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+      Chess.blankImage = canvas.toDataURL(`image/png`).replace(`image/png`, `image/octet-stream`);
 
       let startDrawPosition = [-1, -1];
       let everyOtherRow = true;
@@ -235,18 +235,18 @@ const Chess = {
           everyOtherRow = !everyOtherRow;
         }
 
-        let tileId = startDrawPosition.join("-");
+        let tileId = startDrawPosition.join(`-`);
 
-        const newTile = document.createElement("img");
-        newTile.classList.add("no-select", "tile");
+        const newTile = document.createElement(`img`);
+        newTile.classList.add(`no-select`, `tile`);
 
         newTile.id = `tile_${tileId}`;
         newTile.src = Chess.blankImage;
 
-        newTile.addEventListener("click", function (event) {
-          const [x, y] = this.id.replace("tile_", "").split("-");
+        newTile.addEventListener(`click`, function (event) {
+          const [x, y] = this.id.replace(`tile_`, ``).split(`-`);
 
-          Chess.Functions.ClickedBoard(event, [Number(x), Number(y)]);
+          Chess.Functions.ClickedBoard(event, [+x, +y]);
         });
 
         Chess.board.appendChild(newTile);
@@ -254,13 +254,13 @@ const Chess = {
         newTile.width = Chess.tileSize;
         newTile.height = Chess.tileSize;
 
-        newTile.style.left = startDrawPosition[0] * Chess.tileSize + "px";
-        newTile.style.top = startDrawPosition[1] * Chess.tileSize + "px";
+        newTile.style.left = `${startDrawPosition[0] * Chess.tileSize}px`;
+        newTile.style.top = `${startDrawPosition[1] * Chess.tileSize}px`;
 
         if ((tileNumber + this.whiteOnBottom + everyOtherRow) % 2)
-          newTile.classList.add("light");
+          newTile.classList.add(`light`);
         else
-          newTile.classList.add("dark");
+          newTile.classList.add(`dark`);
       }
 
       this.CreatePieces();
@@ -268,8 +268,8 @@ const Chess = {
     },
 
     CreatePieces: function () {
-      const canvas = document.getElementById("DrawPieceCanvas");
-      const context = canvas.getContext("2d");
+      const canvas = document.getElementById(`DrawPieceCanvas`);
+      const context = canvas.getContext(`2d`);
 
       const tileSize = Chess.tileSize;
 
@@ -288,15 +288,14 @@ const Chess = {
             context.beginPath();
 
             if (((color + drawInstructions[0].sameColor) % 2)) {
-              context.strokeStyle = "#171717"; //very dark gray
-              context.fillStyle = "#e1e1e1"; //very light gray
+              context.strokeStyle = `#171717`; //very dark gray
+              context.fillStyle = `#e1e1e1`; //very light gray
             } else {
-              context.strokeStyle = "#e1e1e1"; //very light gray
-              context.fillStyle = "#171717"; //very dark gray
+              context.strokeStyle = `#e1e1e1`; //very light gray
+              context.fillStyle = `#171717`; //very dark gray
             }
 
             let readOptions = false;
-
             let mirror = false;
 
             let mirroring = false;
@@ -326,10 +325,10 @@ const Chess = {
 
                 switch (instruction.action) {
                   default:
-                  case "move":
+                  case `move`:
                     context.moveTo(path[0] / 100 * tileSize, path[1] / 100 * tileSize);
                     break;
-                  case "line":
+                  case `line`:
                     context.lineTo(path[0] / 100 * tileSize, path[1] / 100 * tileSize);
                     break;
                 }
@@ -342,7 +341,7 @@ const Chess = {
             context.stroke();
           }
 
-          const data = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+          const data = canvas.toDataURL(`image/png`).replace(`image/png`, `image/octet-stream`);
 
           Chess.pieceImages[color + piece] = data;
         }
@@ -367,8 +366,8 @@ const Chess = {
 
           const pieceColor = tile[0];
 
-          const newPiece = document.createElement("img");
-          newPiece.classList.add("no-select", "piece");
+          const newPiece = document.createElement(`img`);
+          newPiece.classList.add(`no-select`, `piece`);
 
           newPiece.id = `piece_${tileId}`;
           newPiece.src = Chess.pieceImages[`${pieceColor}x${tile[2]}`];
@@ -378,35 +377,35 @@ const Chess = {
           newPiece.width = Chess.tileSize;
           newPiece.height = Chess.tileSize;
 
-          newPiece.style.top = Chess.tileSize * rowNumber + "px";
-          newPiece.style.left = Chess.tileSize * tileNumber + "px";
+          newPiece.style.top = `${Chess.tileSize * rowNumber}px`;
+          newPiece.style.left = `${Chess.tileSize * tileNumber}px`;
 
           if (+pieceColor)
-            document.getElementById(`tile_${tileId}`).classList.add("containsBlackPiece");
+            document.getElementById(`tile_${tileId}`).classList.add(`containsBlackPiece`);
           else
-            document.getElementById(`tile_${tileId}`).classList.add("containsWhitePiece", "can-click");
+            document.getElementById(`tile_${tileId}`).classList.add(`containsWhitePiece`, `can-click`);
         }
       }
     },
 
     DrawPromoteCanvas: function (whitesTurn) {
-      const canvas = document.getElementById("PromoteCanvas");
+      const canvas = document.getElementById(`PromoteCanvas`);
 
-      const context = canvas.getContext("2d");
+      const context = canvas.getContext(`2d`);
       const tileSize = Chess.tileSize;
 
       let drawOrder = structuredClone(Chess.promotionOptions);
       if (this.whiteOnBottom !== +whitesTurn)
         drawOrder = drawOrder.reverse();
 
-      context.fillStyle = "#EBEBEB";
+      context.fillStyle = `#EBEBEB`;
       context.fillRect(0, 0, canvas.width, canvas.height);
 
       let offsetHeight = 0;
       if (this.whiteOnBottom !== +whitesTurn) {
         offsetHeight = tileSize / 2 - 8;
 
-        context.fillStyle = "#DD000066";
+        context.fillStyle = `#DD000066`;
         context.fillRect(0, 0, tileSize + 12, offsetHeight);
       }
 
@@ -422,11 +421,11 @@ const Chess = {
 
         for (let drawInstructions of layers) {
           if (((!whitesTurn + drawInstructions[0].sameColor) % 2)) {
-            context.strokeStyle = "#171717"; //very dark gray
-            context.fillStyle = "#e1e1e1"; //very light gray
+            context.strokeStyle = `#171717`; //very dark gray
+            context.fillStyle = `#e1e1e1`; //very light gray
           } else {
-            context.strokeStyle = "#e1e1e1"; //very light gray
-            context.fillStyle = "#171717"; //very dark gray
+            context.strokeStyle = `#e1e1e1`; //very light gray
+            context.fillStyle = `#171717`; //very dark gray
           }
 
           context.beginPath();
@@ -460,7 +459,7 @@ const Chess = {
               if (mirroring)
                 path[0] = 100 - path[0];
 
-              if (instruction.action === "move")
+              if (instruction.action === `move`)
                 context.moveTo((path[0] / 100 * tileSize) + 4, (path[1] / 100 * tileSize) + pieceNumber * tileSize + 4 + offsetHeight);
               else
                 context.lineTo((path[0] / 100 * tileSize) + 4, (path[1] / 100 * tileSize) + pieceNumber * tileSize + 4 + offsetHeight);
@@ -475,7 +474,7 @@ const Chess = {
       }
 
       if (this.whiteOnBottom === +whitesTurn) {
-        context.fillStyle = "#DD000066";
+        context.fillStyle = `#DD000066`;
         context.fillRect(0, drawOrder.length * tileSize + 16, tileSize + 12, tileSize / 2 - 8);
       }
 
@@ -509,10 +508,10 @@ const Chess = {
 
         const pieces = Chess.board.children;
         for (const thisPiece of pieces) {
-          if (thisPiece.nodeName === "IMG") {
-            thisPiece.style.animation = "";
+          if (thisPiece.nodeName === `IMG`) {
+            thisPiece.style.animation = ``;
 
-            const thisPieceLocation = thisPiece.id.split("_")[1].split("-");
+            const thisPieceLocation = thisPiece.id.split("_")[1].split(`-`);
 
             thisPiece.style.left = `${Number(thisPieceLocation[0]) * Chess.tileSize}px`;
             thisPiece.style.top = `${Number(thisPieceLocation[1]) * Chess.tileSize}px`;
@@ -526,8 +525,8 @@ const Chess = {
       const newTileId = `tile_${newX}-${newY}`;
       const oldTileId = `tile_${oldX}-${oldY}`;
 
-      const pieceClassName = (Chess.whitesTurn) ? "containsWhitePiece" : "containsBlackPiece";
-      const captureClassName = (Chess.whitesTurn) ? "containsBlackPiece" : "containsWhitePiece";
+      const pieceClassName = (Chess.whitesTurn) ? `containsWhitePiece` : `containsBlackPiece`;
+      const captureClassName = (Chess.whitesTurn) ? `containsBlackPiece` : `containsWhitePiece`;
 
       if (!simulate) {
         for (const enPassantablePawn of Chess.enPassantablePawns) {
@@ -574,17 +573,17 @@ const Chess = {
       if (Chess.game && !simulate) {
         const pieceElement = document.getElementById(oldPieceId);
 
-        document.documentElement.style.setProperty("--startX", `${oldX * Chess.tileSize}px`);
-        document.documentElement.style.setProperty("--startY", `${oldY * Chess.tileSize}px`);
-        document.documentElement.style.setProperty("--endX", `${newX * Chess.tileSize}px`);
-        document.documentElement.style.setProperty("--endY", `${newY * Chess.tileSize}px`);
+        document.documentElement.style.setProperty(`--startX`, `${oldX * Chess.tileSize}px`);
+        document.documentElement.style.setProperty(`--startY`, `${oldY * Chess.tileSize}px`);
+        document.documentElement.style.setProperty(`--endX`, `${newX * Chess.tileSize}px`);
+        document.documentElement.style.setProperty(`--endY`, `${newY * Chess.tileSize}px`);
 
         pieceElement.style.animation = `moveElement 0.1s ease-in-out 0s 1 normal forwards`;
 
         document.getElementById(oldTileId).classList.remove(pieceClassName);
         document.getElementById(newTileId).classList.add(pieceClassName);
         if (capture) {
-          if (specialMove === "en passant") {
+          if (specialMove === `en passant`) {
             //play move animation
 
             Chess.Position[newY][newX] = piece;
@@ -599,14 +598,14 @@ const Chess = {
           }
         } else {
           //play move sound and play an animation
-          const moveSound = new Audio("audio/move.mp3");
+          const moveSound = new Audio(`audio/move.mp3`);
           moveSound.play();
 
           Chess.Position[newY][newX] = piece;
 
           let newRookId;
           let rookElement;
-          if (specialMove === "queenside castle") { //rook move
+          if (specialMove === `queenside castle`) { //rook move
             //play castle sound
 
             rookElement = document.getElementById(`piece_0-${newY}`);
@@ -615,17 +614,17 @@ const Chess = {
             document.getElementById(`tile_0-${newY}`).classList.remove(pieceClassName);
             document.getElementById(`tile_3-${newY}`).classList.add(pieceClassName);
 
-            document.documentElement.style.setProperty("--startXRook", `${0 * Chess.tileSize}px`);
-            document.documentElement.style.setProperty("--startYRook", `${oldY * Chess.tileSize}px`);
-            document.documentElement.style.setProperty("--endXRook", `${3 * Chess.tileSize}px`);
-            document.documentElement.style.setProperty("--endYRook", `${newY * Chess.tileSize}px`);
+            document.documentElement.style.setProperty(`--startXRook`, `${0 * Chess.tileSize}px`);
+            document.documentElement.style.setProperty(`--startYRook`, `${oldY * Chess.tileSize}px`);
+            document.documentElement.style.setProperty(`--endXRook`, `${3 * Chess.tileSize}px`);
+            document.documentElement.style.setProperty(`--endYRook`, `${newY * Chess.tileSize}px`);
 
             Chess.Position[newY][3] = `${piece[0]}x2.1`;
             Chess.Position[newY][0] = null; //king
 
             rookElement.style.animation = `moveRookForCastle 0.1s ease-in-out 0s 1 normal forwards`;
             rookElement.id = newRookId;
-          } else if (specialMove === "kingside castle") { //rook move
+          } else if (specialMove === `kingside castle`) { //rook move
             //play castle sound
 
             rookElement = document.getElementById(`piece_7-${newY}`);
@@ -634,10 +633,10 @@ const Chess = {
             document.getElementById(`tile_7-${newY}`).classList.remove(pieceClassName);
             document.getElementById(`tile_5-${newY}`).classList.add(pieceClassName);
 
-            document.documentElement.style.setProperty("--startXRook", `${7 * Chess.tileSize}px`);
-            document.documentElement.style.setProperty("--startYRook", `${oldY * Chess.tileSize}px`);
-            document.documentElement.style.setProperty("--endXRook", `${5 * Chess.tileSize}px`);
-            document.documentElement.style.setProperty("--endYRook", `${newY * Chess.tileSize}px`);
+            document.documentElement.style.setProperty(`--startXRook`, `${7 * Chess.tileSize}px`);
+            document.documentElement.style.setProperty(`--startYRook`, `${oldY * Chess.tileSize}px`);
+            document.documentElement.style.setProperty(`--endXRook`, `${5 * Chess.tileSize}px`);
+            document.documentElement.style.setProperty(`--endYRook`, `${newY * Chess.tileSize}px`);
 
             Chess.Position[newY][5] = `${piece[0]}x2.1`;
             Chess.Position[newY][7] = null;
@@ -652,12 +651,12 @@ const Chess = {
         Chess.Position[newY][newX] = piece;
         Chess.Position[oldY][oldX] = null;
 
-        if (specialMove === "en passant")
+        if (specialMove === `en passant`)
           Chess.Position[oldY][newX] = null;
-        else if (specialMove === "queenside castle") { //rook move
+        else if (specialMove === `queenside castle`) { //rook move
           Chess.Position[newY][3] = `${piece[0]}x2.1`;
           Chess.Position[newY][0] = null; //king
-        } else if (specialMove === "kingside castle") { //rook move
+        } else if (specialMove === `kingside castle`) { //rook move
           Chess.Position[newY][5] = `${piece[0]}x2.1`;
           Chess.Position[newY][7] = null;
         }
@@ -666,14 +665,14 @@ const Chess = {
       if (!simulate) {
         Chess.whitesTurn = !Chess.whitesTurn;
 
-        const classToCheckFor = (Chess.whitesTurn) ? "containsWhitePiece" : "containsBlackPiece";
+        const classToCheckFor = (Chess.whitesTurn) ? `containsWhitePiece` : `containsBlackPiece`;
 
-        const tiles = document.getElementsByClassName("tile");
+        const tiles = document.getElementsByClassName(`tile`);
         for (const tile of tiles) {
           if (tile.classList.contains(classToCheckFor))
-            tile.classList.add("can-click");
+            tile.classList.add(`can-click`);
           else
-            tile.classList.remove("can-click");
+            tile.classList.remove(`can-click`);
         }
 
         if (Chess.whiteTimer && Chess.blackTimer) {
@@ -684,7 +683,7 @@ const Chess = {
             clearTimeout(Chess.blackFirstMoveTimeout);
 
           if (Chess.whitesTurn) {
-            Chess.board.style.animation = "whitesTurn 1s ease-in-out 0s 1 normal forwards";
+            Chess.board.style.animation = `whitesTurn 1s ease-in-out 0s 1 normal forwards`;
 
             if (!Chess.blackTimer.paused)
               Chess.blackTimer.pause();
@@ -696,7 +695,7 @@ const Chess = {
             Chess.whiteTimerElement.style.animation = `timerOn${Chess.whiteClockColor} 1s ease-in-out 0s 1 normal forwards`;
             Chess.blackTimerElement.style.animation = `timerOff${Chess.blackClockColor} 1s ease-in-out 0s 1 normal forwards`;
           } else {
-            Chess.board.style.animation = "blacksTurn 1s ease-in-out 0s 1 normal forwards";
+            Chess.board.style.animation = `blacksTurn 1s ease-in-out 0s 1 normal forwards`;
 
             if (!Chess.whiteTimer.paused)
               Chess.whiteTimer.pause();
@@ -751,7 +750,7 @@ const Chess = {
           Chess.blackCapturedPieces.push(`1x${piece[2]}`);
       }
 
-      const moveSound = new Audio("audio/capture.mp3");
+      const moveSound = new Audio(`audio/capture.mp3`);
       moveSound.play();
 
       document.getElementById(`piece_${x}-${y}`).remove();
@@ -766,26 +765,26 @@ const Chess = {
 
       //Material Bar
 
-      const materialBar = document.getElementById("MaterialBar");
-      const materialBarPercentage = document.getElementById("MaterialBarPercentage");
+      const materialBar = document.getElementById(`MaterialBar`);
+      const materialBarPercentage = document.getElementById(`MaterialBarPercentage`);
 
       const whiteMaterial = this.GetMaterial(true);
       const blackMaterial = this.GetMaterial(false);
 
       const width = materialBar.clientWidth * (0.5 + (whiteMaterial - blackMaterial) / 78);
 
-      materialBarPercentage.style.width = width + "px";
+      materialBarPercentage.style.width = `${width}px`;
 
       const materialDiffrence = whiteMaterial - blackMaterial;
       if (materialDiffrence > 0) {
-        document.getElementById("WhiteMaterialDiffrence").innerHTML = `+${materialDiffrence}`;
-        document.getElementById("BlackMaterialDiffrence").innerHTML = "";
+        document.getElementById(`WhiteMaterialDiffrence`).innerHTML = `+${materialDiffrence}`;
+        document.getElementById(`BlackMaterialDiffrence`).innerHTML = ``;
       } else if (materialDiffrence < 0) {
-        document.getElementById("WhiteMaterialDiffrence").innerHTML = "";
-        document.getElementById("BlackMaterialDiffrence").innerHTML = `+${-materialDiffrence}`;
+        document.getElementById(`WhiteMaterialDiffrence`).innerHTML = ``;
+        document.getElementById(`BlackMaterialDiffrence`).innerHTML = `+${-materialDiffrence}`;
       } else {
-        document.getElementById("WhiteMaterialDiffrence").innerHTML = "0";
-        document.getElementById("BlackMaterialDiffrence").innerHTML = "0";
+        document.getElementById(`WhiteMaterialDiffrence`).innerHTML = `0`;
+        document.getElementById(`BlackMaterialDiffrence`).innerHTML = `0`;
       }
 
       if (!promotedPiece)
@@ -796,14 +795,14 @@ const Chess = {
       if (white) {
         Chess.whiteCapturedPieces = Chess.whiteCapturedPieces.sort();
 
-        const whiteCapturedPiecesDiv = document.getElementById("WhiteCapturedPieces");
-        whiteCapturedPiecesDiv.innerHTML = "";
+        const whiteCapturedPiecesDiv = document.getElementById(`WhiteCapturedPieces`);
+        whiteCapturedPiecesDiv.innerHTML = ``;
 
         let x = 0;
         let y = 0;
         for (const capturedPiece of Chess.whiteCapturedPieces) {
-          const newCapturedPieceElement = document.createElement("img");
-          newCapturedPieceElement.classList.add("no-select", "capturedPiece");
+          const newCapturedPieceElement = document.createElement(`img`);
+          newCapturedPieceElement.classList.add(`no-select`, `capturedPiece`);
 
           newCapturedPieceElement.src = Chess.pieceImages[capturedPiece];
 
