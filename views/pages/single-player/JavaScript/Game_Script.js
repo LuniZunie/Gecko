@@ -99,14 +99,14 @@ const Chess = {
   },
 
   StartPosition: [
-    ["1x2.0", "1x4", "1x3", "1x1", "1x0.0", "1x3", "1x4", "1x2.0"],
-    ["1x5.0", "1x5.0", "1x5.0", "1x5.0", "1x5.0", "1x5.0", "1x5.0", "1x5.0"],
+    [`1x2.0`, `1x4`, `1x3`, `1x1`, `1x0.0`, `1x3`, `1x4`, `1x2.0`],
+    [`1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`],
     [null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null],
-    ["0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0"],
-    ["0x2.0", "0x4", "0x3", "0x1", "0x0.0", "0x3", "0x4", "0x2.0"]
+    [`0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`],
+    [`0x2.0`, `0x4`, `0x3`, `0x1`, `0x0.0`, `0x3`, `0x4`, `0x2.0`]
   ],
   Position: [
     [null, null, null, null, null, null, null, null],
@@ -119,14 +119,14 @@ const Chess = {
     [null, null, null, null, null, null, null, null]
   ],
   PositionDebug: [
-    ["1x2.0", "1x4", "1x3", "1x1", "1x0.0", "1x3", "1x4", "1x2.0"],
-    ["1x1", "1x1", "1x1", "1x1", "1x1", "1x1", "1x1", "1x1"],
+    [`1x2.0`, `1x4`, `1x3`, `1x1`, `1x0.0`, `1x3`, `1x4`, `1x2.0`],
+    [`1x1`, `1x1`, `1x1`, `1x1`, `1x1`, `1x1`, `1x1`, `1x1`],
     [null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null],
-    ["0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0", "0x5.0"],
-    ["0x2.0", "0x4", "0x3", "0x1", "0x0.0", "0x3", "0x4", "0x2.0"]
+    [`0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`],
+    [`0x2.0`, `0x4`, `0x3`, `0x1`, `0x0.0`, `0x3`, `0x4`, `0x2.0`]
   ],
 
   //Functions
@@ -203,7 +203,7 @@ const Chess = {
 
           Chess.whiteTimerElement.style.animation = `timerOn${Chess.whiteClockColor} 1s ease-in-out 0s 1 normal forwards`;
 
-          Chess.board.style.animation = "whitesTurn 0s linear 0s 1 normal forwards";
+          Chess.board.style.animation = `whitesTurn 0s linear 0s 1 normal forwards`;
 
           LCF.Update.AddFunction(this.UpdateTimers);
           LCF.Update.SetSpeed(50);
