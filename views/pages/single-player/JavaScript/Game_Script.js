@@ -28,9 +28,9 @@ const Chess = {
   clickedPieceLegalMoves: {},
 
   promotionTileOffsetHeight: null,
-  promotionOptions: ["x1", "x2", "x3", "x4"],
+  promotionOptions: [`x1`, `x2`, `x3`, `x4`],
   waitingForPromotion: false,
-  promotionChose: "",
+  promotionChose: ``,
 
   whiteFirstMove: true,
   blackFirstMove: true,
@@ -47,8 +47,8 @@ const Chess = {
   lastWhiteTimerUpdate: null,
   lastBlackTimerUpdate: null,
 
-  whiteClockColor: "Green",
-  blackClockColor: "Green",
+  whiteClockColor: `Green`,
+  blackClockColor: `Green`,
 
   timeDetails: {
     white: {
@@ -139,12 +139,12 @@ const Chess = {
     //Functions
 
     OnStartup: function () {
-      Chess.gameDiv = document.getElementById("Game");
+      Chess.gameDiv = document.getElementById(`Game`);
 
-      Chess.board = document.getElementById("ChessBoard");
+      Chess.board = document.getElementById(`ChessBoard`);
 
-      Chess.whiteTimerElement = document.getElementById("WhiteTimer");
-      Chess.blackTimerElement = document.getElementById("BlackTimer");
+      Chess.whiteTimerElement = document.getElementById(`WhiteTimer`);
+      Chess.blackTimerElement = document.getElementById(`BlackTimer`);
 
       Chess.gameOver = false;
       Chess.fiftyMoveRuleCount = 0;
@@ -511,7 +511,7 @@ const Chess = {
           if (thisPiece.nodeName === `IMG`) {
             thisPiece.style.animation = ``;
 
-            const thisPieceLocation = thisPiece.id.split("_")[1].split(`-`);
+            const thisPieceLocation = thisPiece.id.split(`_`)[1].split(`-`);
 
             thisPiece.style.left = `${Number(thisPieceLocation[0]) * Chess.tileSize}px`;
             thisPiece.style.top = `${Number(thisPieceLocation[1]) * Chess.tileSize}px`;
@@ -823,14 +823,14 @@ const Chess = {
       } else {
         Chess.blackCapturedPieces = Chess.blackCapturedPieces.sort();
 
-        const blackCapturedPiecesDiv = document.getElementById("BlackCapturedPieces");
+        const blackCapturedPiecesDiv = document.getElementById(`BlackCapturedPieces`);
         blackCapturedPiecesDiv.innerHTML = "";
 
         let x = 0;
         let y = 0;
         for (const capturedPiece of Chess.blackCapturedPieces) {
-          const newCapturedPieceElement = document.createElement("img");
-          newCapturedPieceElement.classList.add("no-select", "capturedPiece");
+          const newCapturedPieceElement = document.createElement(`img`);
+          newCapturedPieceElement.classList.add(`no-select`, `capturedPiece`);
 
           newCapturedPieceElement.src = Chess.pieceImages[capturedPiece];
 
@@ -862,9 +862,9 @@ const Chess = {
     },
 
     Promote: async function (x, y, whitesTurn) {
-      const canvas = document.getElementById("PromoteCanvas");
+      const canvas = document.getElementById(`PromoteCanvas`);
 
-      const offsetHeight = Number(Chess.board.style.top.replace("px", ""));
+      const offsetHeight = +Chess.board.style.top.replace(`px`, ``);
 
       const width = Chess.tileSize + 8;
       const height = Chess.tileSize * (Chess.promotionOptions.length + 0.5) + 8;
@@ -886,11 +886,11 @@ const Chess = {
       this.DrawPromoteCanvas(whitesTurn);
 
       canvas.hidden = false;
-      canvas.classList.add("active");
+      canvas.classList.add(`active`);
 
-      canvas.style.animation = "unrollPromoteMenu 1s ease-in-out 0s 1 normal forward";
+      canvas.style.animation = `unrollPromoteMenu 1s ease-in-out 0s 1 normal forward`;
 
-      Chess.promotionChose = "";
+      Chess.promotionChose = ``;
       Chess.waitingForPromotion = true;
 
       while (Chess.waitingForPromotion && !Chess.gameOver)
@@ -898,10 +898,10 @@ const Chess = {
 
       if (Chess.promotionChose) {
         canvas.hidden = true;
-        canvas.classList.remove("active");
+        canvas.classList.remove(`active`);
 
         if (this.whiteOnBottom !== +whitesTurn)
-          Chess.promotionChose = `x${Chess.promotionOptions.length + 1 - Number(Chess.promotionChose[1])}`;
+          Chess.promotionChose = `x${Chess.promotionOptions.length + 1 - +Chess.promotionChose[1]}`;
 
         Chess.material.total.x5--;
         Chess.material.total[Chess.promotionChose]++;
@@ -915,18 +915,18 @@ const Chess = {
         }
 
         switch (Chess.promotionChose) {
-          case "x1":
-            return `${1 - Number(whitesTurn)}x1`;
-          case "x2":
-            return `${1 - Number(whitesTurn)}x2.1-0`;
-          case "x3":
-            return `${1 - Number(whitesTurn)}x3`;
-          case "x4":
-            return `${1 - Number(whitesTurn)}x4`;
+          case `x1`:
+            return `${+!whitesTurn}x1`;
+          case `x2`:
+            return `${+!whitesTurn}x2.1-0`;
+          case `x3`:
+            return `${+!whitesTurn}x3`;
+          case `x4`:
+            return `${+!whitesTurn}x4`;
         }
       } else {
         canvas.hidden = true;
-        canvas.classList.remove("active");
+        canvas.classList.remove(`active`);
 
         return -1;
       }
@@ -937,19 +937,19 @@ const Chess = {
 
       let kingTileId;
       if (specificPosition) {
-        kingTileId = specificPosition.join("-");
+        kingTileId = specificPosition.join(`-`);
       } else {
         if (whitesTurn)
-          kingTileId = Chess.whiteKingPosition.join("-");
+          kingTileId = Chess.whiteKingPosition.join(`-`);
         else
-          kingTileId = Chess.blackKingPosition.join("-");
+          kingTileId = Chess.blackKingPosition.join(`-`);
       }
 
       for (const [piecesLegalMovesKey, pieceLegalMoves] of Object.entries(Chess.legalMoves)) {
         if (!Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]])
           continue;
 
-        if (Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]][0] === !+whitesTurn)
+        if (Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]][0] === +!whitesTurn)
           continue;
 
         if (Object.keys(pieceLegalMoves).includes(kingTileId)) {
@@ -973,9 +973,9 @@ const Chess = {
 
       let kingTileId;
       if (Chess.whitesTurn)
-        kingTileId = Chess.whiteKingPosition.join("-");
+        kingTileId = Chess.whiteKingPosition.join(`-`);
       else
-        kingTileId = Chess.blackKingPosition.join("-");
+        kingTileId = Chess.blackKingPosition.join(`-`);
 
       if (checkLegalMove)
         for (const [piecesLegalMovesKey, pieceLegalMoves] of Object.entries(Chess.legalMoves)) {
@@ -991,7 +991,7 @@ const Chess = {
 
               this.MovePiece(moveX, moveY, startX, startY, checkLegalMove.piece, checkLegalMove.capture, checkLegalMove.specialMove, true);
 
-              const newLegalMoves = this.GetLegalMoves(...piecesLegalMovesKey.split("-"));
+              const newLegalMoves = this.GetLegalMoves(...piecesLegalMovesKey.split(`-`));
 
               Chess.Position = structuredClone(positionSave);
 
