@@ -371,6 +371,92 @@ const LCF = { //LuniZunie's Custom Functions
     }
   },
   Array: {
+    ConvertTo: {
+      Number: function(...arrays) {
+        if (!arrays.length)
+          return "Invalid data type sent to function: LCF.Array.LimitValueType";
+        
+        let returnArrays = [];
+        for (const array of arrays) {
+          if (!(array instanceOf Array) || !array.length)
+              continue;
+          
+          const newArray = [];
+          for (const value of array)
+            newArray.push(+value);
+          
+          if (newArray.length === 1)
+            returnArrays.push(newArray[0]);
+          else
+            returnArrays = [...returnArrays, ...newArray];
+        }
+        
+        switch(returnArrays.length) {
+          case 0:
+            return "Invalid data type sent to function: LCF.Array.LimitValueType";
+          case 1:
+            return returnArrays[0];
+          default:
+            return returnArrays;
+        }
+      },
+      String: function(...arrays) {
+        if (!arrays.length)
+          return "Invalid data type sent to function: LCF.Array.LimitValueType";
+        
+        let returnArrays = [];
+        for (const array of arrays) {
+          if (!(array instanceOf Array) || !array.length)
+              continue;
+          
+          const newArray = [];
+          for (const value of array)
+            newArray.push(value.toString());
+          
+          if (newArray.length === 1)
+            returnArrays.push(newArray[0]);
+          else
+            returnArrays = [...returnArrays, ...newArray];
+        }
+        
+        switch(returnArrays.length) {
+          case 0:
+            return "Invalid data type sent to function: LCF.Array.LimitValueType";
+          case 1:
+            return returnArrays[0];
+          default:
+            return returnArrays;
+        }
+      },
+      Boolean: function(...arrays) {
+        if (!arrays.length)
+          return "Invalid data type sent to function: LCF.Array.LimitValueType";
+        
+        let returnArrays = [];
+        for (const array of arrays) {
+          if (!(array instanceOf Array) || !array.length)
+              continue;
+          
+          const newArray = [];
+          for (const value of array)
+            newArray.push(!!value);
+          
+          if (newArray.length === 1)
+            returnArrays.push(newArray[0]);
+          else
+            returnArrays = [...returnArrays, ...newArray];
+        }
+        
+        switch(returnArrays.length) {
+          case 0:
+            return "Invalid data type sent to function: LCF.Array.LimitValueType";
+          case 1:
+            return returnArrays[0];
+          default:
+            return returnArrays;
+        }
+      }
+    },
     LimitValueType: function(array, types) {
       if (!(LCF.IsType.String(types) || LCF.IsType.Array(types)) || !LCF.IsType.Array(array))
         throw "Invalid data type sent to function: LCF.Array.LimitValueType";
