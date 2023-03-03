@@ -378,7 +378,7 @@ const LCF = { //LuniZunie's Custom Functions
         
         let returnArrays = [];
         for (const array of arrays) {
-          if (!(array instanceOf Array) || !array.length)
+          if (!(array instanceof Array) || !array.length)
               continue;
           
           const newArray = [];
@@ -406,7 +406,7 @@ const LCF = { //LuniZunie's Custom Functions
         
         let returnArrays = [];
         for (const array of arrays) {
-          if (!(array instanceOf Array) || !array.length)
+          if (!(array instanceof Array) || !array.length)
               continue;
           
           const newArray = [];
@@ -434,7 +434,7 @@ const LCF = { //LuniZunie's Custom Functions
         
         let returnArrays = [];
         for (const array of arrays) {
-          if (!(array instanceOf Array) || !array.length)
+          if (!(array instanceof Array) || !array.length)
               continue;
           
           const newArray = [];

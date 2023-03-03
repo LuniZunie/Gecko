@@ -20,14 +20,14 @@
     <%- `<script>${include("../JavaScript/Game_Script.js")}</script>` %>
   </head>
   <body onload="OnLoad();" style="opacity: 0;">
-    <div id="HomeButtonContainer">
+    <div id="HomeButtonContainer" style="z-index: 10;">
       <a id="HomeButton" class="custom-button" onclick="LCF.Page.FadeTo('/home')">Gecko</a>
     </div>
     <div id="CreatePage" class="page" style="opacity: 1;">
       <%- `${include("../HTML/Create_Page.ejs")}` %>
     </div>
 
-    <div id="GamePage" class="page" style="opacity: 0;">
+    <div id="GamePage" class="page" style="opacity: 0;" hidden>
       <canvas id="DrawPieceCanvas" hidden></canvas>
       <div id="Game" class="no-select">
         <div id="SideDiv">

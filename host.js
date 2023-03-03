@@ -29,7 +29,7 @@ app.get("/home", function (req, res) {
 app.get("/live-game", function (req, res) {
     res.render("pages/live-game/HTML/Index.ejs");
 });
-app.get("/single-player", function (req, res) {
+app.get("/singleplayer", function (req, res) {
   res.render("pages/single-player/HTML/Game.ejs");
 });
 app.get("/connect/game", function (req, res) {
