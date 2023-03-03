@@ -10,6 +10,7 @@
   left: 5%;
   right: 5%;
   opacity: 0.75;
+  text-align: center;
 }
 
 .timerInput.white {
@@ -30,6 +31,7 @@
   position: absolute;
   top: 5%;
   height: 90%;
+  opacity: 0.5;
 }
 
 .timerInput.white .customInput {
@@ -41,7 +43,7 @@
 }
 
 .timerInput .customInput.selected {
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .timerInput .customInput.minute {

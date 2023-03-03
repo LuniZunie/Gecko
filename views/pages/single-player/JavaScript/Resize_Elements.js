@@ -32,12 +32,30 @@ function ResizeElements() {
     const whiteTimerInputs = whiteTimerContainer.children;
     const blackTimerInputs = blackTimerContainer.children;
 
-    const timerInputBorderRadius = LCF.Elements.GetBorderRadius(whiteTimerInputs[0], 15);
-    for (const child of whiteTimerInputs)
+    const timerInputs = [...whiteTimerInputs, ...blackTimerInputs];
+
+    const timerInputBorderRadius = LCF.Elements.GetBorderRadius(timerInputs[0], 15);
+    for (const child of timerInputs)
       child.style.borderRadius = timerInputBorderRadius;
 
-    for (const child of blackTimerInputs)
-      child.style.borderRadius = timerInputBorderRadius;
+    const [timerInputWidth, timerInputHeight] = [timerInputs[0].offsetHeight, timerInputs[0].offsetWidth];
+
+    const timerInputMaxWidth = LCF.Elements.GetTextWidth("00", document.body.style.fontFamily, timerInputHeight + "px") + 50;
+
+    let timerInputFontSize = timerInputHeight;
+    if (timerInputMaxWidth > timerInputWidth)
+      timerInputFontSize = timerInputFontSize * (timerInputWidth / timerInputMaxWidth);
+
+    const timerInputPadding = (timerInputHeight - timerInputFontSize) / 2;
+
+    for (const child of timerInputs) {
+      child.style.fontSize = `${timerInputFontSize}px`;
+
+      child.style.paddingTop = `${timerInputPadding}px`;
+      child.style.paddingBottom = `${timerInputPadding}px`;
+
+      child.style.height = `${timerInputHeight - timerInputPadding * 1.5}px`;
+    }
   }
 
   //Game Page

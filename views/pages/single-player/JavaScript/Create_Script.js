@@ -79,8 +79,7 @@ const CreateGame = {
       }
 
       if (event?.keyCode >= 48 && event?.keyCode <= 57) { //0 - 9
-        if (!element.dataset.text)
-          element.dataset.text = "";
+        element.dataset.text ||= "";
 
         element.dataset.text += event.keyCode - 48;
 
