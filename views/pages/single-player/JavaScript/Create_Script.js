@@ -16,7 +16,7 @@ const CreateGame = {
 
   Functions: {
     SetCustomInputCursor: function(element) {
-      if (!element?.classList?.contains("customInput"))
+      if (!element?.classList?.contains("customNumberInput"))
         return;
 
       if (CreateGame.hasKeyPressEvent)
@@ -24,14 +24,14 @@ const CreateGame = {
       else
         CreateGame.hasKeyPressEvent = true;
 
-      if (CreateGame.hasFocusEvent)
-        window.removeEventListener("focusout", this.CheckFocusOutValid);
+      if (CreateGame.hasClickEvent)
+        window.removeEventListener("click", this.CheckClickValid);
       else
-        CreateGame.hasFocusEvent = true;
+        CreateGame.hasClickEvent = true;
 
       CreateGame.selectedCustomInput = element;
 
-      const inputs = document.getElementsByClassName("customInput");
+      const inputs = document.getElementsByClassName("customNumberInput");
       for (const input of inputs) {
         const children = input.children;
         for (const child of children)
@@ -46,21 +46,17 @@ const CreateGame = {
 
       element.classList.add("selected");
       element.focus();
-      window.addEventListener("keypress", this.CheckKeyPressValid);
-      element.addEventListener("focusout", this.CheckFocusOutValid);
+      window.addEventListener("keydown", this.CheckKeyPressValid);
+      window.addEventListener("click", this.CheckClickValid);
     },
     RemoveCustomInputCursor: function(element) {
-      if (!element?.classList?.contains("customInput"))
+      if (!element?.classList?.contains("customNumberInput"))
         return;
 
       if (CreateGame.hasKeyPressEvent)
-        window.removeEventListener("keypress", this.CheckKeyPressValid);
+        window.removeEventListener("keydown", this.CheckKeyPressValid);
         
       CreateGame.hasKeyPressEvent = false;
-      if (CreateGame.hasFocusEvent)
-        window.removeEventListener("focusout", this.CheckFocusOutValid);
-        
-      CreateGame.hasFocusEvent = false;
       CreateGame.selectedCustomInput = null;
 
       const children = element.children;
@@ -70,36 +66,66 @@ const CreateGame = {
       element.classList.remove("selected");
     },
     WroteInCustomInput: function(element, event) {
-      const NextInput = function(element) {
+      const NextInput = function(element, stopAtEnd) {
         const theNextInput = document.getElementById(element.dataset.nextinput);
         if (LCF.IsType.HTMLElement(theNextInput))
           CreateGame.Functions.SetCustomInputCursor(theNextInput);
-        else
+        else if (!stopAtEnd)
           CreateGame.Functions.RemoveCustomInputCursor(element);
       }
 
-      if (event?.keyCode >= 48 && event?.keyCode <= 57) { //0 - 9
+      const PreviousInput = function(element, stopAtEnd) {
+        const thePreviousInput = document.getElementById(element.dataset.previousinput);
+        if (LCF.IsType.HTMLElement(thePreviousInput))
+          CreateGame.Functions.SetCustomInputCursor(thePreviousInput);
+        else if (!stopAtEnd)
+          CreateGame.Functions.RemoveCustomInputCursor(element);
+      }
+
+      if (+event?.key || +event?.key === 0) { //0 - 9
         element.dataset.text ||= "";
 
-        element.dataset.text += event.keyCode - 48;
+        element.dataset.text += event.key;
+        if (element.dataset.maxnumber) {
+          const textLength = element.dataset.text.length;
+          for (let numberIndex = 0;numberIndex < textLength;numberIndex++) {
+            const currentNumber = +element.dataset.text[numberIndex];
+            const maxNumber = +element.dataset.maxnumber[numberIndex];
+
+            if (currentNumber < maxNumber)
+              break;
+            else if (currentNumber > maxNumber) {
+              element.dataset.text = element.dataset.text.slice(0, -1);
+
+              return;
+            }
+          }
+        }
 
         element.innerHTML = element.dataset.text + element.children[0].outerHTML;
-        if (element.dataset.text.length >= Number(element.dataset.maxtext))
+        if (element.dataset.text.length >= +element.dataset.maxtext)
           NextInput(element);
-      } else if (event?.keyCode == 13) //hit enter
-        NextInput(element);
+      } else if (event?.key === "Backspace") {
+        element.dataset.text ||= "";
+
+        element.dataset.text = element.dataset.text.slice(0, -1);
+        
+        element.innerHTML = element.dataset.text + element.children[0].outerHTML;
+      } else if (event?.key === "Enter" || event?.key === "ArrowRight")
+        NextInput(element, event?.key === "ArrowRight");
+      else if (event?.key === "ArrowLeft")
+        PreviousInput(element, true);
     },
     CheckKeyPressValid: function(event) {
       if (LCF.IsType.HTMLElement(CreateGame.selectedCustomInput))
         CreateGame.Functions.WroteInCustomInput(CreateGame.selectedCustomInput, event);
     },
-    CheckFocusOutValid: function(event) {
-      if (LCF.IsType.HTMLElement(CreateGame.selectedCustomInput) && event.target === CreateGame.selectedCustomInput) {
-          const theNextInput = document.getElementById(this.dataset.nextInput);
-        if (LCF.IsType.HTMLElement(theNextInput))
-          CreateGame.Functions.SetCustomInputCursor(theNextInput);
+    CheckClickValid: function(event) {
+      if (event.target !== CreateGame.selectedCustomInput) {
+        if (event?.target?.classList?.contains("customNumberInput"))
+          CreateGame.Functions.SetCustomInputCursor(event.target);
         else
-          CreateGame.Functions.RemoveCustomInputCursor(this);
+          CreateGame.Functions.RemoveCustomInputCursor(CreateGame.selectedCustomInput);
       }
     }
   }

@@ -1,6 +1,6 @@
 #SettingsSideDiv {
-  left: 70%;
-  width: 30%;
+  left: 60%;
+  width: 40%;
   height: 100%;
   position: absolute;
 }
@@ -27,39 +27,64 @@
   background-color: #393939; /* very dark gray */
 }
 
-.timerInput .customInput {
+.timerInput .customNumberInput {
   position: absolute;
-  top: 5%;
+  top: 10%;
   height: 90%;
   opacity: 0.5;
 }
 
-.timerInput.white .customInput {
+.timerInput.white .customNumberInput {
   background-color: #f3f3f3;
 }
 
-.timerInput.black .customInput {
+.timerInput.black .customNumberInput {
   background-color: #595959;
 }
 
-.timerInput .customInput.selected {
+.timerInput .customNumberInput.selected {
   opacity: 1;
 }
 
-.timerInput .customInput.minute {
+.timerInput .customNumberInput.minute {
   left: 14%;
-  width: 30%;
+  width: 20%;
 }
 
-.timerInput .customInput.second {
+.timerInput .customNumberInput.second {
+  left: 40%;
+  width: 20%;
+}
+
+.timerInput .customNumberInput.increment {
   right: 14%;
-  width: 30%;
+  width: 20%;
 }
 
-.customInput .cursor {
+.customNumberInput .cursor {
   height: 75%;
   width: 2%;
   background-color: black;
   display: inline-block;
   margin-top: 12.5%;
+}
+
+.timerInput .colon {
+  position: absolute;
+
+  left: 34%;
+  width: 6%;
+  height: 100%;
+  text-align: center;
+  margin-top: 2%;
+}
+
+.timerInput .plus {
+  position: absolute;
+
+  right: 34%;
+  width: 6%;
+  height: 100%;
+  text-align: center;
+  margin-top: 2%;
 }
