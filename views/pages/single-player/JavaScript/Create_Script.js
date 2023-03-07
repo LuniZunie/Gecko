@@ -14,7 +14,29 @@ const CreateGame = {
     }
   },
 
+  customInputClasses: {},
+
   Functions: {
+    OnStartup: function() {
+      const customInputs = document.getElementsByClassName("customInput");
+
+      for (const input of customInputs) {
+        const inputClass = input.dataset.custominputclass;
+
+        CreateGame.customInputClasses[inputClass] ||= [];
+
+        const row = input.dataset.row;
+        const column = input.dataset.column;
+
+        if (!CreateGame.customInputClasses[inputClass][row]) {
+          const newArray = [];
+          newArray[column] = input;
+
+          CreateGame.customInputClasses[inputClass][row] = newArray;
+        } else
+          CreateGame.customInputClasses[inputClass][row][column] = input;
+      }
+    },
     SetCustomInputCursor: function(element) {
       if (!element?.classList?.contains("customNumberInput"))
         return;
