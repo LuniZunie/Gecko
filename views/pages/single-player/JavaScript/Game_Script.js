@@ -323,13 +323,15 @@ const Chess = {
                 if (mirroring)
                   path[0] = 100 - path[0];
 
+                let yPosition = (color) ? 100 - path[1] : path[1];
+
                 switch (instruction.action) {
                   default:
-                  case `move`:
-                    context.moveTo(path[0] / 100 * tileSize, path[1] / 100 * tileSize);
+                  case "move":
+                    context.moveTo(path[0] / 100 * tileSize, yPosition / 100 * tileSize);
                     break;
-                  case `line`:
-                    context.lineTo(path[0] / 100 * tileSize, path[1] / 100 * tileSize);
+                  case "line":
+                    context.lineTo(path[0] / 100 * tileSize, yPosition / 100 * tileSize);
                     break;
                 }
               }

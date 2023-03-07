@@ -57,7 +57,7 @@
 }
 
 .timerInput .customNumberInput.increment {
-  right: 14%;
+  right: 10%;
   width: 20%;
 }
 
@@ -82,8 +82,8 @@
 .timerInput .plus {
   position: absolute;
 
-  right: 34%;
-  width: 6%;
+  right: 30%;
+  width: 10%;
   height: 100%;
   text-align: center;
   margin-top: 2%;

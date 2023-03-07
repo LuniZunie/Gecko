@@ -1,14 +1,16 @@
 <div id="SettingsSideDiv">
     <div class="timerInput white" id="WhiteTimerInputContainer">
-        <div id="WhiteTimerMinuteInput" class="customNumberInput minute" data-maxText="2" data-nextInput="WhiteTimerSecondInput"></div>
+        <div id="WhiteTimerMinuteInput" class="customNumberInput minute" data-maxText="2" data-customInputClass="TimerInputs" data-nextInput="WhiteTimerSecondInput">10</div>
         <div class="colon">:</div>
-        <div id="WhiteTimerSecondInput" class="customNumberInput second" data-maxText="2" data-maxNumber="60" data-previousInput="WhiteTimerMinuteInput" data-nextInput="WhiteTimerIncrementInput"></div>
+        <div id="WhiteTimerSecondInput" class="customNumberInput second" data-maxText="2" data-maxNumber="60" data-previousInput="WhiteTimerMinuteInput" data-nextInput="WhiteTimerIncrementInput">00</div>
         <div class="plus">+</div>
-        <div id="WhiteTimerIncrementInput" class="customNumberInput increment" data-maxText="2" data-maxNumber="60" data-previousInput="WhiteTimerSecondInput" data-nextInput="BlackTimerMinuteInput"></div>
+        <div id="WhiteTimerIncrementInput" class="customNumberInput increment" data-maxText="2" data-maxNumber="60" data-previousInput="WhiteTimerSecondInput" data-nextInput="BlackTimerMinuteInput">00</div>
     </div>
     <div class="timerInput black" id="BlackTimerInputContainer">
-        <div id="BlackTimerMinuteInput" class="customNumberInput minute" data-maxText="2" data-previousInput="WhiteTimerIncrementInput" data-nextInput="BlackTimerSecondInput"></div>
-        <div id="BlackTimerSecondInput" class="customNumberInput second" data-maxText="2" data-maxNumber="60" data-previousInput="BlackTimerMinuteInput"  data-nextInput="BlackTimerIncrementInput"></div>
-        <div id="BlackTimerIncrementInput" class="customNumberInput increment" data-maxText="2" data-maxNumber="60" data-previousInput="BlackTimerSecondInput"></div>
+        <div id="BlackTimerMinuteInput" class="customNumberInput minute" data-maxText="2" data-previousInput="WhiteTimerIncrementInput" data-nextInput="BlackTimerSecondInput">10</div>
+        <div class="colon">:</div>
+        <div id="BlackTimerSecondInput" class="customNumberInput second" data-maxText="2" data-maxNumber="60" data-previousInput="BlackTimerMinuteInput"  data-nextInput="BlackTimerIncrementInput">00</div>
+        <div class="plus">+</div>
+        <div id="BlackTimerIncrementInput" class="customNumberInput increment" data-maxText="2" data-maxNumber="60" data-previousInput="BlackTimerSecondInput">00</div>
     </div>
 </div>
