@@ -4,6 +4,7 @@ function OnLoad() {
     LCF.Update.Call();
   } else if (document.getElementById("CreatePage").style.opacity == 1) {
     ResizeElements();
+    CreateGame.Functions.OnStartup();
     CreateGame.Functions.SetCustomInputCursor(document.getElementById("WhiteTimerMinuteInput"));
   }
 

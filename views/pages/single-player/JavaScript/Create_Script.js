@@ -21,6 +21,12 @@ const CreateGame = {
       const customInputs = document.getElementsByClassName("customInput");
 
       for (const input of customInputs) {
+        const currentText = (input.children[0]) ? input.innerHTML.replace(input.children[0].outerHTML, "") : input.innerHTML;
+        if (currentText.length)
+          input.dataset.text = currentText;
+        else if (input.dataset.placeholder)
+          input.innerHTML = input.dataset.placeholder + (input.children[0]) ? input.children[0].outerHTML : "";
+
         const inputClass = input.dataset.custominputclass;
 
         CreateGame.customInputClasses[inputClass] ||= [];
@@ -59,8 +65,22 @@ const CreateGame = {
         for (const child of children)
           child.remove();
 
+        if (!input.dataset.text && input.dataset.placeholder)
+          input.innerHTML = input.dataset.placeholder;
+        else {
+          const lengthDiffrence = +input.dataset.maxtext - input.dataset.text.length;
+          if (lengthDiffrence > 0)
+            for (let index = 0;index < lengthDiffrence;index++)
+              input.dataset.text = `0${input.dataset.text}`;
+
+          input.innerHTML = input.dataset.text;
+        }
+
         input.classList.remove("selected");
       }
+
+      if (!element.dataset.text && element.innerHTML.length)
+        element.innerHTML = "";
 
       const cursor = document.createElement("DIV");
       cursor.classList.add("cursor", "no-select");
@@ -86,22 +106,46 @@ const CreateGame = {
         child.remove();
 
       element.classList.remove("selected");
+
+      if (!element.dataset.text && element.dataset.placeholder)
+        element.innerHTML = element.dataset.placeholder;
     },
     WroteInCustomInput: function(element, event) {
-      const NextInput = function(element, stopAtEnd) {
-        const theNextInput = document.getElementById(element.dataset.nextinput);
-        if (LCF.IsType.HTMLElement(theNextInput))
-          CreateGame.Functions.SetCustomInputCursor(theNextInput);
-        else if (!stopAtEnd)
-          CreateGame.Functions.RemoveCustomInputCursor(element);
+      const NextInput = function(element) {
+        let newInput;
+
+        if (CreateGame.customInputClasses[element.dataset.custominputclass][element.dataset.row].length > +element.dataset.column + 1)
+          newInput = CreateGame.customInputClasses[element.dataset.custominputclass][element.dataset.row][+element.dataset.column + 1];
+        else if (CreateGame.customInputClasses[element.dataset.custominputclass].length > +element.dataset.row + 1)
+          newInput = CreateGame.customInputClasses[element.dataset.custominputclass][+element.dataset.row + 1][0];
+
+        if (LCF.IsType.HTMLElement(newInput))
+          CreateGame.Functions.SetCustomInputCursor(newInput);
+      }
+      const InputRight = function(element) {
+        const newInput = CreateGame.customInputClasses[element.dataset.custominputclass][element.dataset.row][+element.dataset.column + 1];
+        if (LCF.IsType.HTMLElement(newInput))
+          CreateGame.Functions.SetCustomInputCursor(newInput);
+      }
+      const InputLeft = function(element) {
+        const newInput = CreateGame.customInputClasses[element.dataset.custominputclass][element.dataset.row][+element.dataset.column - 1];
+        if (LCF.IsType.HTMLElement(newInput))
+          CreateGame.Functions.SetCustomInputCursor(newInput);
+      }
+      const InputUp = function(element) {
+        if (+element.dataset.row > 0) {
+          const newInput = CreateGame.customInputClasses[element.dataset.custominputclass][+element.dataset.row - 1][+element.dataset.column];
+          if (LCF.IsType.HTMLElement(newInput))
+            CreateGame.Functions.SetCustomInputCursor(newInput);
+        }
       }
 
-      const PreviousInput = function(element, stopAtEnd) {
-        const thePreviousInput = document.getElementById(element.dataset.previousinput);
-        if (LCF.IsType.HTMLElement(thePreviousInput))
-          CreateGame.Functions.SetCustomInputCursor(thePreviousInput);
-        else if (!stopAtEnd)
-          CreateGame.Functions.RemoveCustomInputCursor(element);
+      const InputDown = function(element) {
+        if (+element.dataset.row + 1 < CreateGame.customInputClasses[element.dataset.custominputclass].length) {
+          const newInput = CreateGame.customInputClasses[element.dataset.custominputclass][+element.dataset.row + 1][+element.dataset.column];
+          if (LCF.IsType.HTMLElement(newInput))
+            CreateGame.Functions.SetCustomInputCursor(newInput);
+        }
       }
 
       if (+event?.key || +event?.key === 0) { //0 - 9
@@ -133,10 +177,10 @@ const CreateGame = {
         element.dataset.text = element.dataset.text.slice(0, -1);
         
         element.innerHTML = element.dataset.text + element.children[0].outerHTML;
-      } else if (event?.key === "Enter" || event?.key === "ArrowRight")
-        NextInput(element, event?.key === "ArrowRight");
-      else if (event?.key === "ArrowLeft")
-        PreviousInput(element, true);
+      } else if (event?.key === "Enter")
+        NextInput(element);
+      else if (event?.key.includes("Arrow"))
+        eval(`Input${event?.key.replace("Arrow","")}(element);`);
     },
     CheckKeyPressValid: function(event) {
       if (LCF.IsType.HTMLElement(CreateGame.selectedCustomInput))
