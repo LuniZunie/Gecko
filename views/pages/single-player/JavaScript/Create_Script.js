@@ -25,7 +25,7 @@ const CreateGame = {
         if (currentText.length)
           input.dataset.text = currentText;
         else if (input.dataset.placeholder)
-          input.innerHTML = input.dataset.placeholder + (input.children[0]) ? input.children[0].outerHTML : "";
+          input.innerHTML = input.dataset.placeholder + ((input.children[0]) ? input.children[0].outerHTML : "");
 
         const inputClass = input.dataset.custominputclass;
 
@@ -68,6 +68,10 @@ const CreateGame = {
         if (!input.dataset.text && input.dataset.placeholder)
           input.innerHTML = input.dataset.placeholder;
         else {
+          if (input.dataset.maxnumber)
+            if (+input.dataset.text > input.dataset.maxnumber)
+              input.dataset.text = input.dataset.maxnumber;
+
           const lengthDiffrence = +input.dataset.maxtext - input.dataset.text.length;
           if (lengthDiffrence > 0)
             for (let index = 0;index < lengthDiffrence;index++)
@@ -122,17 +126,37 @@ const CreateGame = {
         if (LCF.IsType.HTMLElement(newInput))
           CreateGame.Functions.SetCustomInputCursor(newInput);
       }
-      const InputRight = function(element) {
+      const InputRight = function(element, event) {
+        if (!event?.ctrlKey && element.children[0]) {
+          const cursorSplit = element.innerHTML.split(element.children[0].outerHTML);
+          if (cursorSplit[1].length > 0) {
+            const cutLetter = cursorSplit[1].slice(0, 1);
+            element.innerHTML = cursorSplit[0] + cutLetter + element.children[0].outerHTML + cursorSplit[1].slice(1, cursorSplit[1].length);
+
+            return;
+          }
+        }
+
         const newInput = CreateGame.customInputClasses[element.dataset.custominputclass][element.dataset.row][+element.dataset.column + 1];
         if (LCF.IsType.HTMLElement(newInput))
           CreateGame.Functions.SetCustomInputCursor(newInput);
       }
-      const InputLeft = function(element) {
+      const InputLeft = function(element, event) {
+        if (!event?.ctrlKey && element.children[0]) {
+          const cursorSplit = element.innerHTML.split(element.children[0].outerHTML);
+          if (cursorSplit[0].length > 0) {
+            const cutLetter = cursorSplit[0].slice(-1);
+            element.innerHTML = cursorSplit[0].slice(0, cursorSplit[0].length - 1) + element.children[0].outerHTML + cutLetter + cursorSplit[1];
+
+            return;
+          }
+        }
+
         const newInput = CreateGame.customInputClasses[element.dataset.custominputclass][element.dataset.row][+element.dataset.column - 1];
         if (LCF.IsType.HTMLElement(newInput))
           CreateGame.Functions.SetCustomInputCursor(newInput);
       }
-      const InputUp = function(element) {
+      const InputUp = function(element, event) {
         if (+element.dataset.row > 0) {
           const newInput = CreateGame.customInputClasses[element.dataset.custominputclass][+element.dataset.row - 1][+element.dataset.column];
           if (LCF.IsType.HTMLElement(newInput))
@@ -140,7 +164,7 @@ const CreateGame = {
         }
       }
 
-      const InputDown = function(element) {
+      const InputDown = function(element, event) {
         if (+element.dataset.row + 1 < CreateGame.customInputClasses[element.dataset.custominputclass].length) {
           const newInput = CreateGame.customInputClasses[element.dataset.custominputclass][+element.dataset.row + 1][+element.dataset.column];
           if (LCF.IsType.HTMLElement(newInput))
@@ -151,36 +175,62 @@ const CreateGame = {
       if (+event?.key || +event?.key === 0) { //0 - 9
         element.dataset.text ||= "";
 
-        element.dataset.text += event.key;
-        if (element.dataset.maxnumber) {
-          const textLength = element.dataset.text.length;
-          for (let numberIndex = 0;numberIndex < textLength;numberIndex++) {
-            const currentNumber = +element.dataset.text[numberIndex];
-            const maxNumber = +element.dataset.maxnumber[numberIndex];
-
-            if (currentNumber < maxNumber)
-              break;
-            else if (currentNumber > maxNumber) {
-              element.dataset.text = element.dataset.text.slice(0, -1);
-
-              return;
-            }
-          }
-        }
-
-        element.innerHTML = element.dataset.text + element.children[0].outerHTML;
         if (element.dataset.text.length >= +element.dataset.maxtext)
-          NextInput(element);
-      } else if (event?.key === "Backspace") {
-        element.dataset.text ||= "";
+          return;
 
-        element.dataset.text = element.dataset.text.slice(0, -1);
+        if (element.children[0]) {
+          const cursorSplit = element.innerHTML.split(element.children[0].outerHTML);
+          if (!cursorSplit[1].length)
+            element.dataset.text += event.key;
+          else
+            element.dataset.text = cursorSplit[0] + event?.key + element.children[0].outerHTML + cursorSplit[1];
+        } else
+          element.dataset.text += event.key;
+
+        element.innerHTML = element.dataset.text + ((element.dataset.text.includes(element.children[0].outerHTML)) ? "" : element.children[0].outerHTML);
+
+        element.dataset.text = element.dataset.text.replace(element.children[0].outerHTML, "");
+      } else if (event?.key === "Backspace" || event?.key === "Delete") {
+        const key = (event?.altKey) ? ["Backspace", "Delete"][1 - ["Backspace", "Delete"].indexOf(event?.key)] : event?.key;
+        if (key === "Backspace") {
+          element.dataset.text ||= "";
+
+          if (!event?.ctrlKey && element.children[0]) {
+            const cursorSplit = element.innerHTML.split(element.children[0].outerHTML);
+            if (cursorSplit[0].length > 0)
+              element.dataset.text = cursorSplit[0].slice(0, cursorSplit[0].length - 1) + element.children[0].outerHTML + cursorSplit[1];
+            else
+              return;
+          } else if (event?.ctrlKey)
+            element.dataset.text = "";
+          else
+            element.dataset.text = element.dataset.text.slice(0, -1);
         
-        element.innerHTML = element.dataset.text + element.children[0].outerHTML;
+          element.innerHTML = element.dataset.text + ((element.dataset.text.includes(element.children[0].outerHTML)) ? "" : element.children[0].outerHTML);
+
+          element.dataset.text = element.dataset.text.replace(element.children[0].outerHTML, "");
+        } else if (key === "Delete") {
+          element.dataset.text ||= "";
+
+          if (!event?.ctrlKey && element.children[0]) {
+            const cursorSplit = element.innerHTML.split(element.children[0].outerHTML);
+            if (cursorSplit[1].length > 0)
+              element.dataset.text = cursorSplit[0] + element.children[0].outerHTML + cursorSplit[1].slice(1, cursorSplit[1].length);
+            else
+              return;
+          } else if (event?.ctrlKey)
+            element.dataset.text = "";
+          else
+            element.dataset.text = element.dataset.text.slice(1, element.dataset.text.length);
+        
+          element.innerHTML = element.dataset.text + ((element.dataset.text.includes(element.children[0].outerHTML)) ? "" : element.children[0].outerHTML);
+
+          element.dataset.text = element.dataset.text.replace(element.children[0].outerHTML, "");
+        }
       } else if (event?.key === "Enter")
         NextInput(element);
       else if (event?.key.includes("Arrow"))
-        eval(`Input${event?.key.replace("Arrow","")}(element);`);
+        eval(`Input${event?.key.replace("Arrow","")}(element, event);`);
     },
     CheckKeyPressValid: function(event) {
       if (LCF.IsType.HTMLElement(CreateGame.selectedCustomInput))
