@@ -11,6 +11,13 @@
   right: 5%;
   opacity: 0.75;
   text-align: center;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .timerInput.white {
@@ -28,6 +35,8 @@
 }
 
 .timerInput .customNumberInput {
+  cursor: pointer;
+
   position: absolute;
   top: 10%;
   height: 90%;
