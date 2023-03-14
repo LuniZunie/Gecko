@@ -93,6 +93,94 @@ const LCF = { //LuniZunie's Custom Functions
       LCF.Update.update();
     }
   },
+  Window: {
+    Alert: function(title, message, color, horizontalPadding, verticalPadding, location, timeout) {
+      let alertDiv = document.createElement("DIV");
+      alertDiv.classList.add("custom-alert");
+
+      if (!LCF.IsType.String(title))
+        throw "Invalid title sent to LCF.Window.Alert";
+      else if (!LCF.IsType.String(message))
+        throw "Invalid title sent to LCF.Window.Alert";
+
+      if (color === "default")
+        color = "white";
+      else if (!LCF.IsType.CSSColor(color))
+        throw "Invalid color sent to LCF.Window.Alert";
+
+      if (horizontalPadding === "default")
+        horizontalPadding = "0px";
+      else if (!LCF.IsType.CSSPosition(horizontalPadding))
+        throw "Invalid horizontal padding sent to LCF.Window.Alert";
+
+      if (verticalPadding === "default")
+        verticalPadding = "0px";
+      else if (!LCF.IsType.CSSPosition(verticalPadding))
+          throw "Invalid vertical padding sent to LCF.Window.Alert";
+
+      if (location === "default")
+        location = "top";
+      else if (!["top","top-right","right","bottom-right","bottom","bottom-left","left","top-left","center"].includes(location))
+        throw "Invalid location sent to LCF.Window.Alert";
+
+      if (!LCF.IsType.Number(timeout))
+        throw "Invalid timeout sent to LCF.Window.Alert";
+
+      alertDiv.style.backgroundColor = color;
+      alertDiv.style.padding = `${verticalPadding} ${horizontalPadding}`;
+
+      let alertTitle = document.createElement("H2");
+      alertTitle.style.textAlign = "center";
+      alertTitle.innerHTML = title;
+
+      alertDiv.appendChild(alertTitle);
+
+      let alertMessage = document.createElement("P");
+      alertMessage.innerHTML = message;
+
+      alertDiv.appendChild(alertMessage);
+
+      document.body.appendChild(alertDiv);
+
+      alertDiv.style.borderRadius = LCF.Elements.GetBorderRadius(alertDiv, 5);
+      
+      if (location.includes("-")) {
+        alertDiv.classList.add(...location.split("-"));
+      } else {
+        switch (location) {
+          case "center":
+            alertDiv.style.left = `${50 - alertDiv.offsetWidth / window.innerWidth * 50}%`;
+            alertDiv.style.top = `${50 - alertDiv.offsetHeight / window.innerHeight * 50}%`;
+            break;
+          case "bottom":
+          case "top":
+            alertDiv.style.left = `${50 - alertDiv.offsetWidth / window.innerWidth * 50}%`;
+            break;
+          case "right":
+          case "left":
+            alertDiv.style.top = `${50 - alertDiv.offsetHeight / window.innerHeight * 50}%`;
+            break;
+        }
+
+        if (location !== "center");
+          eval(`alertDiv.style.${location} = "10px";`);
+      }
+
+      alertDiv.style.animation = "fadeIn 250ms ease-in 0s 1 normal forwards";
+      if (timeout >= 0) {
+        window.setTimeout(async function() {
+          await LCF.Sleep(250);
+
+          alertDiv.style.animation = "fadeOut 750ms ease-in 0s 1 normal forwards";
+          await LCF.Sleep(750);
+
+          alertDiv.remove();
+        }, timeout);
+      }
+
+      return;
+    }
+  },
   Math: {
     Add: function(...numbers) {
       if (!LCF.IsType.Array(numbers))
@@ -367,6 +455,26 @@ const LCF = { //LuniZunie's Custom Functions
         if (!(value instanceof HTMLElement))
           return false;
       
+      return true;
+    },
+    CSSColor: function(...colors) {
+      for (const color of colors) {
+          const style = new Option().style;
+          style.color = color;
+          if (style.color == "")
+            return false;
+      }
+
+      return true;
+    },
+    CSSPosition: function(...positions) {
+      for (const position of positions) {
+          const style = new Option().style;
+          style.left = position;
+          if (style.left == "")
+            return false;
+      }
+
       return true;
     }
   },
@@ -952,7 +1060,7 @@ const LCF = { //LuniZunie's Custom Functions
       
       document.body.appendChild(screen);
 
-      screen.style.animation = `fadeOut ${speed}s linear 0s 1 normal forwards`;
+      screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
       screen.addEventListener("animationend", function(event)  {
         if (this === event.target)
           location.href = newLocation;
@@ -965,7 +1073,7 @@ const LCF = { //LuniZunie's Custom Functions
 
       document.body.appendChild(screen);
 
-      screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
+      screen.style.animation = `fadeOut ${speed}s linear 0s 1 normal forwards`;
       screen.addEventListener("animationend", function(event)  {
         if (this === event.target)
           screen.remove();

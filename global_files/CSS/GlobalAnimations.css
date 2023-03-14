@@ -1,4 +1,4 @@
-@keyframes fadeIn {
+@keyframes fadeOut {
     from {
         opacity: 1;
     }
@@ -7,7 +7,7 @@
     }
 }
 
-@keyframes fadeOut {
+@keyframes fadeIn {
     from {
         opacity: 0;
     }

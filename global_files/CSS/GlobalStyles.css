@@ -49,3 +49,32 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
+
+.custom-alert {
+    position: absolute;
+    z-index: 2147483646; /* 32-bit integer limit minus 1 */
+    box-shadow: 10px 10px 10px 0px black;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.custom-alert.top {
+    top: 10px;
+}
+
+.custom-alert.right {
+    right: 10px;
+}
+
+.custom-alert.bottom {
+    bottom: 10px;
+}
+
+.custom-alert.left {
+    left: 10px;
+}

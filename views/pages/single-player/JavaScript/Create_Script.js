@@ -68,9 +68,64 @@ const CreateGame = {
         if (!input.dataset.text && input.dataset.placeholder)
           input.innerHTML = input.dataset.placeholder;
         else {
-          if (input.dataset.maxnumber)
-            if (+input.dataset.text > input.dataset.maxnumber)
-              input.dataset.text = input.dataset.maxnumber;
+          if (input.dataset.maxnumber && input.dataset.minnumber) {
+            if (+input.dataset.text > input.dataset.maxnumber || +input.dataset.text < input.dataset.minnumber) {
+              LCF.Window.Alert("Error", `Number must be between ${input.dataset.minnumber} and ${input.dataset.maxnumber} (inclusive)`, "#333333", "3%", "0.25%", "top", 1000);
+
+              if (input.dataset.lastvalidnumber)
+                input.dataset.text = input.dataset.lastvalidnumber;
+              else if (input.dataset.placeholder) {
+                input.dataset.text = "";
+                input.innerHTML = input.dataset.placeholder;
+
+                continue;
+              } else {
+                input.dataset.text = "";
+                input.innerHTML = "--";
+
+                continue;
+              }
+            } else
+              input.dataset.lastvalidnumber = input.dataset.text;
+          } else if (input.dataset.maxnumber) {
+            if (+input.dataset.text > input.dataset.maxnumber) {
+              LCF.Window.Alert("Error", `Number can not be greater than ${input.dataset.maxnumber}`, "#333333", "3%", "0.25%", "top", 1000);
+
+              if (input.dataset.lastvalidnumber)
+                input.dataset.text = input.dataset.lastvalidnumber;
+              else if (input.dataset.placeholder) {
+                input.dataset.text = "";
+                input.innerHTML = input.dataset.placeholder;
+
+                continue;
+              } else {
+                input.dataset.text = "";
+                input.innerHTML = "--";
+
+                continue;
+              }
+            } else
+              input.dataset.lastvalidnumber = input.dataset.text;
+          } else if (input.dataset.minnumber) {
+            if (+input.dataset.text < input.dataset.minnumber) {
+              LCF.Window.Alert("Error", `Number can not be less than ${input.dataset.minnumber}`, "#333333", "3%", "0.25%", "top", 1000);
+
+              if (input.dataset.lastvalidnumber)
+                input.dataset.text = input.dataset.lastvalidnumber;
+              else if (input.dataset.placeholder) {
+                input.dataset.text = "";
+                input.innerHTML = input.dataset.placeholder;
+
+                continue;
+              } else {
+                input.dataset.text = "";
+                input.innerHTML = "--";
+
+                continue;
+              }
+            } else
+              input.dataset.lastvalidnumber = input.dataset.text;
+          }
 
           const lengthDiffrence = +input.dataset.maxtext - input.dataset.text.length;
           if (lengthDiffrence > 0)
