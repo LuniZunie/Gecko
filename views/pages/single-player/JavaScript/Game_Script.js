@@ -1003,7 +1003,6 @@ const Chess = {
           }
         }
 
-
       return false;
     },
 
@@ -1066,7 +1065,6 @@ const Chess = {
               gotOutOfChecks++;
         }
       }
-
 
       return (gotOutOfChecks === checksFrom.length);
     },
