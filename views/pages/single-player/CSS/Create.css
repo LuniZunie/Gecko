@@ -97,3 +97,22 @@
   text-align: center;
   margin-top: 2%;
 }
+
+#SubmitButtonContainer {
+  position: absolute;
+  bottom: 7%;
+  left: 35%;
+  width: 30%;
+  height: 12%;
+  background-color: #4b4b4b;
+  overflow: hidden;
+}
+
+#SubmitButton {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  text-decoration: none;
+  text-align: center;
+}

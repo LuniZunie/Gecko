@@ -1067,6 +1067,19 @@ const LCF = { //LuniZunie's Custom Functions
       });
     },
 
+    FadeOut: function(speed = 0.25) {
+      const screen = document.createElement("screen");
+      screen.classList.add("screen");
+      
+      document.body.appendChild(screen);
+
+      screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
+      screen.addEventListener("animationend", function(event)  {
+        if (this === event.target)
+          screen.remove();
+      });
+    },
+
     FadeIn: function(speed = 0.25) {
       const screen = document.createElement("screen");
       screen.classList.add("screen");

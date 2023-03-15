@@ -43,6 +43,59 @@ const CreateGame = {
           CreateGame.customInputClasses[inputClass][row][column] = input;
       }
     },
+    OnSubmit: async function() {
+      const selectedValue = CreateGame.selectedCustomInput.innerHTML;
+
+      this.SetCustomInputCursor(CreateGame.selectedCustomInput);
+
+      if (selectedValue !== CreateGame.selectedCustomInput.innerHTML)
+        return;
+
+      this.RemoveCustomInputCursor(CreateGame.selectedCustomInput);
+
+      let whiteMinute = document.getElementById("WhiteTimerMinuteInput").innerHTML;
+      let whiteSecond = document.getElementById("WhiteTimerSecondInput").innerHTML;
+      let whiteIncrement = document.getElementById("WhiteTimerIncrementInput").innerHTML;
+
+      let blackMinute = document.getElementById("BlackTimerMinuteInput").innerHTML;
+      let blackSecond = document.getElementById("BlackTimerSecondInput").innerHTML;
+      let blackIncrement = document.getElementById("BlackTimerIncrementInput").innerHTML;
+
+      if (!whiteMinute || whiteMinute === "--")
+        whiteMinute = 0;
+      if (!whiteSecond || whiteSecond === "--")
+        whiteSecond = 0;
+      if (!whiteIncrement || whiteIncrement === "--")
+        whiteIncrement = 0;
+
+      if (!blackMinute || blackMinute === "--")
+        blackMinute = 0;
+      if (!blackSecond || blackSecond === "--")
+        blackSecond = 0;
+      if (!blackIncrement || blackIncrement === "--")
+        blackIncrement = 0;
+
+      CreateGame.timeDetails.white.startTime = +whiteMinute * 60000 + +whiteSecond * 1000;
+      CreateGame.timeDetails.white.increment = +whiteIncrement * 1000;
+
+      CreateGame.timeDetails.black.startTime = +blackMinute * 60000 + +blackSecond * 1000;
+      CreateGame.timeDetails.black.increment = +blackIncrement * 1000;
+
+      LCF.Page.FadeOut();
+      await LCF.Sleep(250);
+
+      document.getElementById("CreatePage").style.opacity = 0;
+      document.getElementById("CreatePage").hidden = true;
+      document.body.style.opacity = 0;
+
+      document.getElementById("GamePage").style.opacity = 1;
+      document.getElementById("GamePage").hidden = false;
+
+      window.history.replaceState("SinglePlayer", "Single Player", "/singleplayer/play");
+
+      Chess.timeDetails = structuredClone(CreateGame.timeDetails);
+      OnLoad();
+    },
     SetCustomInputCursor: function(element) {
       if (!element?.classList?.contains("customNumberInput"))
         return;
@@ -70,7 +123,7 @@ const CreateGame = {
         else {
           if (input.dataset.maxnumber && input.dataset.minnumber) {
             if (+input.dataset.text > input.dataset.maxnumber || +input.dataset.text < input.dataset.minnumber) {
-              LCF.Window.Alert("Error", `Number must be between ${input.dataset.minnumber} and ${input.dataset.maxnumber} (inclusive)`, "#333333", "3%", "0.25%", "top", 1000);
+              LCF.Window.Alert("Error", `Number must be between ${input.dataset.minnumber} and ${input.dataset.maxnumber} (inclusive)`, "#333333", "3%", "0.25%", "top", 2000);
 
               if (input.dataset.lastvalidnumber)
                 input.dataset.text = input.dataset.lastvalidnumber;
@@ -89,7 +142,7 @@ const CreateGame = {
               input.dataset.lastvalidnumber = input.dataset.text;
           } else if (input.dataset.maxnumber) {
             if (+input.dataset.text > input.dataset.maxnumber) {
-              LCF.Window.Alert("Error", `Number can not be greater than ${input.dataset.maxnumber}`, "#333333", "3%", "0.25%", "top", 1000);
+              LCF.Window.Alert("Error", `Number can not be greater than ${input.dataset.maxnumber}`, "#333333", "3%", "0.25%", "top", 2000);
 
               if (input.dataset.lastvalidnumber)
                 input.dataset.text = input.dataset.lastvalidnumber;
@@ -108,7 +161,7 @@ const CreateGame = {
               input.dataset.lastvalidnumber = input.dataset.text;
           } else if (input.dataset.minnumber) {
             if (+input.dataset.text < input.dataset.minnumber) {
-              LCF.Window.Alert("Error", `Number can not be less than ${input.dataset.minnumber}`, "#333333", "3%", "0.25%", "top", 1000);
+              LCF.Window.Alert("Error", `Number can not be less than ${input.dataset.minnumber}`, "#333333", "3%", "0.25%", "top", 2000);
 
               if (input.dataset.lastvalidnumber)
                 input.dataset.text = input.dataset.lastvalidnumber;

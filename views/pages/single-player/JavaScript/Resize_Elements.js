@@ -56,6 +56,22 @@ function ResizeElements() {
 
       child.style.height = `${timerInputHeight - timerInputPadding * 1.5}px`;
     }
+
+    //Submit Button
+
+    const submitButtonContainer = document.getElementById("SubmitButtonContainer");
+    submitButtonContainer.style.borderRadius = LCF.Elements.GetBorderRadius(submitButtonContainer, 10);
+
+    const submitButton = document.getElementById("SubmitButton");
+
+    let submitButtonFontSize = submitButton.clientHeight;
+
+    const submitButtonMaxWidth = LCF.Elements.GetTextWidth("Gecko", document.body.style.fontFamily, `${submitButtonFontSize}px`) + 50;
+    if (submitButtonMaxWidth > submitButton.clientWidth)
+      submitButtonFontSize = submitButtonFontSize * (submitButton.clientWidth / submitButtonMaxWidth);
+
+    submitButton.style.fontSize = `${submitButtonFontSize}px`;
+    submitButton.style.lineHeight = `${submitButton.clientHeight}px`;
   }
 
   //Game Page

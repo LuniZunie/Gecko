@@ -30,7 +30,10 @@ app.get("/live-game", function (req, res) {
     res.render("pages/live-game/HTML/Index.ejs");
 });
 app.get("/singleplayer", function (req, res) {
-  res.render("pages/single-player/HTML/Game.ejs");
+    res.render("pages/single-player/HTML/Game.ejs");
+});
+app.get("/singleplayer/play", function (req, res) {
+    res.redirect("/singleplayer");
 });
 app.get("/connect/game", function (req, res) {
     const id = req.query.id;

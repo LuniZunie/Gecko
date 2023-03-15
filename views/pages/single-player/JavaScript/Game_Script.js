@@ -153,7 +153,7 @@ const Chess = {
       this.SetupPosition();
     },
 
-    SetupPosition: function () {//working on
+    SetupPosition: function() {//working on
       Chess.Position = structuredClone(Chess.StartPosition);
       //Chess.Position = structuredClone(Chess.PositionDebug);
       //Chess.Position = this.ConvertCodeToGame("rnbqkbnr/ppp1pppp/3p4/8/4P3/5N2/PPPP1PPP/RNBQKB1R");
@@ -189,7 +189,7 @@ const Chess = {
       this.GetLegalMoves();
 
       if (Chess.game) {
-        if (Chess.timeDetails.whtie.startTime > 0 && Chess.timeDetails.black.startTime > 0) {
+        if (Chess.timeDetails.white.startTime > 0 && Chess.timeDetails.black.startTime > 0) {
           Chess.whiteTimer = LCF.Timer.Create(false);
           Chess.whiteTimer.time = Chess.timeDetails.white.startTime;
 
@@ -209,7 +209,7 @@ const Chess = {
           LCF.Update.SetSpeed(50);
         }
 
-        this.whiteOnBottom = Chess.white;
+        Chess.Functions.whiteOnBottom = Chess.white;
 
         this.DrawBoard();
       }
@@ -709,7 +709,7 @@ const Chess = {
             else
               Chess.blackTimer.play();
             
-            blackFirstMove &&= false;
+            Chess.blackFirstMove &&= false;
 
             Chess.whiteTimerElement.style.animation = `timerOff${Chess.whiteClockColor} 1s ease-in-out 0s 1 normal forwards`;
             Chess.blackTimerElement.style.animation = `timerOn${Chess.blackClockColor} 1s ease-in-out 0s 1 normal forwards`;
@@ -1084,7 +1084,9 @@ const Chess = {
       const castleMoves = {};
 
       for (let y in Chess.Position) {
+        y = +y;
         for (let x in Chess.Position[y]) {
+          x = +x;
           if (onePieceCheck)
             [x, y] = [+onlyX, +onlyY];
 

@@ -50,6 +50,18 @@ body {
     user-select: none;
 }
 
+.custom-button.gray {
+    background-color: #333333;
+}
+
+.custom-button.blue {
+    background-color: dodgerblue;
+}
+
+.custom-button.green {
+    background-color: forestgreen;
+}
+
 .custom-alert {
     position: absolute;
     z-index: 2147483646; /* 32-bit integer limit minus 1 */
