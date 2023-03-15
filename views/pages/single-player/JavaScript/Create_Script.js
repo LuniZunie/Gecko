@@ -46,7 +46,7 @@ const CreateGame = {
     OnSubmit: async function() {
       const selectedValue = CreateGame.selectedCustomInput.innerHTML;
 
-      this.SetCustomInputCursor(CreateGame.selectedCustomInput);
+      this.SetCustomInputCursor(CreateGame.selectedCustomInput, true);
 
       if (selectedValue !== CreateGame.selectedCustomInput.innerHTML)
         return;
@@ -96,7 +96,7 @@ const CreateGame = {
       Chess.timeDetails = structuredClone(CreateGame.timeDetails);
       OnLoad();
     },
-    SetCustomInputCursor: function(element) {
+    SetCustomInputCursor: function(element, noZero = false) {
       if (!element?.classList?.contains("customNumberInput"))
         return;
 
@@ -180,10 +180,12 @@ const CreateGame = {
               input.dataset.lastvalidnumber = input.dataset.text;
           }
 
-          const lengthDiffrence = +input.dataset.maxtext - input.dataset.text.length;
-          if (lengthDiffrence > 0)
-            for (let index = 0;index < lengthDiffrence;index++)
-              input.dataset.text = `0${input.dataset.text}`;
+          if (!noZero) {
+            const lengthDiffrence = +input.dataset.maxtext - input.dataset.text.length;
+            if (lengthDiffrence > 0)
+              for (let index = 0;index < lengthDiffrence;index++)
+                input.dataset.text = `0${input.dataset.text}`;
+          }
 
           input.innerHTML = input.dataset.text;
         }
