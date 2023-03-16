@@ -979,7 +979,7 @@ const Chess = {
       else
         kingTileId = Chess.blackKingPosition.join(`-`);
 
-      if (checkLegalMove)
+      if (checkLegalMove) {
         for (const [piecesLegalMovesKey, pieceLegalMoves] of Object.entries(Chess.legalMoves)) {
           if (piecesLegalMovesKey === startTileId)
             continue;
@@ -1002,6 +1002,7 @@ const Chess = {
             }
           }
         }
+      }
 
       return false;
     },
@@ -1024,7 +1025,7 @@ const Chess = {
       if (kingMove) {
         for (const piecesLegalMovesKey of Object.keys(Chess.legalMoves)) { //CHANGED
           const piecePosition = piecesLegalMovesKey.split("-");
-          if (+Chess.Position[+piecePosition[1]][+piecePosition[0]][0] !== Chess.whitesTurn)
+          if (!+Chess.Position[+piecePosition[1]][+piecePosition[0]][0] === Chess.whitesTurn)
             continue;
 
           const positionSave = structuredClone(Chess.Position);
@@ -1308,7 +1309,7 @@ const Chess = {
         for (const [kingTileId, kingCastleMoves] of Object.entries(castleMoves)) {
           for (const [castleTileId, castleMove] of Object.entries(kingCastleMoves)) {
             let [x, y] = kingTileId.split("-");
-            [x, y] = [Number(x), Number(y)];
+            [x, y] = [+x, +y];
 
             const piece = Chess.Position[y][x];
 
