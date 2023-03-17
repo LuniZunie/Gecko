@@ -116,3 +116,7 @@
   text-decoration: none;
   text-align: center;
 }
+
+#CustomPositionCanvasWrapper {
+  position: relative;
+}

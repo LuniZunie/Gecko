@@ -951,7 +951,7 @@ const Chess = {
         if (!Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]])
           continue;
 
-        if (Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]][0] === +!whitesTurn)
+        if (!+Chess.Position[piecesLegalMovesKey[2]][piecesLegalMovesKey[0]][0] === whitesTurn)
           continue;
 
         if (Object.keys(pieceLegalMoves).includes(kingTileId)) {

@@ -94,19 +94,56 @@ const LCF = { //LuniZunie's Custom Functions
     }
   },
   Window: {
-    Alert: function(title, message, color, horizontalPadding, verticalPadding, location, timeout) {
+    //      OR      template, title, message
+    Alert: function(title, message, colors, horizontalPadding = null, verticalPadding = null, location = null, timeout = null) {
       let alertDiv = document.createElement("DIV");
       alertDiv.classList.add("custom-alert");
 
       if (!LCF.IsType.String(title))
         throw "Invalid title sent to LCF.Window.Alert";
-      else if (!LCF.IsType.String(message))
+      if (!LCF.IsType.String(message))
         throw "Invalid title sent to LCF.Window.Alert";
 
-      if (color === "default")
-        color = "white";
-      else if (!LCF.IsType.CSSColor(color))
-        throw "Invalid color sent to LCF.Window.Alert";
+      if (!LCF.IsType.Object(colors))
+        throw "Invalid colors sent to LCF.Window.Alert";
+
+      let backgroundColor = "default";
+      let titleColor = "default";
+      let messageColor = "default";
+      for (const [key, value] of Object.entries(colors)) {
+        switch(key) {
+          case "background":
+          case "bg":
+            if (value !== "default" && !LCF.IsType.CSSColor(value))
+              throw "Invalid color sent to LCF.Window.Alert";
+
+            backgroundColor = value;
+            break;
+          case "title":
+          case "t":
+            if (value !== "default" && !LCF.IsType.CSSColor(value))
+              throw "Invalid color sent to LCF.Window.Alert";
+
+            titleColor = value;
+            break;
+          case "message":
+          case "msg":
+            if (value !== "default" && !LCF.IsType.CSSColor(value))
+              throw "Invalid color sent to LCF.Window.Alert";
+
+            messageColor = value;
+            break;
+          default:
+            throw "Invalid color type sent to LCF.Window.Alert";
+        }
+      }
+
+      if (backgroundColor === "default")
+        backgroundColor = "white";
+      if (titleColor === "default")
+        titleColor = "black";
+      if (messageColor === "default")
+        messageColor = "black";
 
       if (horizontalPadding === "default")
         horizontalPadding = "0px";
@@ -116,7 +153,7 @@ const LCF = { //LuniZunie's Custom Functions
       if (verticalPadding === "default")
         verticalPadding = "0px";
       else if (!LCF.IsType.CSSPosition(verticalPadding))
-          throw "Invalid vertical padding sent to LCF.Window.Alert";
+        throw "Invalid vertical padding sent to LCF.Window.Alert";
 
       if (location === "default")
         location = "top";
@@ -126,16 +163,18 @@ const LCF = { //LuniZunie's Custom Functions
       if (!LCF.IsType.Number(timeout))
         throw "Invalid timeout sent to LCF.Window.Alert";
 
-      alertDiv.style.backgroundColor = color;
+      alertDiv.style.backgroundColor = backgroundColor;
       alertDiv.style.padding = `${verticalPadding} ${horizontalPadding}`;
 
       let alertTitle = document.createElement("H2");
       alertTitle.style.textAlign = "center";
+      alertTitle.style.color = titleColor;
       alertTitle.innerHTML = title;
 
       alertDiv.appendChild(alertTitle);
 
       let alertMessage = document.createElement("P");
+      alertMessage.style.color = messageColor;
       alertMessage.innerHTML = message;
 
       alertDiv.appendChild(alertMessage);

@@ -16,6 +16,19 @@ const CreateGame = {
 
   customInputClasses: {},
 
+  CustomPosition: {
+    Position: [
+      [`1x2.0`, `1x4`, `1x3`, `1x1`, `1x0.0`, `1x3`, `1x4`, `1x2.0`],
+      [`1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`, `1x5.0`],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [`0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`, `0x5.0`],
+      [`0x2.0`, `0x4`, `0x3`, `0x1`, `0x0.0`, `0x3`, `0x4`, `0x2.0`]
+    ],
+  },
+
   Functions: {
     OnStartup: function() {
       const customInputs = document.getElementsByClassName("customInput");
@@ -94,6 +107,7 @@ const CreateGame = {
       window.history.replaceState("SinglePlayer", "Single Player", "/singleplayer/play");
 
       Chess.timeDetails = structuredClone(CreateGame.timeDetails);
+      Chess.StartPosition = structuredClone(CreateGame.CustomPosition.Position);
       OnLoad();
     },
     SetCustomInputCursor: function(element, noZero = false) {
@@ -123,7 +137,7 @@ const CreateGame = {
         else {
           if (input.dataset.maxnumber && input.dataset.minnumber) {
             if (+input.dataset.text > input.dataset.maxnumber || +input.dataset.text < input.dataset.minnumber) {
-              LCF.Window.Alert("Error", `Number must be between ${input.dataset.minnumber} and ${input.dataset.maxnumber} (inclusive)`, "#333333", "3%", "0.25%", "top", 2000);
+              LCF.Window.Alert("Error", `<b>Number must be between ${input.dataset.minnumber} and ${input.dataset.maxnumber} (inclusive)</b>`, {background:"#333333",title:"red",message:"red"}, "3%", "0.25%", "top", 2000);
 
               if (input.dataset.lastvalidnumber)
                 input.dataset.text = input.dataset.lastvalidnumber;
@@ -142,7 +156,7 @@ const CreateGame = {
               input.dataset.lastvalidnumber = input.dataset.text;
           } else if (input.dataset.maxnumber) {
             if (+input.dataset.text > input.dataset.maxnumber) {
-              LCF.Window.Alert("Error", `Number can not be greater than ${input.dataset.maxnumber}`, "#333333", "3%", "0.25%", "top", 2000);
+              LCF.Window.Alert("Error", `<b>Number can not be greater than ${input.dataset.maxnumber}</b>`, {background:"#333333",title:"red",message:"red"}, "3%", "0.25%", "top", 2000);
 
               if (input.dataset.lastvalidnumber)
                 input.dataset.text = input.dataset.lastvalidnumber;
@@ -161,7 +175,7 @@ const CreateGame = {
               input.dataset.lastvalidnumber = input.dataset.text;
           } else if (input.dataset.minnumber) {
             if (+input.dataset.text < input.dataset.minnumber) {
-              LCF.Window.Alert("Error", `Number can not be less than ${input.dataset.minnumber}`, "#333333", "3%", "0.25%", "top", 2000);
+              LCF.Window.Alert("Error", `<b>Number can not be less than ${input.dataset.minnumber}</b>`, {background:"#333333",title:"red",message:"red"}, "3%", "0.25%", "top", 2000);
 
               if (input.dataset.lastvalidnumber)
                 input.dataset.text = input.dataset.lastvalidnumber;
