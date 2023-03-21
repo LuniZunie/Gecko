@@ -2,6 +2,22 @@ const CreateGame = {
   selectedCustomInput: null,
   hasKeyPressEvent: false,
   hasFocusEvent: false,
+
+  tileSize: 0,
+
+  gameDiv: null,
+
+  board: null,
+  canvas: null,
+  context: null,
+
+  blankImage: null,
+  pieceImages: {},
+
+  whitesTurn: true,
+
+  clickedPiece: false,
+  currentClickedPiece: [null, null],
   
   timeDetails: {
     white: {
@@ -31,6 +47,8 @@ const CreateGame = {
 
   Functions: {
     OnStartup: function() {
+      CreateGame.gameDiv
+
       const customInputs = document.getElementsByClassName("customInput");
 
       for (const input of customInputs) {
@@ -110,6 +128,57 @@ const CreateGame = {
       Chess.StartPosition = structuredClone(CreateGame.CustomPosition.Position);
       OnLoad();
     },
+    DrawBoard: function () {
+      const canvas = document.getElementById(`Create_DrawPieceCanvas`);
+
+      canvas.width = Chess.tileSize;
+      canvas.height = Chess.tileSize;
+
+      Chess.blankImage = canvas.toDataURL(`image/png`).replace(`image/png`, `image/octet-stream`);
+
+      let startDrawPosition = [-1, -1];
+      let everyOtherRow = true;
+
+      for (let tileNumber = 0; tileNumber < 64; tileNumber++) {
+        startDrawPosition[0]++;
+
+        if (!(tileNumber % 8)) {
+          startDrawPosition = [0, startDrawPosition[1] + 1];
+
+          everyOtherRow = !everyOtherRow;
+        }
+
+        let tileId = startDrawPosition.join(`-`);
+
+        const newTile = document.createElement(`img`);
+        newTile.classList.add(`no-select`, `tile`);
+
+        newTile.id = `tile_${tileId}`;
+        newTile.src = Chess.blankImage;
+
+        newTile.addEventListener(`click`, function (event) {
+          const [x, y] = this.id.replace(`tile_`, ``).split(`-`);
+
+          Chess.Functions.ClickedBoard(event, [+x, +y]);
+        });
+
+        Chess.board.appendChild(newTile);
+
+        newTile.width = Chess.tileSize;
+        newTile.height = Chess.tileSize;
+
+        newTile.style.left = `${startDrawPosition[0] * Chess.tileSize}px`;
+        newTile.style.top = `${startDrawPosition[1] * Chess.tileSize}px`;
+
+        if ((tileNumber + this.whiteOnBottom + everyOtherRow) % 2)
+          newTile.classList.add(`light`);
+        else
+          newTile.classList.add(`dark`);
+      }
+
+      this.CreatePieces();
+      this.PlacePieces();
+    },
     SetCustomInputCursor: function(element, noZero = false) {
       if (!element?.classList?.contains("customNumberInput"))
         return;
@@ -137,7 +206,7 @@ const CreateGame = {
         else {
           if (input.dataset.maxnumber && input.dataset.minnumber) {
             if (+input.dataset.text > input.dataset.maxnumber || +input.dataset.text < input.dataset.minnumber) {
-              LCF.Window.Alert("Error", `<b>Number must be between ${input.dataset.minnumber} and ${input.dataset.maxnumber} (inclusive)</b>`, {background:"#333333",title:"red",message:"red"}, "3%", "0.25%", "top", 2000);
+              LCF.Window.Alert("$template:error_dark", "Error", `<b>Number must be between ${input.dataset.minnumber} and ${input.dataset.maxnumber} (inclusive)</b>`);
 
               if (input.dataset.lastvalidnumber)
                 input.dataset.text = input.dataset.lastvalidnumber;
@@ -156,7 +225,7 @@ const CreateGame = {
               input.dataset.lastvalidnumber = input.dataset.text;
           } else if (input.dataset.maxnumber) {
             if (+input.dataset.text > input.dataset.maxnumber) {
-              LCF.Window.Alert("Error", `<b>Number can not be greater than ${input.dataset.maxnumber}</b>`, {background:"#333333",title:"red",message:"red"}, "3%", "0.25%", "top", 2000);
+              LCF.Window.Alert("$template:error_dark", "Error", `<b>Number can not be greater than ${input.dataset.maxnumber}</b>`);
 
               if (input.dataset.lastvalidnumber)
                 input.dataset.text = input.dataset.lastvalidnumber;
@@ -175,7 +244,7 @@ const CreateGame = {
               input.dataset.lastvalidnumber = input.dataset.text;
           } else if (input.dataset.minnumber) {
             if (+input.dataset.text < input.dataset.minnumber) {
-              LCF.Window.Alert("Error", `<b>Number can not be less than ${input.dataset.minnumber}</b>`, {background:"#333333",title:"red",message:"red"}, "3%", "0.25%", "top", 2000);
+              LCF.Window.Alert("$template:error_dark", "Error", `<b>Number can not be less than ${input.dataset.minnumber}</b>`);
 
               if (input.dataset.lastvalidnumber)
                 input.dataset.text = input.dataset.lastvalidnumber;

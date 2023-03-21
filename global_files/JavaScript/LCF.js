@@ -99,6 +99,55 @@ const LCF = { //LuniZunie's Custom Functions
       let alertDiv = document.createElement("DIV");
       alertDiv.classList.add("custom-alert");
 
+      if (!title.split("$template:")[0].length) {
+        if (horizontalPadding || verticalPadding || location || timeout)
+          throw "Too many parameters sent to LCF.Window.Alert";
+
+        switch(title) {
+          case "$template:light":
+            title = message;
+            message = colors;
+
+            colors = {background:"#aaaaaa",title:"#333333",message:"#333333"};
+            horizontalPadding = "3%";
+            verticalPadding = "0.25%";
+            location = "top";
+            timeout = 2000;
+            break;
+          case "$template:dark":
+            title = message;
+            message = colors;
+
+            colors = {background:"#cccccc",title:"#111111",message:"#111111"};
+            horizontalPadding = "3%";
+            verticalPadding = "0.25%";
+            location = "top";
+            timeout = 2000;
+            break;
+          case "$template:error_light":
+            title = message;
+            message = colors;
+  
+            colors = {background:"#cccccc",title:"#c94c4c",message:"#c94c4c"};
+            horizontalPadding = "3%";
+            verticalPadding = "0.25%";
+            location = "top";
+            timeout = 2000;
+            break;
+          case "$template:error_dark":
+            title = message;
+            message = colors;
+
+            colors = {background:"#333333",title:"red",message:"red"};
+            horizontalPadding = "3%";
+            verticalPadding = "0.25%";
+            location = "top";
+            timeout = 2000;
+            break;
+        }
+      } else
+        title.replace(/\\$/g,"$");
+
       if (!LCF.IsType.String(title))
         throw "Invalid title sent to LCF.Window.Alert";
       if (!LCF.IsType.String(message))

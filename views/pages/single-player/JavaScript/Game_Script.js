@@ -153,6 +153,114 @@ const Chess = {
       this.SetupPosition();
     },
 
+    Reset: function() {
+      for (const child of Chess.board.children)
+        if (child.tagName === "IMG")
+          child.remove();
+
+      document.getElementById(`WhiteCapturedPieces`).innerHTML = ``;
+      document.getElementById(`BlackCapturedPieces`).innerHTML = ``;
+
+      const gameOverGraphDiv = document.getElementById("GameGraphDiv");
+      for (const child of gameOverGraphDiv.children)
+        if (child.classList.contains("tooltip"))
+          child.remove();
+
+      Chess.game = true;
+      Chess.tileSize = 0;
+
+      Chess.gameOver = false;
+
+      Chess.gameDiv = null;
+
+      Chess.board = null;
+      Chess.canvas = null;
+      Chess.context = null;
+
+      Chess.blankImage = null;
+      Chess.pieceImages = {};
+
+      Chess.whitesTurn = true;
+      Chess.white = true;
+
+      Chess.capturedPieceSize = 0;
+      Chess.capturedPieceLeftOffset = 0;
+      Chess.capturedPieceTopOffset = 0;
+      Chess.whiteCapturedPieces = [];
+      Chess.blackCapturedPieces = [];
+
+      Chess.clickedPiece = false;
+      Chess.legalMoves = {};
+      Chess.clickedPieceLegalMoves = {};
+
+      Chess.promotionTileOffsetHeight = null;
+      Chess.promotionOptions = [`x1`, `x2`, `x3`, `x4`];
+      Chess.waitingForPromotion = false;
+      Chess.promotionChose = ``;
+
+      Chess.whiteFirstMove = true;
+      Chess.blackFirstMove = true;
+
+      Chess.whiteFirstMoveTimeout = null;
+      Chess.blackFirstMoveTimeout = null;
+
+      Chess.whiteTimer = null;
+      Chess.blackTimer = null;
+
+      Chess.whiteTimerElement = null;
+      Chess.blackTimerElement = null;
+
+      Chess.lastWhiteTimerUpdate = null;
+      Chess.lastBlackTimerUpdate = null;
+
+      Chess.whiteClockColor = `Green`;
+      Chess.blackClockColor = `Green`;
+
+      Chess.whiteKingPosition = [4, 7];
+      Chess.blackKingPosition = [4, 0];
+
+      Chess.enPassantablePawns = [];
+
+      Chess.currentClickedPiece = [null, null];
+
+      Chess.materialDiffrencesMax = 0;
+      Chess.materialDiffrences = [];
+
+      Chess.fiftyMoveRuleCount = 0;
+
+      Chess.material = {
+        total: {
+          x5: 0,
+          x4: 0,
+          x3: 0,
+          x2: 0,
+          x1: 0
+        },
+        white: {
+          x5: 0,
+          x4: 0,
+          x3: 0,
+          x2: 0,
+          x1: 0
+        },
+        black: {
+          x5: 0,
+          x4: 0,
+          x3: 0,
+          x2: 0,
+          x1: 0
+        }
+      };
+
+      const gameOverElement = document.getElementById("GameOver");
+
+      gameOverElement.style.opacity = 0;
+      gameOverElement.hidden = true;
+      gameOverElement.classList.remove("show");
+
+      this.OnStartup();
+    },
+
     SetupPosition: function() {//working on
       Chess.Position = structuredClone(Chess.StartPosition);
       //Chess.Position = structuredClone(Chess.PositionDebug);
@@ -350,7 +458,7 @@ const Chess = {
       }
     },
 
-    PlacePieces: function () {
+    PlacePieces: async function () {
       let localPosition = structuredClone(Chess.Position);
       if (!this.whiteOnBottom)
         localPosition = localPosition.reverse();

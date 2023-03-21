@@ -19,10 +19,10 @@
 
 .gameOver {
   position: absolute;
-  left: 27.5%;
-  top: 25%;
-  height: 50%;
-  width: 45%;
+  left: 22.5%;
+  top: 20%;
+  height: 60%;
+  width: 55%;
   background-color: #c9c9c9; /* very light gray */
   overflow: hidden;
   z-index: 10;
@@ -162,95 +162,6 @@
 
 .gameOver .buttons .gameOverRematchButton.suggested:hover {
   background-color: #7a211b; /* dark red */
-}
-
-#CanvasWrapper {
-  position: relative;
-}
-
-.chessBoard {
-  left: 5%;
-  position: absolute;
-}
-
-.chessBoard .piece {
-  pointer-events: none;
-  position: absolute;
-  z-index: 6;
-}
-
-.chessBoard .tile {
-  position: absolute;
-}
-
-.chessBoard .tile.can-click {
-  cursor: pointer;
-}
-
-.chessBoard .tile.can-click:hover {
-  outline: 2px outset white;
-  box-shadow: 10px 10px 10px 0px black;
-  z-index: 1;
-}
-
-.chessBoard .tile.light {
-  background-color: #C4A484; /* light brown */
-}
-
-.chessBoard .tile.dark {
-  background-color: #5C4033; /* dark brown */
-}
-
-.chessBoard .tile.light.highlighted {
-  cursor: pointer !important;
-  background-color: #A48464; /* light brown with black shade */
-}
-
-.chessBoard .tile.dark.highlighted {
-  cursor: pointer !important;
-  background-color: #3C2013; /* dark brown with black shade */
-}
-
-.chessBoard .tile.highlighted.containsWhitePiece {
-  outline: 2px outset red;
-  box-shadow: 10px 10px 10px 0px black;
-  z-index: 3;
-}
-
-.chessBoard .tile.highlighted.containsBlackPiece {
-  outline: 2px outset red;
-  box-shadow: 10px 10px 10px 0px black;
-  z-index: 3;
-}
-
-.chessBoard .tile.highlighted.containsWhitePiece.can-click {
-  outline: 0px outset black;
-  box-shadow: 0px 0px 0px 0px black;
-  z-index: 0;
-}
-
-.chessBoard .tile.highlighted.containsBlackPiece.can-click {
-  outline: 0px outset black;
-  box-shadow: 0px 0px 0px 0px black;
-  z-index: 0;
-}
-
-.chessBoard .tile.highlighted.containsWhitePiece.can-click:hover {
-  outline: 2px outset white;
-  box-shadow: 10px 10px 10px 0px black;
-  z-index: 5;
-}
-
-.chessBoard .tile.highlighted.containsBlackPiece.can-click:hover {
-  outline: 2px outset white;
-  box-shadow: 10px 10px 10px 0px black;
-  z-index: 5;
-}
-
-.chessBoard .tile.highlighted:hover {
-  outline: 2px outset white;
-  box-shadow: 10px 10px 10px 0px black;
-  z-index: 4;
 }
 
 .promoteCanvas {
