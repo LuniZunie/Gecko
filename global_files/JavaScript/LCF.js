@@ -492,6 +492,42 @@ const LCF = { //LuniZunie's Custom Functions
         throw "Invalid data type sent to function: LCF.Math.DegreesToRadians";
 
       return degrees * Math.PI / 180;
+    },
+    DecimalToBinary: decimal => {
+      if (!LCF.IsType.Number(decimal))
+        throw "Invalid data type sent to function: LCF.Math.DecimalToBinary";
+
+      return decimal.toString(16);
+    },
+    BinaryToDecimal: binary => {
+      if (!LCF.IsType.Number(binary) && !LCF.IsType.String(binary))
+        throw "Invalid data type sent to function: LCF.Math.BinaryToDecimal";
+
+      return parseInt(binary, 2);
+    },
+    DecimalToHex: decimal => {
+      if (!LCF.IsType.Number(decimal))
+        throw "Invalid data type sent to function: LCF.Math.DecimalToHex";
+
+      return decimal.toString(16);
+    },
+    HexToDecimal: hex => {
+      if (!LCF.IsType.Number(hex) && !LCF.IsType.String(hex))
+        throw "Invalid data type sent to function: LCF.Math.HexToDecimal";
+
+      return parseInt(hex, 16);
+    },
+    BinaryToHex: binary => {
+      if (!LCF.IsType.Number(binary) && !LCF.IsType.String(binary))
+        throw "Invalid data type sent to function: LCF.Math.BinaryToHex";
+
+      return parseInt(binary, 2).toString(16);
+    },
+    HexToBinary: hex => {
+      if (!LCF.IsType.String(hex) && !LCF.IsType.String(hex))
+        throw "Invalid data type sent to function: LCF.Math.HexToBinary";
+
+      return parseInt(hex, 16).toString(2);
     }
   },
   IsType: {
@@ -1159,7 +1195,8 @@ const LCF = { //LuniZunie's Custom Functions
       interval: null,
       speed: 100,
       running: false,
-      customFunctions: {}
+      customFunctions: {},
+      textResizeElements: {}
     },
     timers: []
   }
