@@ -15,7 +15,7 @@ const LCF = { //LuniZunie's Custom Functions
       const timers = LCF.data.timers,
             nextUpdateTimers = [];
 
-      timers.forEach(() => {
+      timers.forEach(timer => {
         if (timer.requestedDestruction)
           return;
 
@@ -256,7 +256,7 @@ const LCF = { //LuniZunie's Custom Functions
 
       alertDiv.style.animation = "fadeIn 250ms ease-in 0s 1 normal forwards";
       if (timeout >= 0) {
-        window.setTimeout(async() => {
+        setTimeout(async() => {
           await LCF.Sleep(250);
           alertDiv.style.animation = "fadeOut 750ms ease-in 0s 1 normal forwards";
           await LCF.Sleep(750);
@@ -342,23 +342,23 @@ const LCF = { //LuniZunie's Custom Functions
           return random[0]; //return first element if random number not found
         } else
           return random[Math.floor(Math.random() * random.length)]; //return random array element - non weighted
-      } else if (LCF.IsType.Number(Number(random)) || LCF.IsType.Number(Number(weights))) { //random number (inclusive)
+      } else if (LCF.IsType.Number(+random) || LCF.IsType.Number(+weights)) { //random number (inclusive)
         if (!LCF.IsType.Number(weights))
-          return Number(random); //if no max, return min or 0 if there is no min
+          return +random; //if no max, return min or 0 if there is no min
         else if (!LCF.IsType.Number(random))
           random = 0; //if no min, set the min to 0
 
         if (!random.toString().includes(".") && !weights.toString().includes("."))
-          return Math.floor(Math.random() * (Number(weights) - Number(random) + 1)) + Number(random); //return random integer
+          return Math.floor(Math.random() * (+weights - +random + 1)) + +random; //return random integer
         else {
           const minDecimals = (random.toString().includes(".")) ? random.toString().split(".")[1].length : 0,
                 maxDecimals = (weights.toString().includes(".")) ? weights.toString().split(".")[1].length : 0,
                 decimals = Math.max(minDecimals, maxDecimals);
 
-          random = Number(random);
-          weights = Number(weights);
+          random = +random;
+          weights = +weights;
 
-          return Number((Math.floor(Math.random() * (weights - random + 1 / (10 ** decimals)) * 10 ** decimals) / 10 ** decimals + random).toFixed(decimals)); //return random float with the same amount of decimals
+          return +((Math.floor(Math.random() * (weights - random + 1 / (10 ** decimals)) * 10 ** decimals) / 10 ** decimals + random).toFixed(decimals)); //return random float with the same amount of decimals
         }
       }
     },
@@ -435,23 +435,24 @@ const LCF = { //LuniZunie's Custom Functions
         throw "Invalid data type sent to function: LCF.Math.SlopeToAngle";
 
       if (degrees)
-        return Math.atan2(rise, run) * 180 / Math.PI;
+        return -Math.atan2(rise, run) * 180 / Math.PI;
       else
-        return Math.atan2(rise, run);
+        return -Math.atan2(rise, run);
     },
     AngleToSlope: (angle, degrees = true) => {
       if (!LCF.IsType.Number(angle) || !LCF.IsType.Boolean(degrees))
         throw "Invalid data type sent to function: LCF.Math.AngleToSlope";
 
-      angle %= 360;
       if (!degrees)
         angle *= 180 / Math.PI;
+
+      angle %= 360;
 
       let rise = 1,
           run = 1;
 
       const slopeAngle = 45 - Math.abs(45 - (angle % 90)),
-            slope = Math.round(Math.tan(slopeAngle * Math.PI / 180) / 1000) * 1000;
+            slope = Math.tan(slopeAngle * Math.PI / 180);
 
 
       if (angle <= 45)
@@ -473,14 +474,14 @@ const LCF = { //LuniZunie's Custom Functions
       else if (angle <= 305)
         run *= slope;
       else
-        rise *= slope
+        rise *= slope;
 
       return {
-        run: run,
-        rise: rise
+        rise: rise,
+        run: run
       };
     },
-    RadiansToDegrees: (radians) => {
+    RadiansToDegrees: radians => {
       if (!LCF.IsType.Number(radians))
         throw "Invalid data type sent to function: LCF.Math.RadiansToDegrees";
 
@@ -870,7 +871,7 @@ const LCF = { //LuniZunie's Custom Functions
 
       range = LCF.Array.LimitValueType(range, "number");
       if (!LCF.IsType.Array(range)) {
-        range = Number(range);
+        range = +range;
 
         if (!LCF.IsType.Number(range))
           range = [0, 1];
@@ -883,7 +884,7 @@ const LCF = { //LuniZunie's Custom Functions
 
       numbers = LCF.Array.LimitValueType(numbers, "number");
       if (!LCF.IsType.Array(numbers)) {
-        numbers = Number(numbers);
+        numbers = +numbers;
 
         if (!LCF.IsType.Number(numbers))
           numbers = [0];
