@@ -3,18 +3,18 @@ const LCF = { //LuniZunie's Custom Functions
     update: () => {
       //Update Custom Function
       const customFunctions = Object.values(LCF.data.update.customFunctions);
-      for (const customFunction of customFunctions) {
+      customFunctions.forEach(customFunction => {
         if (LCF.IsType.Function(customFunction))
           customFunction();
         else
           delete LCF.data.update.customFunctions[thisFunction.name];
-      }
+      });
 
       //Update Timers
 
-      const timers = LCF.data.timers;
+      const timers = LCF.data.timers,
+            nextUpdateTimers = [];
 
-      const nextUpdateTimers = [];
       timers.forEach(() => {
         if (timer.requestedDestruction)
           return;
@@ -97,7 +97,7 @@ const LCF = { //LuniZunie's Custom Functions
     //      OR      template, title, message
     Alert: (title, message, colors, horizontalPadding = null, verticalPadding = null, location = null, timeout = null) => {
       let alertDiv = document.createElement("DIV");
-      alertDiv.classList.add("custom-alert");
+          alertDiv.classList.add("custom-alert");
 
       if (!title.split("$template:")[0].length) {
         if (horizontalPadding || verticalPadding || location || timeout)
@@ -156,10 +156,10 @@ const LCF = { //LuniZunie's Custom Functions
       if (!LCF.IsType.Object(colors))
         throw "Invalid colors sent to LCF.Window.Alert";
 
-      let backgroundColor = "default";
-      let titleColor = "default";
-      let messageColor = "default";
-      for (const [key, value] of Object.entries(colors)) {
+      let backgroundColor = "default",
+          titleColor = "default",
+          messageColor = "default";
+      Object.entries(colors).forEach(([key, value]) => {
         switch(key) {
           case "background":
           case "bg":
@@ -185,7 +185,7 @@ const LCF = { //LuniZunie's Custom Functions
           default:
             throw "Invalid color type sent to LCF.Window.Alert";
         }
-      }
+      });
 
       if (backgroundColor === "default")
         backgroundColor = "white";
@@ -216,15 +216,15 @@ const LCF = { //LuniZunie's Custom Functions
       alertDiv.style.padding = `${verticalPadding} ${horizontalPadding}`;
 
       let alertTitle = document.createElement("H2");
-      alertTitle.style.textAlign = "center";
-      alertTitle.style.color = titleColor;
-      alertTitle.innerHTML = title;
+          alertTitle.style.textAlign = "center";
+          alertTitle.style.color = titleColor;
+          alertTitle.innerHTML = title;
 
       alertDiv.appendChild(alertTitle);
 
       let alertMessage = document.createElement("P");
-      alertMessage.style.color = messageColor;
-      alertMessage.innerHTML = message;
+          alertMessage.style.color = messageColor;
+          alertMessage.innerHTML = message;
 
       alertDiv.appendChild(alertMessage);
 
@@ -232,9 +232,9 @@ const LCF = { //LuniZunie's Custom Functions
 
       alertDiv.style.borderRadius = LCF.Elements.GetBorderRadius(alertDiv, 5);
       
-      if (location.includes("-")) {
+      if (location.includes("-"))
         alertDiv.classList.add(...location.split("-"));
-      } else {
+      else {
         switch (location) {
           case "center":
             alertDiv.style.left = `${50 - alertDiv.offsetWidth / window.innerWidth * 50}%`;
@@ -258,7 +258,6 @@ const LCF = { //LuniZunie's Custom Functions
       if (timeout >= 0) {
         window.setTimeout(async() => {
           await LCF.Sleep(250);
-
           alertDiv.style.animation = "fadeOut 750ms ease-in 0s 1 normal forwards";
           await LCF.Sleep(750);
 
@@ -278,10 +277,10 @@ const LCF = { //LuniZunie's Custom Functions
       if (!numbers.length)
         throw "No values sent to function: LCF.Math.Add";
 
-      let returnNumber = 0;
+      let returnNumber = 0,
+          maxDecimals = 0;
 
-      let maxDecimals = 0;
-      for (const number of numbers) {
+      numbers.forEach(number => {
         const numberToString = number.toString();
         if (numberToString.includes(".")) {
           const amountOfDecimals = numberToString.split(".")[1].length;
@@ -290,9 +289,9 @@ const LCF = { //LuniZunie's Custom Functions
         }
 
         returnNumber += number;
-      }
+      });
 
-      return Number(returnNumber.toFixed(maxDecimals)); //remove end decimals
+      return +returnNumber.toFixed(maxDecimals); //remove end decimals
     },
     Subtract: (...numbers) => {
       if (!LCF.IsType.Array(numbers))
@@ -302,10 +301,10 @@ const LCF = { //LuniZunie's Custom Functions
       if (!numbers.length)
         throw "No values sent to function: LCF.Math.Subtract";
 
-      let returnNumber = 0;
+      let returnNumber = 0,
+          maxDecimals = 0;
 
-      let maxDecimals = 0;
-      for (const number of numbers) {
+      numbers.forEach(number => {
         const numberToString = number.toString();
         if (numberToString.includes(".")) {
           const amountOfDecimals = numberToString.split(".")[1].length;
@@ -314,9 +313,9 @@ const LCF = { //LuniZunie's Custom Functions
         }
 
         returnNumber -= number;
-      }
+      });
 
-      return Number(returnNumber.toFixed(maxDecimals)); //remove end decimals
+      return +returnNumber.toFixed(maxDecimals); //remove end decimals
     },
     Random: (random = true, weights = []) => { //random = min, weights = max for random number
       if (LCF.IsType.Boolean(random)) {
@@ -334,14 +333,11 @@ const LCF = { //LuniZunie's Custom Functions
           const randomNumber = Math.floor(Math.random() * totalWeight);
           let weightSum = 0;
 
-          const amountOfWeights = weights.length;
-          for (let weightNumber = 0;weightNumber < amountOfWeights;weightNumber++) {
-            const thisWeight = weights[weightNumber];
-
-            weightSum += thisWeight;
+          weights.forEach((weight, index) => {
+            weightSum += weight;
             if (randomNumber < weightSum)
-              return random[weightNumber]; //return random array element - weighted
-          }
+              return random[index]; //return random array element - weighted
+          });
 
           return random[0]; //return first element if random number not found
         } else
@@ -355,10 +351,9 @@ const LCF = { //LuniZunie's Custom Functions
         if (!random.toString().includes(".") && !weights.toString().includes("."))
           return Math.floor(Math.random() * (Number(weights) - Number(random) + 1)) + Number(random); //return random integer
         else {
-          const minDecimals = (random.toString().includes(".")) ? random.toString().split(".")[1].length : 0;
-          const maxDecimals = (weights.toString().includes(".")) ? weights.toString().split(".")[1].length : 0;
-
-          const decimals = Math.max(minDecimals, maxDecimals);
+          const minDecimals = (random.toString().includes(".")) ? random.toString().split(".")[1].length : 0,
+                maxDecimals = (weights.toString().includes(".")) ? weights.toString().split(".")[1].length : 0,
+                decimals = Math.max(minDecimals, maxDecimals);
 
           random = Number(random);
           weights = Number(weights);
@@ -371,27 +366,24 @@ const LCF = { //LuniZunie's Custom Functions
       if (!Array.isArray(dimensions) || !dimensions.length)
         throw "Invalid data type sent to function: LCF.Math.RandomCoordinates";
 
-      const returnCoords = {};
+      const returnCoords = {},
+            dimensionLetters = ["x", "y", "z", "w"]; //W is commonly seen as the "4th" spacial dimension
 
-      const dimensionLetters = ["x", "y", "z", "w"]; //W is commonly seen as the "4th" spacial dimension
-      
-      for (const dimensionNumber in dimensions) {
-        const dimension = dimensions[dimensionNumber];
-
+      dimensions.forEach((dimension, index) => {
         if (!Array.isArray(dimension) || dimension.length !== 2)
           throw "Invalid data type sent to function: LCF.Math.RandomCoordinates";
 
         if (!LCF.IsType.Number(dimension[0], dimension[1]))
           throw "Invalid data type sent to function: LCF.Math.RandomCoordinates";
 
-        const coords = LCF.Math.Random(...dimension);
+        const coords = LCF.Math.Random(...dimension),
+              dimensionLetter = dimensionLetters[index];
 
-        const dimensionLetter = dimensionLetters[dimensionNumber];
         if (dimensionLetter)
           returnCoords[dimensionLetter] = coords;
         else
-          returnCoords[dimensionNumber] = coords;
-      }
+          returnCoords[index] = coords;
+      });
 
       return returnCoords;
     },
@@ -423,11 +415,10 @@ const LCF = { //LuniZunie's Custom Functions
         throw "Invalid data type sent to function: LCF.Math.Slope";
 
       let slope = Math.abs((y2 - y1) / (x2 - x1));
+          slope ||= 0;
 
-      slope ||= 0;
-
-      let rise = 1;
-      let run = 1;
+      let rise = 1,
+          run = 1;
 
       if (slope < 1)
         rise = slope;
@@ -526,7 +517,7 @@ const LCF = { //LuniZunie's Custom Functions
     CSSColor: (...colors) => {
       return values.every(value => {
         const style = new Option().style;
-        style.color = value;
+              style.color = value;
 
         return (style.color != "");
       });
@@ -534,7 +525,7 @@ const LCF = { //LuniZunie's Custom Functions
     CSSPosition: (...positions) => {
       return values.every(value => {
         const style = new Option().style;
-        style.left = value;
+              style.left = value;
 
         return (style.left != "");
       });
@@ -547,19 +538,20 @@ const LCF = { //LuniZunie's Custom Functions
           return "Invalid data type sent to function: LCF.Array.LimitValueType";
         
         let returnArrays = [];
-        for (const array of arrays) {
+        arrays.forEach(array => {
           if (!(array instanceof Array) || !array.length)
-              continue;
+            return;
           
           const newArray = [];
-          for (const value of array)
+          array.forEach(value => {
             newArray.push(+value);
+          });
           
           if (newArray.length === 1)
             returnArrays.push(newArray[0]);
           else
-            returnArrays = [...returnArrays, ...newArray];
-        }
+            returnArrays.concat(newArray);
+        });
         
         switch(returnArrays.length) {
           case 0:
@@ -575,19 +567,20 @@ const LCF = { //LuniZunie's Custom Functions
           return "Invalid data type sent to function: LCF.Array.LimitValueType";
         
         let returnArrays = [];
-        for (const array of arrays) {
+        arrays.forEach(array => {
           if (!(array instanceof Array) || !array.length)
-              continue;
+            return;
           
           const newArray = [];
-          for (const value of array)
+          array.forEach(value => {
             newArray.push(value.toString());
+          });
           
           if (newArray.length === 1)
             returnArrays.push(newArray[0]);
           else
-            returnArrays = [...returnArrays, ...newArray];
-        }
+            returnArrays.concat(newArray);
+        });
         
         switch(returnArrays.length) {
           case 0:
@@ -603,19 +596,20 @@ const LCF = { //LuniZunie's Custom Functions
           return "Invalid data type sent to function: LCF.Array.LimitValueType";
         
         let returnArrays = [];
-        for (const array of arrays) {
+        arrays.forEach(array => {
           if (!(array instanceof Array) || !array.length)
-              continue;
+            return;
           
           const newArray = [];
-          for (const value of array)
-            newArray.push(!!value);
+          array.forEach(value => {
+            newArray.push(Boolean(value));
+          });
           
           if (newArray.length === 1)
             returnArrays.push(newArray[0]);
           else
-            returnArrays = [...returnArrays, ...newArray];
-        }
+            returnArrays.concat(newArray);
+        });
         
         switch(returnArrays.length) {
           case 0:
@@ -633,9 +627,10 @@ const LCF = { //LuniZunie's Custom Functions
       else if (LCF.IsType.String(types))
         types = [types];
           
-      for (const type of types)
+      types.forEach(type => {
         if (!LCF.IsType.String(type))
           throw "Invalid data type sent to function: LCF.Array.LimitValueType";
+      });
 
       return array.filter(value => {
         return types.includes(typeof value);
@@ -648,20 +643,21 @@ const LCF = { //LuniZunie's Custom Functions
         values = [values];
       
       const returnArray = [];
-      for (const valuePosition in array) {
-        const value = array[valuePosition];
+      array.forEach((value, index) => {
         if (typeSensitive && values.includes(value))
-          returnArray.push(valuePosition);
+          returnArray.push(index);
         else if (!typeSensitive) {
-          for (const valueToCheck of values) {
+          values.every(valueToCheck => {
             if (value == valueToCheck) {
-              returnArray.push(valuePosition);
+              returnArray.push(index);
 
-              break;
+              return;
             }
-          }
+
+            return true;
+          });
         }
-      }
+      });
 
       return returnArray;
     },
@@ -669,32 +665,30 @@ const LCF = { //LuniZunie's Custom Functions
       if (!arrays.length || !arrays[0].length)
         throw "Invalid data type sent to function: LCF.Array.Add";
 
-      const returnArray = [];
-
-      const arrayLengths = arrays[0].length;
-      for (const array of arrays)
-        if (array.length !== arrayLengths)
+      arrays.forEach(array => {
+        if (array.length !== arrays[0].length)
           throw "Invalid data type sent to function: LCF.Array.Add";
+      });
 
-      for (let index = 0;index < arrayLengths;index++) {
+      const returnArray = [];
+      arrays.forEach((value, valueIndex) => {
         let returnNumber = 0;
 
-        for (const arrayNumber in arrays) {
-          const array = arrays[arrayNumber];
-          if (!arrayNumber) {
-            returnNumber = arrayNumber;
-            continue;
+        arrays.forEach((array, arrayIndex) => {
+          if (!arrayIndex) {
+            returnNumber = arrayIndex;
+            return;
           }
 
-          const arrayValue = array[index];
+          const arrayValue = array[valueIndex];
           if (!LCF.IsType.Number(arrayValue))
             throw "Invalid data type sent to function: LCF.Array.Add";
 
           returnNumber = LCF.Math.Add(returnNumber, arrayValue);
-        }
+        });
 
         returnArray.push(returnNumber);
-      }
+      });
 
       return returnArray;
     },
@@ -702,32 +696,30 @@ const LCF = { //LuniZunie's Custom Functions
       if (!arrays.length || !arrays[0].length)
         throw "Invalid data type sent to function: LCF.Array.Subtract";
 
+      arrays.forEach(array => {
+        if (array.length !== arrays[0].length)
+          throw "Invalid data type sent to function: LCF.Array.Add";
+      });
+
       const returnArray = [];
-
-      const arrayLengths = arrays[0].length;
-      for (const array of arrays)
-        if (array.length !== arrayLengths)
-          throw "Invalid data type sent to function: LCF.Array.Subtract";
-
-      for (let index = 0;index < arrayLengths;index++) {
+      arrays.forEach((value, valueIndex) => {
         let returnNumber = 0;
 
-        for (const arrayNumber in arrays) {
-          const array = arrays[arrayNumber];
-          if (!arrayNumber) {
-            returnNumber = arrayNumber;
-            continue;
+        arrays.forEach((array, arrayIndex) => {
+          if (!arrayIndex) {
+            returnNumber = arrayIndex;
+            return;
           }
 
-          const arrayValue = array[index];
+          const arrayValue = array[valueIndex];
           if (!LCF.IsType.Number(arrayValue))
-            throw "Invalid data type sent to function: LCF.Array.Subtract";
+            throw "Invalid data type sent to function: LCF.Array.Add";
 
           returnNumber = LCF.Math.Subtract(returnNumber, arrayValue);
-        }
+        });
 
         returnArray.push(returnNumber);
-      }
+      });
 
       return returnArray;
     },
@@ -735,32 +727,30 @@ const LCF = { //LuniZunie's Custom Functions
       if (!arrays.length || !arrays[0].length)
         throw "Invalid data type sent to function: LCF.Array.Multiply";
 
+      arrays.forEach(array => {
+        if (array.length !== arrays[0].length)
+          throw "Invalid data type sent to function: LCF.Array.Add";
+      });
+
       const returnArray = [];
-
-      const arrayLengths = arrays[0].length;
-      for (const array of arrays)
-        if (array.length !== arrayLengths)
-          throw "Invalid data type sent to function: LCF.Array.Multiply";
-
-      for (let index = 0;index < arrayLengths;index++) {
+      arrays.forEach((value, valueIndex) => {
         let returnNumber = 0;
 
-        for (const arrayNumber in arrays) {
-          const array = arrays[arrayNumber];
-          if (!arrayNumber) {
-            returnNumber = arrayNumber;
-            continue;
+        arrays.forEach((array, arrayIndex) => {
+          if (!arrayIndex) {
+            returnNumber = arrayIndex;
+            return;
           }
 
-          const arrayValue = array[index];
+          const arrayValue = array[valueIndex];
           if (!LCF.IsType.Number(arrayValue))
-            throw "Invalid data type sent to function: LCF.Array.Multiply";
+            throw "Invalid data type sent to function: LCF.Array.Add";
 
           returnNumber *= arrayValue;
-        }
+        });
 
         returnArray.push(returnNumber);
-      }
+      });
 
       return returnArray;
     },
@@ -768,32 +758,30 @@ const LCF = { //LuniZunie's Custom Functions
       if (!arrays.length || !arrays[0].length)
         throw "Invalid data type sent to function: LCF.Array.Divide";
 
+      arrays.forEach(array => {
+        if (array.length !== arrays[0].length)
+          throw "Invalid data type sent to function: LCF.Array.Add";
+      });
+
       const returnArray = [];
-
-      const arrayLengths = arrays[0].length;
-      for (const array of arrays)
-        if (array.length !== arrayLengths)
-          throw "Invalid data type sent to function: LCF.Array.Divide";
-
-      for (let index = 0;index < arrayLengths;index++) {
+      arrays.forEach((value, valueIndex) => {
         let returnNumber = 0;
 
-        for (const arrayNumber in arrays) {
-          const array = arrays[arrayNumber];
-          if (!arrayNumber) {
-            returnNumber = arrayNumber;
-            continue;
+        arrays.forEach((array, arrayIndex) => {
+          if (!arrayIndex) {
+            returnNumber = arrayIndex;
+            return;
           }
 
-          const arrayValue = array[index];
+          const arrayValue = array[valueIndex];
           if (!LCF.IsType.Number(arrayValue))
-            throw "Invalid data type sent to function: LCF.Array.Divide";
+            throw "Invalid data type sent to function: LCF.Array.Add";
 
           returnNumber /= arrayValue;
-        }
+        });
 
         returnArray.push(returnNumber);
-      }
+      });
 
       return returnArray;
     },
@@ -801,32 +789,30 @@ const LCF = { //LuniZunie's Custom Functions
       if (!arrays.length || !arrays[0].length)
         throw "Invalid data type sent to function: LCF.Array.Power";
 
+      arrays.forEach(array => {
+        if (array.length !== arrays[0].length)
+          throw "Invalid data type sent to function: LCF.Array.Add";
+      });
+
       const returnArray = [];
-
-      const arrayLengths = arrays[0].length;
-      for (const array of arrays)
-        if (array.length !== arrayLengths)
-          throw "Invalid data type sent to function: LCF.Array.Power";
-
-      for (let index = 0;index < arrayLengths;index++) {
+      arrays.forEach((value, valueIndex) => {
         let returnNumber = 0;
 
-        for (const arrayNumber in arrays) {
-          const array = arrays[arrayNumber];
-          if (!arrayNumber) {
-            returnNumber = arrayNumber;
-            continue;
+        arrays.forEach((array, arrayIndex) => {
+          if (!arrayIndex) {
+            returnNumber = arrayIndex;
+            return;
           }
 
-          const arrayValue = array[index];
+          const arrayValue = array[valueIndex];
           if (!LCF.IsType.Number(arrayValue))
-            throw "Invalid data type sent to function: LCF.Array.Power";
+            throw "Invalid data type sent to function: LCF.Array.Add";
 
           returnNumber **= arrayValue;
-        }
+        });
 
         returnArray.push(returnNumber);
-      }
+      });
 
       return returnArray;
     }
@@ -872,25 +858,25 @@ const LCF = { //LuniZunie's Custom Functions
         numbers = [0];
 
       let numbersInRange = [];
-      for (const number of numbers) {
+      numbers.forEach(number => {
         if (inclusive[0] && number < range[0]) {
           numbersInRange.push(false);
-          continue;
+          return;
         } else if (!inclusive[0] && number <= range[0]) {
           numbersInRange.push(false);
-          continue;
+          return;
         }
 
         if (inclusive[1] && number > range[1]) {
           numbersInRange.push(false);
-          continue;
+          return;
         } else if (!inclusive[1] && number >= range[1]) {
           numbersInRange.push(false);
-          continue;
+          return;
         }
 
         numbersInRange.push(true);
-      }
+      });
 
       if (singleValue) {
         numbersInRange = numbersInRange.reduce((totalBool, thisBool) => {
@@ -902,17 +888,17 @@ const LCF = { //LuniZunie's Custom Functions
     }
   },
   Gates: {
-    Buffer: (bool) => { //seperate input from output
+    Buffer: bool => { //seperate input from output
       if (!LCF.IsType.Boolean(bool))
         throw "Invalid data type sent to function: LCF.Gates.Buffer";
 
-      return (bool);
+      return bool;
     },
-    NOT: (bool) => { //opposite input
+    NOT: bool => { //opposite input
       if (!LCF.IsType.Boolean(bool))
         throw "Invalid data type sent to function: LCF.Gates.NOT";
 
-      return (!bool);
+      return !bool;
     },
     AND: (...bools) => { //all true inputs
       bools = LCF.Array.LimitValueType(bools, "boolean");
@@ -960,7 +946,7 @@ const LCF = { //LuniZunie's Custom Functions
         trues += +bool;
       });
 
-      return (trues % 2);
+      return Boolean(trues % 2);
     },
     XNOR: (...bools) => { //amount of falses is odd
       bools = LCF.Array.LimitValueType(bools, "boolean");
@@ -972,7 +958,7 @@ const LCF = { //LuniZunie's Custom Functions
         falses += +!bool;
       });
   
-      return (falses % 2);
+      return Boolean(falses % 2);
     }
   },
   Characters: {
@@ -1050,13 +1036,12 @@ const LCF = { //LuniZunie's Custom Functions
         throw "Invalid data type sent to function: LCF.Elements.GetTextWidth";
 
       const span = document.createElement("span");
+            span.innerHTML = text;
 
-      span.innerHTML = text;
+            span.classList.add("textWidth");
 
-      span.classList.add("textWidth");
-
-      span.style.fontFamily = font;
-      span.style.fontSize = size;
+            span.style.fontFamily = font;
+            span.style.fontSize = size;
 
       document.body.appendChild(span);
     
@@ -1077,41 +1062,41 @@ const LCF = { //LuniZunie's Custom Functions
   Page: {
     FadeTo: (newLocation, speed = 0.25) => {
       const screen = document.createElement("screen");
-      screen.classList.add("screen");
+            screen.classList.add("screen");
       
       document.body.appendChild(screen);
 
       screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
-      screen.addEventListener("animationend", event => {
+      screen.onanimationend = event => {
         if (this === event.target)
           location.href = newLocation;
-      });
+      }
     },
 
     FadeOut: (speed = 0.25) => {
       const screen = document.createElement("screen");
-      screen.classList.add("screen");
+            screen.classList.add("screen");
       
       document.body.appendChild(screen);
 
       screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
-      screen.addEventListener("animationend", event => {
+      screen.onanimationend = event => {
         if (this === event.target)
           screen.remove();
-      });
+      }
     },
 
     FadeIn: (speed = 0.25) => {
       const screen = document.createElement("screen");
-      screen.classList.add("screen");
+            screen.classList.add("screen");
 
       document.body.appendChild(screen);
 
       screen.style.animation = `fadeOut ${speed}s linear 0s 1 normal forwards`;
-      screen.addEventListener("animationend", event => {
+      screen.onanimationend = event => {
         if (this === event.target)
           screen.remove();
-      });
+      };
     }
   },
   Timer: {
