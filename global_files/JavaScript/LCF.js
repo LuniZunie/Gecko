@@ -443,7 +443,42 @@ const LCF = { //LuniZunie's Custom Functions
       if (!LCF.IsType.Number(angle) || !LCF.IsType.Boolean(degrees))
         throw "Invalid data type sent to function: LCF.Math.AngleToSlope";
 
-      throw "Function: LCF.Math.AngleToSlope is not complete";
+      angle %= 360;
+      if (!degrees)
+        angle *= 180 / Math.PI;
+
+      let rise = 1,
+          run = 1;
+
+      const slopeAngle = 45 - Math.abs(45 - (angle % 90)),
+            slope = Math.round(Math.tan(slopeAngle * Math.PI / 180) / 1000) * 1000;
+
+
+      if (angle <= 45)
+        rise *= -slope;
+      else if (angle <= 90) {
+        run *= slope;
+        rise *= -1;
+      } else if (angle <= 135) {
+        run *= -slope;
+        rise *= -1;
+      } else if (angle <= 180) {
+        run *= -1;
+        rise *= -slope;
+      } else if (angle <= 225) {
+        run *= -1;
+        rise *= slope;
+      } else if (angle <= 270)
+        run *= -slope;
+      else if (angle <= 305)
+        run *= slope;
+      else
+        rise *= slope
+
+      return {
+        run: run,
+        rise: rise
+      };
     },
     RadiansToDegrees: (radians) => {
       if (!LCF.IsType.Number(radians))
