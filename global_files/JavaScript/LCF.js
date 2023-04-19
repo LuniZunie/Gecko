@@ -10,6 +10,33 @@ const LCF = { //LuniZunie's Custom Functions
           delete LCF.data.update.customFunctions[thisFunction.name];
       });
 
+      //Update Text Fit Elements
+      const textFitElements = Object.entries(LCF.data.update.textFitElements);
+      textFitElements.forEach(([key, textFitElement]) => {
+        const element = textFitElement.element;
+        const padding = textFitElement.padding;
+        if (LCF.IsType.HTMLElement(element)) {
+          const originalHiddenValue = element.hidden,
+                originalDisplayValue = element.style.display;
+
+          element.hidden &&= false;
+          element.style.display = (element.style.display === "none") ? "block" : element.style.display;
+
+          const fontSize = element.clientHeight - padding.vertical * 2,
+                maxTextWidth = LCF.Elements.GetTextWidth(element.innerHTML, element.style.fontFamily ?? "'Times New Roman', serif", `${fontSize}px`) + padding.horizontal * 2;
+
+          element.style.fontFamily ??= "'Times New Roman', serif";
+
+          const textWidthRatio = element.clientWidth / maxTextWidth;
+          element.style.fontSize = `${fontSize * textWidthRatio}px`;
+          element.style.lineHeight = `${element.clientHeight - textWidthRatio / 2}px`
+
+          element.hidden ||= originalHiddenValue;
+          element.style.display = originalDisplayValue;
+        } else
+          delete LCF.data.update.textFitElements[key];
+      });
+
       //Update Timers
 
       const timers = LCF.data.timers,
@@ -31,6 +58,8 @@ const LCF = { //LuniZunie's Custom Functions
         throw "Invalid data type sent to function: LCF.Update.AddFunction";
 
       LCF.data.update.customFunctions[thisFunction.name] = thisFunction;
+
+      return thisFunction.name;
     },
     RemoveFunction: thisFunction => {
       if (!LCF.IsType.Function(thisFunction))
@@ -41,11 +70,78 @@ const LCF = { //LuniZunie's Custom Functions
     IncludesFunction: thisFunction => {
       if (!LCF.IsType.Function(thisFunction))
         throw "Invalid data type sent to function: LCF.Update.IncludesFunction";
-      
-      return (LCF.data.update.customFunctions[thisFunction.name]);
+
+      return Boolean(LCF.data.update.customFunctions[thisFunction.name]);
     },
     CustomFunctions: () => {
-      return (LCF.data.update.customFunctions);
+      return LCF.data.update.customFunctions;
+    },
+    AddTextFitElement: (element, padding) => {
+      if (!LCF.IsType.HTMLElement(element))
+        throw "Invalid data type sent to function: LCF.Update.AddTextFitElement";
+
+      if (!LCF.IsType.Number(padding) && !LCF.IsType.Object(padding))
+        throw "Invalid data type sent to function: LCF.Update.AddTextFitElement";
+
+      const alreadyContains = [];
+      if (Object.entries(padding).every(([key, value]) => {
+        if (!["top, right, bottom, left"].includes(key) || alreadyContains.includes(key))
+          return;
+        else
+          alreadyContains.push(key);
+
+        if (!LCF.IsType.Number(value))
+          return;
+      }))
+        throw "Invalid data type sent to function: LCF.Update.AddTextFitElement";
+
+      let id = element.id;
+          id ??= `0x${LCF.Math.DecimalToHex(new Date().now())}`;
+
+      LCF.data.update.textFitElements[id] = {
+        element: element,
+        padding: {
+          horizontal: paddingHorizontal,
+          vertical: paddingVertical
+        }
+      };
+
+      return id;
+    },
+    ChangeTextFitElement: (id, paddingHorizontal, paddingVertical) => {
+      if (!LCF.IsType.String(id))
+        throw "Invalid data type sent to function: LCF.Update.RemoveTextFitElement";
+
+      if (!LCF.data.update.textFitElements[id])
+        throw `Unknown element id (${id}) sent to function: LCF.Update.RemoveTextFitElement`;
+
+      if (!LCF.IsType.Number(paddingHorizontal))
+        throw "Invalid data type sent to function: LCF.Update.AddTextFitElement";
+      if (!LCF.IsType.Number(paddingVertical))
+        throw "Invalid data type sent to function: LCF.Update.AddTextFitElement";
+
+      LCF.data.update.textFitElements[id].padding = {
+        horizontal: paddingHorizontal,
+        vertical: verticalPadding
+      };
+    },
+    RemoveTextFitElement: id => {
+      if (!LCF.IsType.String(id))
+        throw "Invalid data type sent to function: LCF.Update.RemoveTextFitElement";
+
+      if (!LCF.data.update.textFitElements[id])
+        throw `Unknown element id (${id}) sent to function: LCF.Update.RemoveTextFitElement`;
+
+      delete LCF.data.update.textFitElements[id];
+    },
+    IncludesTextFitElement: id => {
+      if (!LCF.IsType.String(id))
+        throw "Invalid data type sent to function: LCF.Update.IncludesTextFitElement";
+
+      return Boolean(LCF.data.update.textFitElements[id]);
+    },
+    TextFitElements: () => {
+      return LCF.data.update.textFitElements;
     },
     SetSpeed: speed => {
       if (!LCF.IsType.Number(speed))
@@ -127,7 +223,7 @@ const LCF = { //LuniZunie's Custom Functions
           case "$template:error_light":
             title = message;
             message = colors;
-  
+
             colors = {background:"#cccccc",title:"#c94c4c",message:"#c94c4c"};
             horizontalPadding = "3%";
             verticalPadding = "0.25%";
@@ -231,7 +327,7 @@ const LCF = { //LuniZunie's Custom Functions
       document.body.appendChild(alertDiv);
 
       alertDiv.style.borderRadius = LCF.Elements.GetBorderRadius(alertDiv, 5);
-      
+
       if (location.includes("-"))
         alertDiv.classList.add(...location.split("-"));
       else {
@@ -329,7 +425,7 @@ const LCF = { //LuniZunie's Custom Functions
         if (LCF.IsType.Array(weights) && weights.length === random.length && LCF.IsType.Number(totalWeight)) {
           if (totalWeight <= 0)
             return random[0]; //return random array element - weighted
-              
+
           const randomNumber = Math.floor(Math.random() * totalWeight);
           let weightSum = 0;
 
@@ -607,27 +703,27 @@ const LCF = { //LuniZunie's Custom Functions
     ConvertTo: {
       Number: (...arrays) => {
         if (!arrays.length)
-          return "Invalid data type sent to function: LCF.Array.LimitValueType";
-        
+          return "Invalid data type sent to function: LCF.ConvertTo.Number";
+
         let returnArrays = [];
         arrays.forEach(array => {
           if (!(array instanceof Array) || !array.length)
             return;
-          
+
           const newArray = [];
           array.forEach(value => {
             newArray.push(+value);
           });
-          
+
           if (newArray.length === 1)
             returnArrays.push(newArray[0]);
           else
             returnArrays.concat(newArray);
         });
-        
+
         switch(returnArrays.length) {
           case 0:
-            return "Invalid data type sent to function: LCF.Array.LimitValueType";
+            return "Invalid data type sent to function: LCF.ConvertTo.Number";
           case 1:
             return returnArrays[0];
           default:
@@ -636,27 +732,27 @@ const LCF = { //LuniZunie's Custom Functions
       },
       String: (...arrays) => {
         if (!arrays.length)
-          return "Invalid data type sent to function: LCF.Array.LimitValueType";
-        
+          return "Invalid data type sent to function: LCF.ConvertTo.String";
+
         let returnArrays = [];
         arrays.forEach(array => {
           if (!(array instanceof Array) || !array.length)
             return;
-          
+
           const newArray = [];
           array.forEach(value => {
             newArray.push(value.toString());
           });
-          
+
           if (newArray.length === 1)
             returnArrays.push(newArray[0]);
           else
             returnArrays.concat(newArray);
         });
-        
+
         switch(returnArrays.length) {
           case 0:
-            return "Invalid data type sent to function: LCF.Array.LimitValueType";
+            return "Invalid data type sent to function: LCF.ConvertTo.String";
           case 1:
             return returnArrays[0];
           default:
@@ -665,27 +761,27 @@ const LCF = { //LuniZunie's Custom Functions
       },
       Boolean: (...arrays) => {
         if (!arrays.length)
-          return "Invalid data type sent to function: LCF.Array.LimitValueType";
-        
+          return "Invalid data type sent to function: LCF.ConvertTo.Boolean";
+
         let returnArrays = [];
         arrays.forEach(array => {
           if (!(array instanceof Array) || !array.length)
             return;
-          
+
           const newArray = [];
           array.forEach(value => {
             newArray.push(Boolean(value));
           });
-          
+
           if (newArray.length === 1)
             returnArrays.push(newArray[0]);
           else
             returnArrays.concat(newArray);
         });
-        
+
         switch(returnArrays.length) {
           case 0:
-            return "Invalid data type sent to function: LCF.Array.LimitValueType";
+            return "Invalid data type sent to function: LCF.ConvertTo.Boolean";
           case 1:
             return returnArrays[0];
           default:
@@ -698,7 +794,7 @@ const LCF = { //LuniZunie's Custom Functions
         throw "Invalid data type sent to function: LCF.Array.LimitValueType";
       else if (LCF.IsType.String(types))
         types = [types];
-          
+
       types.forEach(type => {
         if (!LCF.IsType.String(type))
           throw "Invalid data type sent to function: LCF.Array.LimitValueType";
@@ -713,7 +809,7 @@ const LCF = { //LuniZunie's Custom Functions
         throw "Invalid data type sent to function: LCF.Array.IndexesOf";
       else if (!LCF.IsType.Array(values))
         values = [values];
-      
+
       const returnArray = [];
       array.forEach((value, index) => {
         if (typeSensitive && values.includes(value))
@@ -890,7 +986,7 @@ const LCF = { //LuniZunie's Custom Functions
     }
   },
   Number: {
-    InRange: (numbers = [0], range = [0, 1], inclusive = [true, true], singleValue = false) => {
+    InRange: (numbers = [0], range = [0, 1], inclusive = [true, true], singleValue = true) => {
       inclusive = LCF.Array.LimitValueType(inclusive, "boolean");
       if (!LCF.IsType.Array(inclusive) || !inclusive.length)
         if (!LCF.IsType.Boolean(inclusive))
@@ -1029,7 +1125,7 @@ const LCF = { //LuniZunie's Custom Functions
       bools.forEach(bool => {
         falses += +!bool;
       });
-  
+
       return Boolean(falses % 2);
     }
   },
@@ -1102,7 +1198,6 @@ const LCF = { //LuniZunie's Custom Functions
 
       return `${borderRadius}% / ${borderRadius * (element.clientWidth / element.clientHeight)}%`;
     },
-
     GetTextWidth: (text, font, size) => {
       if (!LCF.IsType.String(text))
         throw "Invalid data type sent to function: LCF.Elements.GetTextWidth";
@@ -1116,13 +1211,12 @@ const LCF = { //LuniZunie's Custom Functions
             span.style.fontSize = size;
 
       document.body.appendChild(span);
-    
+
       const textWidth = span.clientWidth;
       document.body.removeChild(span);
 
       return textWidth;
     },
-
     Move: (element, newParent) => {
       if (!LCF.IsType.HTMLElement(element, newParent))
         throw "Invalid data type sent to function: LCF.Elements.Move";
@@ -1135,12 +1229,12 @@ const LCF = { //LuniZunie's Custom Functions
     FadeTo: (newLocation, speed = 0.25) => {
       const screen = document.createElement("screen");
             screen.classList.add("screen");
-      
+
       document.body.appendChild(screen);
 
       screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
       screen.onanimationend = event => {
-        if (this === event.target)
+        if (screen === event.target)
           location.href = newLocation;
       }
     },
@@ -1148,12 +1242,12 @@ const LCF = { //LuniZunie's Custom Functions
     FadeOut: (speed = 0.25) => {
       const screen = document.createElement("screen");
             screen.classList.add("screen");
-      
+
       document.body.appendChild(screen);
 
       screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
       screen.onanimationend = event => {
-        if (this === event.target)
+        if (screen === event.target)
           screen.remove();
       }
     },
@@ -1166,7 +1260,7 @@ const LCF = { //LuniZunie's Custom Functions
 
       screen.style.animation = `fadeOut ${speed}s linear 0s 1 normal forwards`;
       screen.onanimationend = event => {
-        if (this === event.target)
+        if (screen === event.target)
           screen.remove();
       };
     }
@@ -1196,7 +1290,7 @@ const LCF = { //LuniZunie's Custom Functions
       speed: 100,
       running: false,
       customFunctions: {},
-      textResizeElements: {}
+      textFitElements: {}
     },
     timers: []
   }
@@ -1227,7 +1321,7 @@ class Timer {
   set time(time) {
     if (!LCF.IsType.Number(time))
       throw "Invalid data type sent to class: Timer";
-    
+
     if (this.stopwatch)
       this._clock = new Date().getTime() - time;
     else
@@ -1254,7 +1348,7 @@ class Timer {
   addTime = time => {
     if (!LCF.IsType.Number(time))
       throw "Invalid data type sent to class: Timer";
-    
+
     if (this._stopwatch)
       this._clock -= time;
     else
@@ -1263,7 +1357,7 @@ class Timer {
   removeTime = time => {
     if (!LCF.IsType.Number(time))
       throw "Invalid data type sent to class: Timer";
-    
+
     if (this._stopwatch)
       this._clock += time;
     else

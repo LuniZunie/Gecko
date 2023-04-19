@@ -1,21 +1,27 @@
-function ResizeElements() {
+AddAutoResizeElements = () => {
+  const createPage = document.getElementById("CreatePage");
+  const gamePage = document.getElementById("GamePage");
+
+  LCF.Update.AddTextFitElement(document.getElementById("HomeButton"), 25, 10);
+
+  //createPage
+  if (createPage.style.opacity == 1) {
+    const whiteTimerInputs = document.getElementById("WhiteTimerInputContainer");
+    const blackTimerInputs = document.getElementById("BlackTimerInputContainer");
+
+    const timerInputs = [...whiteTimerInputs.children, ...blackTimerInputs.children];
+    for (const child of timerInputs)
+      LCF.Update.AddTextFitElement(child, 25, 10);
+  }
+}
+
+ResizeElements = () => {
   const createPage = document.getElementById("CreatePage");
   const gamePage = document.getElementById("GamePage");
 
   //Home Button
   const homeButtonContainer = document.getElementById("HomeButtonContainer");
   homeButtonContainer.style.borderRadius = LCF.Elements.GetBorderRadius(homeButtonContainer, 10);
-
-  const homeButton = document.getElementById("HomeButton");
-
-  let homeButtonFontSize = homeButton.clientHeight;
-
-  const homeButtonMaxWidth = LCF.Elements.GetTextWidth("Gecko", document.body.style.fontFamily, `${homeButtonFontSize}px`) + 50;
-  if (homeButtonMaxWidth > homeButton.clientWidth)
-    homeButtonFontSize = homeButtonFontSize * (homeButton.clientWidth / homeButtonMaxWidth);
-
-  homeButton.style.fontSize = `${homeButtonFontSize}px`;
-  homeButton.style.lineHeight = `${homeButton.clientHeight}px`;
 
   //Create Page
   if (createPage.style.opacity == 1) {
