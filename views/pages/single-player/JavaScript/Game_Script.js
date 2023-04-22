@@ -816,7 +816,7 @@ const Chess = {
               Chess.blackFirstMoveTimeout = setTimeout(this.StartTimer, 10000);
             else
               Chess.blackTimer.play();
-            
+
             Chess.blackFirstMove &&= false;
 
             Chess.whiteTimerElement.style.animation = `timerOff${Chess.whiteClockColor} 1s ease-in-out 0s 1 normal forwards`;
@@ -1230,7 +1230,7 @@ const Chess = {
               ];
 
               for (const kingNormalMove of kingNormalMoves) {
-                const [moveX, moveY] = LCF.Array.Add([x, y], kingNormalMove);
+                const [moveX, moveY] = LCF.Array.Math.Add([x, y], kingNormalMove);
                 if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                   const tile = Chess.Position[moveY][moveX];
                   if (!tile)
@@ -1275,7 +1275,7 @@ const Chess = {
               for (const queenMove of queenMoves) {
                 let [moveX, moveY] = [x, y];
                 for (let distance = 0; distance < 8; distance++) {//max queen can move in 1 move
-                  [moveX, moveY] = LCF.Array.Add([moveX, moveY], queenMove);
+                  [moveX, moveY] = LCF.Array.Math.Add([moveX, moveY], queenMove);
                   if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                     const tile = Chess.Position[moveY][moveX];
                     if (!tile)
@@ -1305,7 +1305,7 @@ const Chess = {
               for (const rookMove of rookMoves) {
                 let [moveX, moveY] = [x, y];
                 for (let distance = 0; distance < 8; distance++) {//max rook can move in 1 move
-                  [moveX, moveY] = LCF.Array.Add([moveX, moveY], rookMove);
+                  [moveX, moveY] = LCF.Array.Math.Add([moveX, moveY], rookMove);
                   if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                     const tile = Chess.Position[moveY][moveX];
                     if (!tile)
@@ -1331,7 +1331,7 @@ const Chess = {
               for (const bishopMove of bishopMoves) {
                 let [moveX, moveY] = [x, y];
                 for (let distance = 0; distance < 8; distance++) {//max bishop can move in 1 move
-                  [moveX, moveY] = LCF.Array.Add([moveX, moveY], bishopMove);
+                  [moveX, moveY] = LCF.Array.Math.Add([moveX, moveY], bishopMove);
                   if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                     const tile = Chess.Position[moveY][moveX];
                     if (!tile)
@@ -1359,7 +1359,7 @@ const Chess = {
               ];
 
               for (const knightMove of knightMoves) {
-                const [moveX, moveY] = LCF.Array.Add([x, y], knightMove);
+                const [moveX, moveY] = LCF.Array.Math.Add([x, y], knightMove);
                 if (LCF.Number.InRange([moveX, moveY], [0, 8], [true, false], true)) {
                   const tile = Chess.Position[moveY][moveX];
                   if (!tile)
@@ -1951,7 +1951,7 @@ const Chess = {
       let fontSize = timerElement.clientHeight;
       const timerWidth = timerElement.clientWidth;
 
-      const timerMaxWidth = LCF.Elements.GetTextWidth(text, document.body.style.fontFamily, fontSize + "px") + 50;
+      const timerMaxWidth = LCF.Element.GetTextWidth(text, document.body.style.fontFamily, fontSize + "px") + 50;
       if (timerMaxWidth > timerWidth)
         fontSize = fontSize * (timerWidth / timerMaxWidth);
 

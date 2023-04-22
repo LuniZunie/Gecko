@@ -21,7 +21,7 @@ ResizeElements = () => {
 
   //Home Button
   const homeButtonContainer = document.getElementById("HomeButtonContainer");
-  homeButtonContainer.style.borderRadius = LCF.Elements.GetBorderRadius(homeButtonContainer, 10);
+  homeButtonContainer.style.borderRadius = LCF.Element.GetBorderRadius(homeButtonContainer, 10);
 
   //Create Page
   if (createPage.style.opacity == 1) {
@@ -29,7 +29,7 @@ ResizeElements = () => {
     const whiteTimerContainer = document.getElementById("WhiteTimerInputContainer");
     const blackTimerContainer = document.getElementById("BlackTimerInputContainer");
 
-    const timerContainerBorderRadius = LCF.Elements.GetBorderRadius(whiteTimerContainer, 10);
+    const timerContainerBorderRadius = LCF.Element.GetBorderRadius(whiteTimerContainer, 10);
 
     whiteTimerContainer.style.borderRadius = timerContainerBorderRadius;
     blackTimerContainer.style.borderRadius = timerContainerBorderRadius;
@@ -40,13 +40,13 @@ ResizeElements = () => {
 
     const timerInputs = [...whiteTimerInputs, ...blackTimerInputs];
 
-    const timerInputBorderRadius = LCF.Elements.GetBorderRadius(timerInputs[0], 15);
+    const timerInputBorderRadius = LCF.Element.GetBorderRadius(timerInputs[0], 15);
     for (const child of timerInputs)
       child.style.borderRadius = timerInputBorderRadius;
 
     const [timerInputWidth, timerInputHeight] = [timerInputs[0].offsetHeight, timerInputs[0].offsetWidth];
 
-    const timerInputMaxWidth = LCF.Elements.GetTextWidth("00", document.body.style.fontFamily, timerInputHeight + "px") + 50;
+    const timerInputMaxWidth = LCF.Element.GetTextWidth("00", document.body.style.fontFamily, timerInputHeight + "px") + 50;
 
     let timerInputFontSize = timerInputHeight;
     if (timerInputMaxWidth > timerInputWidth)
@@ -66,13 +66,13 @@ ResizeElements = () => {
     //Submit Button
 
     const submitButtonContainer = document.getElementById("SubmitButtonContainer");
-    submitButtonContainer.style.borderRadius = LCF.Elements.GetBorderRadius(submitButtonContainer, 10);
+    submitButtonContainer.style.borderRadius = LCF.Element.GetBorderRadius(submitButtonContainer, 10);
 
     const submitButton = document.getElementById("SubmitButton");
 
     let submitButtonFontSize = submitButton.clientHeight;
 
-    const submitButtonMaxWidth = LCF.Elements.GetTextWidth("Gecko", document.body.style.fontFamily, `${submitButtonFontSize}px`) + 50;
+    const submitButtonMaxWidth = LCF.Element.GetTextWidth("Gecko", document.body.style.fontFamily, `${submitButtonFontSize}px`) + 50;
     if (submitButtonMaxWidth > submitButton.clientWidth)
       submitButtonFontSize = submitButtonFontSize * (submitButton.clientWidth / submitButtonMaxWidth);
 
@@ -153,12 +153,12 @@ ResizeElements = () => {
     whiteTimerText.style.lineHeight = timerHeight + "px";
     blackTimerText.style.lineHeight = timerHeight + "px";
 
-    const timerBorderRadius = LCF.Elements.GetBorderRadius(whiteTimerElement, 10);
+    const timerBorderRadius = LCF.Element.GetBorderRadius(whiteTimerElement, 10);
 
     whiteTimerElement.style.borderRadius = timerBorderRadius;
     blackTimerElement.style.borderRadius = timerBorderRadius;
 
-    const timerMaxWidth = LCF.Elements.GetTextWidth("00:00.0", document.body.style.fontFamily, timerHeight + "px") + 50;
+    const timerMaxWidth = LCF.Element.GetTextWidth("00:00.0", document.body.style.fontFamily, timerHeight + "px") + 50;
 
     let timerFontSize = timerHeight;
     if (timerMaxWidth > timerWidth)
@@ -189,7 +189,7 @@ ResizeElements = () => {
     whiteCapturedPiecesDiv.style.height = capturedPiecesDivHeight + "px";
     blackCapturedPiecesDiv.style.height = capturedPiecesDivHeight + "px";
 
-    const capturedPiecesBorderRadius = LCF.Elements.GetBorderRadius(whiteCapturedPiecesDiv, 10);
+    const capturedPiecesBorderRadius = LCF.Element.GetBorderRadius(whiteCapturedPiecesDiv, 10);
 
     whiteCapturedPiecesDiv.style.borderRadius = capturedPiecesBorderRadius;
     blackCapturedPiecesDiv.style.borderRadius = capturedPiecesBorderRadius;
@@ -218,11 +218,11 @@ ResizeElements = () => {
 
     materialBar.style.top = sideDiv.offsetHeight * 0.5 - (trueBarHeight / 2) + "px";
 
-    materialBar.style.borderRadius = LCF.Elements.GetBorderRadius(materialBar, 5);
+    materialBar.style.borderRadius = LCF.Element.GetBorderRadius(materialBar, 5);
 
     materialBarPercentage.style.width = timerWidth / 2 + "px";
 
-    const materialMaxWidth = LCF.Elements.GetTextWidth("+00", document.body.style.fontFamily, trueBarHeight + "px");
+    const materialMaxWidth = LCF.Element.GetTextWidth("+00", document.body.style.fontFamily, trueBarHeight + "px");
 
     let materialFontSize = trueBarHeight;
     if (materialMaxWidth > timerWidth)
@@ -241,17 +241,17 @@ ResizeElements = () => {
     gameOverElement.style.opacity = Number(!gameOverElementHidden);
     gameOverElement.hidden = false;
 
-    gameOverElement.style.borderRadius = LCF.Elements.GetBorderRadius(gameOverElement, 10);
+    gameOverElement.style.borderRadius = LCF.Element.GetBorderRadius(gameOverElement, 10);
 
     let gameOverFontSize = gameOverTopBar.clientHeight;
 
-    const gameOverMaxWidth = LCF.Elements.GetTextWidth("Draw: Insufficient Material", document.body.style.fontFamily, `${gameOverFontSize}px`) + 25;
+    const gameOverMaxWidth = LCF.Element.GetTextWidth("Draw: Insufficient Material", document.body.style.fontFamily, `${gameOverFontSize}px`) + 25;
     if (gameOverMaxWidth > gameOverTopBar.clientWidth)
       gameOverFontSize = gameOverFontSize * (gameOverTopBar.clientWidth / gameOverMaxWidth);
 
     gameOverTopBar.style.fontSize = `${gameOverFontSize}px`;
 
-    gameOverGraphDiv.style.borderRadius = LCF.Elements.GetBorderRadius(gameOverGraphDiv, 5);
+    gameOverGraphDiv.style.borderRadius = LCF.Element.GetBorderRadius(gameOverGraphDiv, 5);
 
     //Game Over Buttons
     const gameOverButtons = document.getElementById("GameOverButtons");
@@ -259,7 +259,7 @@ ResizeElements = () => {
 
     let gameOverButtonFontSize = gameOverButtons.clientHeight;
 
-    const gameOverButtonsMaxWidth = LCF.Elements.GetTextWidth("Rematch (1)", document.body.style.fontFamily, `${gameOverButtonFontSize}px`);
+    const gameOverButtonsMaxWidth = LCF.Element.GetTextWidth("Rematch (1)", document.body.style.fontFamily, `${gameOverButtonFontSize}px`);
     if (gameOverButtonsMaxWidth > buttonsWidth)
       gameOverButtonFontSize = gameOverButtonFontSize * (buttonsWidth / gameOverButtonsMaxWidth);
 
@@ -268,7 +268,7 @@ ResizeElements = () => {
 
     const gameOverButtonsChildren = gameOverButtons.children;
     for (const button of gameOverButtonsChildren)
-      button.style.borderRadius = LCF.Elements.GetBorderRadius(button, 10);
+      button.style.borderRadius = LCF.Element.GetBorderRadius(button, 10);
 
     gameOverElement.style.opacity = 1;
     gameOverElement.hidden = gameOverElementHidden;

@@ -26,7 +26,7 @@ function ResizeElements() {
     board.style.width = twoThirdsWidth + "px";
 
     board.style.top = (gameDiv.clientHeight - twoThirdsWidth) / 2 + "px";
-          
+
     Chess.tileSize = twoThirdsWidth / 8;
   }
 
@@ -50,7 +50,7 @@ function ResizeElements() {
 
   const timerPositionPixels = timerPosition * board.offsetHeight / 100 + board.offsetTop;
   const trueTimerPosition = timerPositionPixels / sideDiv.offsetHeight * 100;
-    
+
   let trueTimerTop;
   let distanceBetweenTimers;
   if (Chess.Functions.whiteOnBottom) {
@@ -70,12 +70,12 @@ function ResizeElements() {
   whiteTimerText.style.lineHeight = timerHeight + "px";
   blackTimerText.style.lineHeight = timerHeight + "px";
 
-  const timerBorderRadius = LCF.Elements.GetBorderRadius(whiteTimerElement, 10);
+  const timerBorderRadius = LCF.Element.GetBorderRadius(whiteTimerElement, 10);
 
   whiteTimerElement.style.borderRadius = timerBorderRadius;
   blackTimerElement.style.borderRadius = timerBorderRadius;
 
-  const timerMaxWidth = LCF.Elements.GetTextWidth("00:00.0", document.body.style.fontFamily, timerHeight + "px") + 50;
+  const timerMaxWidth = LCF.Element.GetTextWidth("00:00.0", document.body.style.fontFamily, timerHeight + "px") + 50;
 
   let timerFontSize = timerHeight;
   if (timerMaxWidth > timerWidth)
@@ -106,7 +106,7 @@ function ResizeElements() {
   whiteCapturedPiecesDiv.style.height = capturedPiecesDivHeight + "px";
   blackCapturedPiecesDiv.style.height = capturedPiecesDivHeight + "px";
 
-  const capturedPiecesBorderRadius = LCF.Elements.GetBorderRadius(whiteCapturedPiecesDiv, 10);
+  const capturedPiecesBorderRadius = LCF.Element.GetBorderRadius(whiteCapturedPiecesDiv, 10);
 
   whiteCapturedPiecesDiv.style.borderRadius = capturedPiecesBorderRadius;
   blackCapturedPiecesDiv.style.borderRadius = capturedPiecesBorderRadius;
@@ -135,11 +135,11 @@ function ResizeElements() {
 
   materialBar.style.top = sideDiv.offsetHeight * 0.5 - (trueBarHeight / 2) + "px";
 
-  materialBar.style.borderRadius = LCF.Elements.GetBorderRadius(materialBar, 5);
+  materialBar.style.borderRadius = LCF.Element.GetBorderRadius(materialBar, 5);
 
   materialBarPercentage.style.width = timerWidth / 2 + "px";
 
-  const materialMaxWidth = LCF.Elements.GetTextWidth("+00", document.body.style.fontFamily, trueBarHeight + "px");
+  const materialMaxWidth = LCF.Element.GetTextWidth("+00", document.body.style.fontFamily, trueBarHeight + "px");
 
   let materialFontSize = trueBarHeight;
   if (materialMaxWidth > timerWidth)
@@ -158,17 +158,17 @@ function ResizeElements() {
   gameOverElement.style.opacity = Number(!gameOverElementHidden);
   gameOverElement.hidden = false;
 
-  gameOverElement.style.borderRadius = LCF.Elements.GetBorderRadius(gameOverElement, 10);
+  gameOverElement.style.borderRadius = LCF.Element.GetBorderRadius(gameOverElement, 10);
 
   let gameOverFontSize = gameOverTopBar.clientHeight;
-  
-  const gameOverMaxWidth = LCF.Elements.GetTextWidth("Draw: Insufficient Material", document.body.style.fontFamily, `${gameOverFontSize}px`) + 25;
+
+  const gameOverMaxWidth = LCF.Element.GetTextWidth("Draw: Insufficient Material", document.body.style.fontFamily, `${gameOverFontSize}px`) + 25;
   if (gameOverMaxWidth > gameOverTopBar.clientWidth)
     gameOverFontSize = gameOverFontSize * (gameOverTopBar.clientWidth / gameOverMaxWidth);
 
   gameOverTopBar.style.fontSize = `${gameOverFontSize}px`;
 
-  gameOverGraphDiv.style.borderRadius = LCF.Elements.GetBorderRadius(gameOverGraphDiv, 5);
+  gameOverGraphDiv.style.borderRadius = LCF.Element.GetBorderRadius(gameOverGraphDiv, 5);
 
   //Game Over Buttons
   const gameOverButtons = document.getElementById("GameOverButtons");
@@ -176,7 +176,7 @@ function ResizeElements() {
 
   let gameOverButtonFontSize = gameOverButtons.clientHeight;
 
-  const gameOverButtonsMaxWidth = LCF.Elements.GetTextWidth("Rematch (1)", document.body.style.fontFamily, `${gameOverButtonFontSize}px`);
+  const gameOverButtonsMaxWidth = LCF.Element.GetTextWidth("Rematch (1)", document.body.style.fontFamily, `${gameOverButtonFontSize}px`);
   if (gameOverButtonsMaxWidth > buttonsWidth)
     gameOverButtonFontSize = gameOverButtonFontSize * (buttonsWidth / gameOverButtonsMaxWidth);
 
@@ -185,20 +185,20 @@ function ResizeElements() {
 
   const gameOverButtonsChildren = gameOverButtons.children;
   for (const button of gameOverButtonsChildren)
-    button.style.borderRadius = LCF.Elements.GetBorderRadius(button, 10);
+    button.style.borderRadius = LCF.Element.GetBorderRadius(button, 10);
 
   gameOverElement.style.opacity = 1;
   gameOverElement.hidden = gameOverElementHidden;
 
   //Home Button
   const homeButtonContainer = document.getElementById("HomeButtonContainer");
-  homeButtonContainer.style.borderRadius = LCF.Elements.GetBorderRadius(homeButtonContainer, 10);
+  homeButtonContainer.style.borderRadius = LCF.Element.GetBorderRadius(homeButtonContainer, 10);
 
   const homeButton = document.getElementById("HomeButton");
 
   let homeButtonFontSize = homeButton.clientHeight;
 
-  const homeButtonMaxWidth = LCF.Elements.GetTextWidth("Gecko", document.body.style.fontFamily, `${homeButtonFontSize}px`) + 50;
+  const homeButtonMaxWidth = LCF.Element.GetTextWidth("Gecko", document.body.style.fontFamily, `${homeButtonFontSize}px`) + 50;
   if (homeButtonMaxWidth > buttonsWidth)
     homeButtonFontSize = homeButtonFontSize * (homeButton.clientWidth / homeButtonMaxWidth);
 

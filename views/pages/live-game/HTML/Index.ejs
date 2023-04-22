@@ -8,7 +8,7 @@
     <%- `<style>${include("/workspace/Gecko/global_files/CSS/GlobalStyles.css")}</style>` %>
     <%- `<style>${include("../CSS/Animations.css")}</style>` %>
     <%- `<style>${include("../CSS/Main_CSS.css")}</style>` %>
-        
+
     <!-- JavaScript -->
     <%- `<script>${include("../JavaScript/Load_Event.js")}</script>` %>
     <%- `<script>${include("../JavaScript/Resize_Elements.js")}</script>` %>
@@ -17,7 +17,7 @@
   </head>
   <body onload="OnLoad();">
     <div id="HomeButtonContainer">
-      <a id="HomeButton" class="custom-button" onclick="LCF.Page.FadeTo('/home')">Gecko</a>
+      <a id="HomeButton" class="custom-button" onclick="LCF.Page.Fade.To('/home')">Gecko</a>
     </div>
     <canvas id="DrawPieceCanvas" hidden></canvas>
     <div id="Game" class="no-select">
@@ -28,10 +28,10 @@
         <div class="timer black" id="BlackTimer">
           <div id="BlackTimerText"></div>
         </div>
-        
+
         <div id="BlackCapturedPieces" class="capturedPieces white"></div> <!--Reverse because black captured pieces means the black pieces white has captured-->
         <div id="WhiteCapturedPieces"  class="capturedPieces black"></div>
-        
+
         <div id="MaterialBar" class="materialBar" style="opacity: 1;" onclick="this.style.opacity = 1 - this.style.opacity;">
           <div id="MaterialBarPercentage" class="percentage"></div>
           <span id="WhiteMaterialDiffrence" class="diffrence white">0</span>
@@ -49,7 +49,7 @@
               <canvas id="GameGraph" class="canvas"></canvas>
             </div>
             <div id="GameOverButtons" class="buttons no-select">
-              <div id="GameOverHomeButton" class="gameOverHomeButton" onclick="LCF.Page.FadeTo('/home')">
+              <div id="GameOverHomeButton" class="gameOverHomeButton" onclick="LCF.Page.Fade.To('/home')">
                 Home
               </div>
               <div id="GameOverRematchButton" class="gameOverRematchButton">

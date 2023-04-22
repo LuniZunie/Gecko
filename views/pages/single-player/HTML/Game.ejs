@@ -10,7 +10,7 @@
     <%- `<style>${include("../CSS/Main.css")}</style>` %>
     <%- `<style>${include("../CSS/Create.css")}</style>` %>
     <%- `<style>${include("../CSS/Game.css")}</style>` %>
-        
+
     <!-- JavaScript -->
     <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/Global_Load_Event.js")}</script>` %>
     <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/LCF.js")}</script>` %>
@@ -21,7 +21,7 @@
   </head>
   <body onload="OnLoad();" style="opacity: 0;">
     <div id="HomeButtonContainer" style="z-index: 10;">
-      <a id="HomeButton" class="custom-button gray" onclick="LCF.Page.FadeTo('/home')">Gecko</a>
+      <a id="HomeButton" class="custom-button gray" onclick="LCF.Page.Fade.To('/home')">Gecko</a>
     </div>
     <div id="CreatePage" class="page" style="opacity: 1;">
       <%- `${include("../HTML/Create_Page.ejs")}` %>
@@ -37,10 +37,10 @@
           <div class="timer black" id="BlackTimer">
             <div id="BlackTimerText"></div>
           </div>
-        
+
           <div id="BlackCapturedPieces" class="capturedPieces white"></div> <!--Reverse because black captured pieces means the black pieces white has captured-->
           <div id="WhiteCapturedPieces"  class="capturedPieces black"></div>
-        
+
           <div id="MaterialBar" class="materialBar" style="opacity: 1;" onclick="this.style.opacity = 1 - this.style.opacity;">
             <div id="MaterialBarPercentage" class="percentage"></div>
             <span id="WhiteMaterialDiffrence" class="diffrence white">0</span>
@@ -58,7 +58,7 @@
                 <canvas id="GameGraph" class="canvas"></canvas>
               </div>
               <div id="GameOverButtons" class="buttons no-select">
-                <div id="GameOverHomeButton" class="gameOverHomeButton" onclick="LCF.Page.FadeTo('/home');">
+                <div id="GameOverHomeButton" class="gameOverHomeButton" onclick="LCF.Page.Fade.To('/home');">
                   Home
                 </div>
                 <div id="GameOverRematchButton" class="gameOverRematchButton" onclick="Chess.Functions.Reset();">

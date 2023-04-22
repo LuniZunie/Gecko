@@ -1,5 +1,5 @@
 window.addEventListener("load", async function() {
-    if (LCF.IsType.Function(ResizeElements))
+    if (LCF.Type.Function(ResizeElements))
         window.addEventListener("resize", ResizeElements);
 });
 

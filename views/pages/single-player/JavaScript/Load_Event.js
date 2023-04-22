@@ -9,6 +9,6 @@ function OnLoad() {
     CreateGame.Functions.SetCustomInputCursor(document.getElementById("WhiteTimerMinuteInput"));
   }
 
-  LCF.Page.FadeIn();
+  LCF.Page.Fade.In();
   document.body.style.opacity = 1;
 }

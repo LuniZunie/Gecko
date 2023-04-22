@@ -1,10 +1,31 @@
 const LCF = { //LuniZunie's Custom Functions
+  Startup: () => {
+    if (LCF.data.update.start) {
+      LCF.data.update.start = false;
+      LCF.data.update.running = true;
+
+      LCF.data.update.interval = setInterval(LCF.Update.update, LCF.data.update.speed);
+    }
+
+    if (!LCF.data.type.allSupported)
+      Object.entries(LCF.data.type.allSupported).forEach(([key, value]) => LCF.data.type.supported.concat([key], value));
+  },
   Update: {
     update: () => {
+      //British Spelling Change
+      if (LCF.options.britishReturnValues !== lastBritishSpellingState) {
+        if (LCF.options.britishReturnValues)
+          LCF.data.type.function_return.CSS_Color = "css_colour";
+        else
+          LCF.data.type.function_return.CSS_Color = "css_color";
+
+        lastBritishSpellingState = LCF.options.britishReturnValues;
+      }
+
       //Update Custom Function
       const customFunctions = Object.values(LCF.data.update.customFunctions);
       customFunctions.forEach(customFunction => {
-        if (LCF.IsType.Function(customFunction))
+        if (LCF.Type.Function(customFunction))
           customFunction();
         else
           delete LCF.data.update.customFunctions[thisFunction.name];
@@ -15,7 +36,7 @@ const LCF = { //LuniZunie's Custom Functions
       textFitElements.forEach(([key, textFitElement]) => {
         const element = textFitElement.element;
         const padding = textFitElement.padding;
-        if (LCF.IsType.HTML_Element(element)) {
+        if (LCF.Type.HTML_Element(element)) {
           const originalHiddenValue = element.hidden,
                 originalDisplayValue = element.style.display;
 
@@ -23,7 +44,7 @@ const LCF = { //LuniZunie's Custom Functions
           element.style.display = (element.style.display === "none") ? "block" : element.style.display;
 
           const fontSize = element.clientHeight - padding.vertical * 2,
-                maxTextWidth = LCF.Elements.GetTextWidth(element.innerHTML, element.style.fontFamily ?? "'Times New Roman', serif", `${fontSize}px`) + padding.horizontal * 2;
+                maxTextWidth = LCF.Element.GetTextWidth(element.innerHTML, element.style.fontFamily ?? "'Times New Roman', serif", `${fontSize}px`) + padding.horizontal * 2;
 
           element.style.fontFamily ??= "'Times New Roman', serif";
 
@@ -53,7 +74,7 @@ const LCF = { //LuniZunie's Custom Functions
       return;
     },
     AddFunction: thisFunction => {
-      if (!LCF.IsType.Function(thisFunction))
+      if (!LCF.Type.Function(thisFunction))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.AddFunction".\n\nERROR: parameter_1 must be a Function! Parameter passed: "${thisFunction}"`;
 
       LCF.data.update.customFunctions[thisFunction.name] = thisFunction;
@@ -61,13 +82,13 @@ const LCF = { //LuniZunie's Custom Functions
       return thisFunction.name;
     },
     RemoveFunction: thisFunction => {
-      if (!LCF.IsType.Function(thisFunction))
+      if (!LCF.Type.Function(thisFunction))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.RemoveFunction".\n\nERROR: parameter_1 must be a Function! Parameter passed: "${thisFunction}"`;
 
       delete LCF.data.update.customFunctions[thisFunction.name];
     },
     IncludesFunction: thisFunction => {
-      if (!LCF.IsType.Function(thisFunction))
+      if (!LCF.Type.Function(thisFunction))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.IncludesFunction".\n\nERROR: parameter_1 must be a Function! Parameter passed: "${thisFunction}"`;
 
       return Boolean(LCF.data.update.customFunctions[thisFunction.name]);
@@ -76,20 +97,20 @@ const LCF = { //LuniZunie's Custom Functions
       return LCF.data.update.customFunctions;
     },
     AddTextFitElement: (element, padding) => {
-      if (!LCF.IsType.HTML_Element(element))
+      if (!LCF.Type.HTML_Element(element))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.AddTextFitElement".\n\nERROR: parameter_1 must be an HTML Element! Parameter passed: "${element}"`;
 
-      if (LCF.IsType.Number(padding))
+      if (LCF.Type.Number(padding))
         padding = {
           padding: padding
         };
-      else if (!LCF.IsType.Object(padding))
+      else if (!LCF.Type.Object(padding))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.AddTextFitElement".\n\nERROR: parameter_2 must be a Number OR an Object! Parameter passed: "${padding}"`;
 
       const possibleKeys = ["top", "right", "bottom", "left", "vertical", "horizontal", "padding"],
             alreadyContainsKey = [];
       Object.entries(padding).every(([key, value]) => {
-        if (!LCF.IsType.Number(value))
+        if (!LCF.Type.Number(value))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Update.AddTextFitElement".\n\nERROR: parameter_2 can only contain Numbers as object values! Parameter passed: "${padding}" (KEY: ${key})`;
 
         if (!possibleKeys.includes(key))
@@ -138,21 +159,21 @@ const LCF = { //LuniZunie's Custom Functions
       return id;
     },
     ChangeTextFitElement: (id, padding) => {
-      if (!LCF.IsType.String(id))
+      if (!LCF.Type.String(id))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.ChangeTextFitElement".\n\nERROR: parameter_1 must be a String! Parameter passed: "${id}"`;
 
-      if (LCF.IsType.Number(padding))
+      if (LCF.Type.Number(padding))
         padding = {
           padding: padding
         };
-      else if (!LCF.IsType.Object(padding))
+      else if (!LCF.Type.Object(padding))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.ChangeTextFitElement".\n\nERROR: parameter_2 must be a Number OR an Object! Parameter passed: "${padding}"`;
 
 
       const possibleKeys = ["top", "right", "bottom", "left", "vertical", "horizontal", "padding"],
             alreadyContainsKey = [];
       Object.entries(padding).every(([key, value]) => {
-        if (!LCF.IsType.Number(value))
+        if (!LCF.Type.Number(value))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Update.ChangeTextFitElement".\n\nERROR: parameter_2 can only contain Numbers as object values! Parameter passed: "${padding}" (KEY: ${key})`;
 
         if (!possibleKeys.includes(key))
@@ -193,7 +214,7 @@ const LCF = { //LuniZunie's Custom Functions
       };
     },
     RemoveTextFitElement: id => {
-      if (!LCF.IsType.String(id))
+      if (!LCF.Type.String(id))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.RemoveTextFitElement".\n\nERROR: parameter_1 must be a String! Parameter passed: "${id}"`;
 
       if (!LCF.data.update.textFitElements[id])
@@ -202,7 +223,7 @@ const LCF = { //LuniZunie's Custom Functions
       delete LCF.data.update.textFitElements[id];
     },
     IncludesTextFitElement: id => {
-      if (!LCF.IsType.String(id))
+      if (!LCF.Type.String(id))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.IncludesTextFitElement".\n\nERROR: parameter_1 must be a String! Parameter passed: "${id}"`;
 
       return Boolean(LCF.data.update.textFitElements[id]);
@@ -211,7 +232,7 @@ const LCF = { //LuniZunie's Custom Functions
       return LCF.data.update.textFitElements;
     },
     SetSpeed: speed => {
-      if (!LCF.IsType.Number(speed))
+      if (!LCF.Type.Number(speed))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Update.SetSpeed".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${speed}"`;
 
       if (speed < 0)
@@ -311,12 +332,12 @@ const LCF = { //LuniZunie's Custom Functions
       } else
         title.replace(/\\$/g,"$");
 
-      if (!LCF.IsType.String(title))
+      if (!LCF.Type.String(title))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_1 must be a String! Parameter passed: "${title}"`;
-      if (!LCF.IsType.String(message))
+      if (!LCF.Type.String(message))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_1 must be a String! Parameter passed: "${message}"`;
 
-      if (!LCF.IsType.Object(colors))
+      if (!LCF.Type.Object(colors))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_1 must be an Object! Parameter passed: "${colors}"`;
 
       let backgroundColor = "default",
@@ -327,7 +348,7 @@ const LCF = { //LuniZunie's Custom Functions
       Object.entries(colors).forEach(([key, value]) => {
         if (value === "default")
           return;
-        else if (!LCF.IsType.CSS_Color(value))
+        else if (!LCF.Type.CSS_Color(value))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_3 can only contain CSS Colors as values OR the String: "default"! Parameter passed: "${colors}" (KEY: ${key})`;
 
         if (alreadyContainsKey.includes(key))
@@ -363,21 +384,21 @@ const LCF = { //LuniZunie's Custom Functions
 
       if (horizontalPadding === "default")
         horizontalPadding = "0px";
-      else if (!LCF.IsType.CSS_Position(horizontalPadding))
+      else if (!LCF.Type.CSS_Position(horizontalPadding))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_4 must be a CSS Position! Parameter passed: "${horizontalPadding}"`;
 
       if (verticalPadding === "default")
         verticalPadding = "0px";
-      else if (!LCF.IsType.CSS_Position(verticalPadding))
+      else if (!LCF.Type.CSS_Position(verticalPadding))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_5 must be a CSS Position! Parameter passed: "${verticalPadding}"`;
 
-      const possibleStrings = ["top","top-right","right","bottom-right","bottom","bottom-left","left","top-left","center","default"];
+      const possibleStrings = ["top","top-right","right","bottom-right","bottom","bottom-left","left","top-left","center","centre","default"];
       if (location === "default")
         location = "top";
       else if (!possibleStrings.includes(location))
         throw `USER ERROR: Invalid data sent to function: "LCF.Window.Alert".\n\nERROR: parameter_6 must be one of the following Strings: "${possibleStrings.join("\", \"")}"! Parameter passed: "${location}"`;
 
-      if (!LCF.IsType.Number(timeout))
+      if (!LCF.Type.Number(timeout))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_7 must be a Number! Parameter passed: "${timeout}"`;
 
       alertDiv.style.backgroundColor = backgroundColor;
@@ -398,13 +419,14 @@ const LCF = { //LuniZunie's Custom Functions
 
       document.body.appendChild(alertDiv);
 
-      alertDiv.style.borderRadius = LCF.Elements.GetBorderRadius(alertDiv, 5);
+      alertDiv.style.borderRadius = LCF.Element.GetBorderRadius(alertDiv, 5);
 
       if (location.includes("-"))
         alertDiv.classList.add(...location.split("-"));
       else {
         switch (location) {
           case "center":
+          case "centre":
             alertDiv.style.left = `${50 - alertDiv.offsetWidth / window.innerWidth * 50}%`;
             alertDiv.style.top = `${50 - alertDiv.offsetHeight / window.innerHeight * 50}%`;
             break;
@@ -418,7 +440,7 @@ const LCF = { //LuniZunie's Custom Functions
             break;
         }
 
-        if (location !== "center");
+        if (!["center","centre"].includes(location));
           eval(`alertDiv.style.${location} = "10px";`);
       }
 
@@ -434,6 +456,12 @@ const LCF = { //LuniZunie's Custom Functions
       }
 
       return;
+    },
+    Sleep: milliseconds => {
+      if (!LCF.Type.Number(milliseconds))
+        throw `USER ERROR: Invalid data type sent to function: "LCF.Sleep".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${milliseconds}"`;
+
+      return new Promise(resolve => setTimeout(resolve, milliseconds));
     }
   },
   Math: {
@@ -480,15 +508,15 @@ const LCF = { //LuniZunie's Custom Functions
       return +returnNumber.toFixed(maxDecimals); //remove end decimals
     },
     Random: (random = true, weights = []) => { //random = min, weights = max for random number
-      if (LCF.IsType.Boolean(random)) {
+      if (LCF.Type.Boolean(random)) {
         const totalWeight = weights.reduce((sum, value) => sum + value, 0);
-        if (LCF.IsType.Array(weights) && weights.length === 2 && LCF.IsType.Number(totalWeight))
+        if (LCF.Type.Array(weights) && weights.length === 2 && LCF.Type.Number(totalWeight))
           return (Math.floor(Math.random() * totalWeight) < weights[0]); //return random boolean - weighted
         else
           return (Math.floor(Math.random() * 2)); //return random boolean - non weighted
-      } else if (LCF.IsType.Array(random) && random.length) {
+      } else if (LCF.Type.Array(random) && random.length) {
         const totalWeight = weights.reduce((sum, value) => sum + value, 0);
-        if (LCF.IsType.Array(weights) && weights.length === random.length && LCF.IsType.Number(totalWeight)) {
+        if (LCF.Type.Array(weights) && weights.length === random.length && LCF.Type.Number(totalWeight)) {
           if (totalWeight <= 0)
             return random[0]; //return random array element - weighted
 
@@ -504,10 +532,10 @@ const LCF = { //LuniZunie's Custom Functions
           return random[0]; //return first element if random number not found
         } else
           return random[Math.floor(Math.random() * random.length)]; //return random array element - non weighted
-      } else if (LCF.IsType.Number(+random) || LCF.IsType.Number(+weights)) { //random number (inclusive)
-        if (!LCF.IsType.Number(weights))
+      } else if (LCF.Type.Number(+random) || LCF.Type.Number(+weights)) { //random number (inclusive)
+        if (!LCF.Type.Number(weights))
           return +random; //if no max, return min or 0 if there is no min
-        else if (!LCF.IsType.Number(random))
+        else if (!LCF.Type.Number(random))
           random = 0; //if no min, set the min to 0
 
         if (!random.toString().includes(".") && !weights.toString().includes("."))
@@ -528,7 +556,7 @@ const LCF = { //LuniZunie's Custom Functions
 
       /*TODO: Check if can use binary to detect floating value*/
 
-      if (!LCF.IsType.Array(dimensions))
+      if (!LCF.Type.Array(dimensions))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 must be an Array! Parameter passed: "${dimensions}"`;
       else if (!dimensions.length)
         throw `USER ERROR: Invalid data to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 cannot be an empty array! Parameter passed: "${dimensions}"`;
@@ -537,12 +565,12 @@ const LCF = { //LuniZunie's Custom Functions
             dimensionLetters = ["x", "y", "z", "w"]; //W is commonly seen as the "4th" spacial dimension
 
       dimensions.forEach((dimension, index) => {
-        if (!LCF.IsType.Array(dimension))
+        if (!LCF.Type.Array(dimension))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 can only contain Arrays with 2 Number values! Parameter passed: "${dimensions}" (INDEX: ${index})`;
         else if (dimension.length !== 2)
           throw `USER ERROR: Invalid data to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 can only contain Arrays with 2 Number values! Parameter passed: "${dimensions}" (INDEX: ${index})`;
 
-        if (!LCF.IsType.Number(+dimension[0], +dimension[1]))
+        if (!LCF.Type.Number(+dimension[0], +dimension[1]))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 can only contain Arrays with 2 Number values! Parameter passed: "${dimensions}" (INDEX: ${index})`;
 
         returnCoords[dimensionLetters[index] ?? index] = LCF.Math.Random(...dimension);
@@ -551,9 +579,9 @@ const LCF = { //LuniZunie's Custom Functions
       return returnCoords;
     },
     Distance: (firstCoordinates, secondCoordinates) => {
-      if (!LCF.IsType.Array(firstCoordinates))
+      if (!LCF.Type.Array(firstCoordinates))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Distance".\n\nERROR: parameter_1 must be an Array! Parameter passed: "${firstCoordinates}"`;
-      else if (!LCF.IsType.Array(secondCoordinates))
+      else if (!LCF.Type.Array(secondCoordinates))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Distance".\n\nERROR: parameter_2 must be an Array! Parameter passed: "${secondCoordinates}"`;
 
       if (firstCoordinates.length !== 2)
@@ -565,22 +593,22 @@ const LCF = { //LuniZunie's Custom Functions
             [x2, y2] = secondCoordinates;
 
       switch(false) {
-        case LCF.IsType.Number(x1):
+        case LCF.Type.Number(x1):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Distance".\n\nERROR: parameter_1 can only contain Numbers as Array values! Parameter passed: "${firstCoordinates}" (INDEX: 0)`;
-        case LCF.IsType.Number(y1):
+        case LCF.Type.Number(y1):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Distance".\n\nERROR: parameter_1 can only contain Numbers as Array values! Parameter passed: "${firstCoordinates}" (INDEX: 1)`;
-        case LCF.IsType.Number(x2):
+        case LCF.Type.Number(x2):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Distance".\n\nERROR: parameter_2 can only contain Numbers as Array values! Parameter passed: "${secondCoordinates}" (INDEX: 0)`;
-        case LCF.IsType.Number(y2):
+        case LCF.Type.Number(y2):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Distance".\n\nERROR: parameter_2 can only contain Numbers as Array values! Parameter passed: "${secondCoordinates}" (INDEX: 1)`;
       }
 
       return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
     },
     CoordinatesInArea: (firstCoordinates, secondCoordinates, range = 0, type = "square", inclusive = true) => {
-      if (!LCF.IsType.Array(firstCoordinates))
+      if (!LCF.Type.Array(firstCoordinates))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_1 must be an Array! Parameter passed: "${firstCoordinates}"`;
-      else if (!LCF.IsType.Array(secondCoordinates))
+      else if (!LCF.Type.Array(secondCoordinates))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_2 must be an Array! Parameter passed: "${secondCoordinates}"`;
 
       if (firstCoordinates.length !== 2)
@@ -592,19 +620,19 @@ const LCF = { //LuniZunie's Custom Functions
             [x2, y2] = secondCoordinates;
 
       switch(false) {
-        case LCF.IsType.Number(x1):
+        case LCF.Type.Number(x1):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_1 can only contain Numbers as Array values! Parameter passed: "${firstCoordinates}" (INDEX: 0)`;
-        case LCF.IsType.Number(y1):
+        case LCF.Type.Number(y1):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_1 can only contain Numbers as Array values! Parameter passed: "${firstCoordinates}" (INDEX: 1)`;
-        case LCF.IsType.Number(x2):
+        case LCF.Type.Number(x2):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_2 can only contain Numbers as Array values! Parameter passed: "${secondCoordinates}" (INDEX: 0)`;
-        case LCF.IsType.Number(y2):
+        case LCF.Type.Number(y2):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_2 can only contain Numbers as Array values! Parameter passed: "${secondCoordinates}" (INDEX: 1)`;
-        case LCF.IsType.Number(range):
+        case LCF.Type.Number(range):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_3 must be a Number! Parameter passed: "${range}"`;
-        case LCF.IsType.String(type):
+        case LCF.Type.String(type):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_4 must be a String! Parameter passed: "${type}"`;
-        case LCF.IsType.Boolean(inclusive):
+        case LCF.Type.Boolean(inclusive):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_5 must be a Boolean! Parameter passed: "${inclusive}"`;
       }
 
@@ -625,9 +653,9 @@ const LCF = { //LuniZunie's Custom Functions
       }
     },
     Slope: (firstCoordinates, secondCoordinates) => {
-      if (!LCF.IsType.Array(firstCoordinates))
+      if (!LCF.Type.Array(firstCoordinates))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Slope".\n\nERROR: parameter_1 must be an Array! Parameter passed: "${firstCoordinates}"`;
-      else if (!LCF.IsType.Array(secondCoordinates))
+      else if (!LCF.Type.Array(secondCoordinates))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Slope".\n\nERROR: parameter_2 must be an Array! Parameter passed: "${secondCoordinates}"`;
 
       if (firstCoordinates.length !== 2)
@@ -639,13 +667,13 @@ const LCF = { //LuniZunie's Custom Functions
             [x2, y2] = secondCoordinates;
 
       switch(false) {
-        case LCF.IsType.Number(x1):
+        case LCF.Type.Number(x1):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Slope".\n\nERROR: parameter_1 can only contain Numbers as Array values! Parameter passed: "${firstCoordinates}" (INDEX: 0)`;
-        case LCF.IsType.Number(y1):
+        case LCF.Type.Number(y1):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Slope".\n\nERROR: parameter_1 can only contain Numbers as Array values! Parameter passed: "${firstCoordinates}" (INDEX: 1)`;
-        case LCF.IsType.Number(x2):
+        case LCF.Type.Number(x2):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Slope".\n\nERROR: parameter_2 can only contain Numbers as Array values! Parameter passed: "${secondCoordinates}" (INDEX: 0)`;
-        case LCF.IsType.Number(y2):
+        case LCF.Type.Number(y2):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Slope".\n\nERROR: parameter_2 can only contain Numbers as Array values! Parameter passed: "${secondCoordinates}" (INDEX: 1)`;
       }
 
@@ -666,11 +694,11 @@ const LCF = { //LuniZunie's Custom Functions
     },
     SlopeToAngle: (rise, run, degrees = true) => {
       switch(false) {
-        case LCF.IsType.Number(rise):
+        case LCF.Type.Number(rise):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.SlopeToAngle".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${rise}"`;
-        case LCF.IsType.Number(run):
+        case LCF.Type.Number(run):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.SlopeToAngle".\n\nERROR: parameter_2 must be a Number! Parameter passed: "${run}"`;
-        case LCF.IsType.Boolean(degrees):
+        case LCF.Type.Boolean(degrees):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.SlopeToAngle".\n\nERROR: parameter_3 must be a Boolean! Parameter passed: "${degrees}"`;
       }
 
@@ -681,9 +709,9 @@ const LCF = { //LuniZunie's Custom Functions
     },
     AngleToSlope: (angle, degrees = true) => {
       switch(false) {
-        case LCF.IsType.Number(angle):
+        case LCF.Type.Number(angle):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.AngleToSlope".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${angle}"`;
-        case LCF.IsType.Boolean(degrees):
+        case LCF.Type.Boolean(degrees):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.AngleToSlope".\n\nERROR: parameter_2 must be a Boolean! Parameter passed: "${degrees}"`;
       }
 
@@ -735,72 +763,84 @@ const LCF = { //LuniZunie's Custom Functions
       };
     },
     RadiansToDegrees: radians => {
-      if (!LCF.IsType.Number(radians))
+      if (!LCF.Type.Number(radians))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.RadiansToDegrees".\n\nERROR: parameter_1 must be a number! Parameter passed: "${radians}"`;
 
       return radians * 180 / Math.PI;
     },
     Rad_Deg: LCF.Math.RadiansToDegrees,
     DegreesToRadians: degrees => {
-      if (!LCF.IsType.Number(degrees))
+      if (!LCF.Type.Number(degrees))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.DegreesToRadians".\n\nERROR: parameter_1 must be a number! Parameter passed: "${degrees}"`;
 
       return degrees * Math.PI / 180;
     },
     Deg_Rad: LCF.Math.DegreesToRadians,
     DecimalToBinary: decimal => {
-      if (!LCF.IsType.Number(decimal))
+      if (!LCF.Type.Number(decimal))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.DecimalToBinary".\n\nERROR: parameter_1 must be a number! Parameter passed: "${decimal}"`;
 
       return decimal.toString(16);
     },
     Dec_Bin: LCF.Math.DecimalToBinary,
     BinaryToDecimal: binary => {
-      if (!LCF.IsType.Number(binary) && !LCF.IsType.String(binary))
+      if (!LCF.Type.Number(binary) && !LCF.Type.String(binary))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.BinaryToDecimal".\n\nERROR: parameter_1 must be a number! Parameter passed: "${binary}"`;
 
       return parseInt(binary, 2);
     },
     Bin_Dec: LCF.Math.BinaryToDecimal,
     DecimalToHexadecimal: decimal => {
-      if (!LCF.IsType.Number(decimal))
+      if (!LCF.Type.Number(decimal))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.DecimalToHexadecimal".\n\nERROR: parameter_1 must be a number! Parameter passed: "${decimal}"`;
 
       return decimal.toString(16);
     },
     Dec_Hex: LCF.Math.DecimalToHexadecimal,
     HexadecimalToDecimal: hexadecimal => {
-      if (!LCF.IsType.Number(hexadecimal) && !LCF.IsType.String(hexadecimal))
+      if (!LCF.Type.Number(hexadecimal) && !LCF.Type.String(hexadecimal))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.HexadecimalToDecimal".\n\nERROR: parameter_1 must be a number! Parameter passed: "${hexadecimal}"`;
 
       return parseInt(hexadecimal, 16);
     },
     Hex_Dec: LCF.Math.HexadecimalToDecimal,
     BinaryToHexadecimal: binary => {
-      if (!LCF.IsType.Number(binary) && !LCF.IsType.String(binary))
+      if (!LCF.Type.Number(binary) && !LCF.Type.String(binary))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.".\n\nERROR: parameter_1 must be a number! Parameter passed: "${binary}"`;
 
       return parseInt(binary, 2).toString(16);
     },
     Bin_Hex: LCF.Math.BinaryToHexadecimal,
     HexadecimalToBinary: hexadecimal => {
-      if (!LCF.IsType.String(hexadecimal) && !LCF.IsType.String(hexadecimal))
+      if (!LCF.Type.String(hexadecimal) && !LCF.Type.String(hexadecimal))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.".\n\nERROR: parameter_1 must be a number! Parameter passed: "${hexadecimal}"`;
 
       return parseInt(hexadecimal, 16).toString(2);
     },
     Hex_Bin: LCF.Math.HexadecimalToBinary
   },
-  IsType: {
-
-    /* TODO: Add error check*/
-
+  Maths: LCF.Math,
+  Type: {
+    Get: value => {
+      const returnType = [];
+      if (Object.entries(LCF.data.type.function_return).forEach(([key, type]) => {
+        try {
+          if (LCF.Type[key](value))
+            returnType.push(type);
+        } catch (error) {
+          throw `SCRIPT ERROR: ${error}.\n\nThis error is not your fault! Please report this on our GitHub page by sending a screenshot of this error in an issue report!`;
+        }
+      }))
+        return returnType;
+      else
+        return typeof value;
+    },
     Function: (...values) => {
       return values.every(value => {
         return (typeof value === "function");
       });
     },
-    Func: LCF.IsType.Function,
+    Func: LCF.Type.Function,
     Date: (...values) => {
       return values.every(value => {
         return (value instanceof Date);
@@ -811,31 +851,58 @@ const LCF = { //LuniZunie's Custom Functions
         return (value === Object(value));
       });
     },
-    Obj: LCF.IsType.Object,
+    Obj: LCF.Type.Object,
     Array: (...values) => {
       return values.every(value => {
         return (value instanceof Array);
       });
     },
-    Arr: LCF.IsType.Array,
+    Arr: LCF.Type.Array,
     String: (...values) => {
       return values.every(value => {
         return (typeof value === "string");
       });
     },
-    Str: LCF.IsType.String,
+    Str: LCF.Type.String,
     Number: (...values) => {
       return values.every(value => {
         return (typeof value === "number");
       });
     },
-    Num: LCF.IsType.Number,
+    Num: LCF.Type.Number,
+    Integer: (...values) => {
+      return values.every(value => {
+        return Number.isInteger(value);
+      });
+    },
+    Int: LCF.Type.Integer,
+    SafeInteger: (...values) => {
+      return values.every(value => {
+        return Number.isSafeInteger(value);
+      });
+    },
+    SafeInt: LCF.Type.SafeInteger,
+    Float: (...values) => {
+      return values.every(value => {
+        return Number.isFloat(value);
+      });
+    },
+    Finite: (...values) => {
+      return values.every(value => {
+        return Number.isFinite(value);
+      });
+    },
     Boolean: (...values) => {
       return values.every(value => {
         return (typeof value === "boolean");
       });
     },
-    Bool: LCF.IsType.Boolean,
+    Bool: LCF.Type.Boolean,
+    NaN: (...values) => {
+      return values.every(value => {
+        return Number.isNaN(value);
+      });
+    },
     Null: (...values) => {
       return values.every(value => {
         return (value === null);
@@ -846,8 +913,8 @@ const LCF = { //LuniZunie's Custom Functions
         return (value === undefined);
       });
     },
-    Undef: LCF.IsType.Undefined,
-    Empty: (...values) => { //same as (LCF.IsType.Null() || LCF.IsType.Undefined())
+    Undef: LCF.Type.Undefined,
+    Empty: (...values) => { //same as (LCF.Type.Null() || LCF.Type.Undefined())
       return values.every(value => {
         return (value === null || value === undefined);
       });
@@ -857,7 +924,7 @@ const LCF = { //LuniZunie's Custom Functions
         return (value instanceof HTMLElement);
       });
     },
-    HTML_Elmn: LCF.IsType.HTML_Element,
+    HTML_Elmt: LCF.Type.HTML_Element,
     CSS_Color: (...values) => {
       return values.every(value => {
         const style = new Option().style;
@@ -866,8 +933,8 @@ const LCF = { //LuniZunie's Custom Functions
         return (style.color != "");
       });
     },
-    CSS_Colour: LCF.IsType.CSS_Color,
-    CSS_Clr: LCF.IsType.CSS_Color,
+    CSS_Colour: LCF.Type.CSS_Color,
+    CSS_Clr: LCF.Type.CSS_Color,
     CSS_Position: (...values) => {
       return values.every(value => {
         const style = new Option().style;
@@ -876,7 +943,166 @@ const LCF = { //LuniZunie's Custom Functions
         return (style.left != "");
       });
     },
-    CSS_Pos: LCF.IsType.CSS_Position
+    CSS_Pos: LCF.Type.CSS_Position,
+    CSS_FontFamily: (...values) => {
+      return values.every(value => {
+        const style = new Option().style;
+              style.fontFamily = value;
+
+        return (style.fontFamily != "");
+      });
+    },
+    CSS_FontSize: (...values) => {
+      return values.every(value => {
+        const style = new Option().style;
+              style.fontSize = value;
+
+        return (style.fontSize != "");
+      });
+    },
+    Event: (...values) => {
+      return values.every(value => {
+        return (value instanceof Event);
+      });
+    },
+    Evnt: LCF.Type.Event,
+    AnimationEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof AnimationEvent);
+      });
+    },
+    AnmEvnt: LCF.Type.AnimationEvent,
+    ClipboardEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof ClipboardEvent);
+      });
+    },
+    CbEvnt: LCF.Type.ClipboardEvent,
+    DragEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof DragEvent);
+      });
+    },
+    DrgEvnt: LCF.Type.DragEvent,
+    FocusEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof FocusEvent);
+      });
+    },
+    FcEvnt: LCF.Type.FocusEvent,
+    HashChangeEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof HashChangeEvent);
+      });
+    },
+    HsChgEvnt: LCF.Type.HashChangeEvent,
+    InputEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof InputEvent);
+      });
+    },
+    InptEvnt: LCF.Type.InputEvent,
+    KeyboardEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof KeyboardEvent);
+      });
+    },
+    KbEvnt: LCF.Type.KeyboardEvent,
+    MouseEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof MouseEvent);
+      });
+    },
+    MseEvnt: LCF.Type.MouseEvent,
+    PageTransitionEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof PageTransitionEvent);
+      });
+    },
+    PgTransEvnt: LCF.Type.PageTransitionEvent,
+    PopStateEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof PopStateEvent);
+      });
+    },
+    PopStEvnt: LCF.Type.PopStateEvent,
+    ProgressEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof ProgressEvent);
+      });
+    },
+    PrgEvnt: LCF.Type.ProgressEvent,
+    StorageEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof StorageEvent);
+      });
+    },
+    StrEvnt: LCF.Type.StorageEvent,
+    TouchEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof TouchEvent);
+      });
+    },
+    TchEvnt: LCF.Type.Event,
+    TransitionEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof TransitionEvent);
+      });
+    },
+    TransEvnt: LCF.Type.TransitionEvent,
+    UIEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof UIEvent);
+      });
+    },
+    WheelEvent: (...values) => {
+      return values.every(value => {
+        return (value instanceof WheelEvent);
+      });
+    },
+    WhlEvnt: LCF.Type.WheelEvent,
+    Error: (...values) => {
+      return values.every(value => {
+        return (value instanceof Error);
+      });
+    },
+    Err: LCF.Type.Error,
+    EvalError: (...values) => {
+      return values.every(value => {
+        return (value instanceof Error);
+      });
+    },
+    EvlErr: LCF.Type.EvalError,
+    RangeError: (...values) => {
+      return values.every(value => {
+        return (value instanceof Error);
+      });
+    },
+    RngeErr: LCF.Type.RangeError,
+    ReferenceError: (...values) => {
+      return values.every(value => {
+        return (value instanceof Error);
+      });
+    },
+    RefErr: LCF.Type.ReferenceError,
+    SyntaxError: (...values) => {
+      return values.every(value => {
+        return (value instanceof Error);
+      });
+    },
+    Syntx: LCF.Type.SyntaxError,
+    TypeError: (...values) => {
+      return values.every(value => {
+        return (value instanceof Error);
+      });
+    },
+    TypErr: LCF.Type.TypeError,
+    URIError: (...values) => {
+      return values.every(value => {
+        return (value instanceof Error);
+      });
+    },
+    URIErr: LCF.Type.URIError
   },
   Array: {
     ConvertTo: {
@@ -886,7 +1112,7 @@ const LCF = { //LuniZunie's Custom Functions
 
         let returnArrays = [];
         arrays.forEach(array => {
-          if (!LCF.IsType.Array(array))
+          if (!LCF.Type.Array(array))
             throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Number"! ERROR: All parameters passed must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
 
           const newArray = [];
@@ -906,7 +1132,7 @@ const LCF = { //LuniZunie's Custom Functions
 
         let returnArrays = [];
         arrays.forEach(array => {
-          if (!LCF.IsType.Array(array))
+          if (!LCF.Type.Array(array))
             throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.String"! ERROR: All parameters passed must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
 
           const newArray = [];
@@ -926,7 +1152,7 @@ const LCF = { //LuniZunie's Custom Functions
 
         let returnArrays = [];
         arrays.forEach(array => {
-          if (!LCF.IsType.Array(array))
+          if (!LCF.Type.Array(array))
             throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Boolean"! ERROR: All parameters passed must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
 
           const newArray = [];
@@ -945,7 +1171,7 @@ const LCF = { //LuniZunie's Custom Functions
       Add: (...arrays) => {
         const firstArrayLength = arrays[0].length;
         switch(false) {
-          case LCF.IsType.Array(arrays[0]):
+          case LCF.Type.Array(arrays[0]):
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
@@ -953,7 +1179,7 @@ const LCF = { //LuniZunie's Custom Functions
 
         arrays.forEach(array => {
           switch(false) {
-            case LCF.IsType.Array(array):
+            case LCF.Type.Array(array):
               throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
               throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
@@ -971,7 +1197,7 @@ const LCF = { //LuniZunie's Custom Functions
             }
 
             const arrayValue = array[valueIndex];
-            if (!LCF.IsType.Number(arrayValue))
+            if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
 
             returnNumber = LCF.Math.Add(returnNumber, arrayValue);
@@ -985,7 +1211,7 @@ const LCF = { //LuniZunie's Custom Functions
       Subtract: (...arrays) => {
         const firstArrayLength = arrays[0].length;
         switch(false) {
-          case LCF.IsType.Array(arrays[0]):
+          case LCF.Type.Array(arrays[0]):
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
@@ -993,7 +1219,7 @@ const LCF = { //LuniZunie's Custom Functions
 
         arrays.forEach(array => {
           switch(false) {
-            case LCF.IsType.Array(array):
+            case LCF.Type.Array(array):
               throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
               throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
@@ -1011,7 +1237,7 @@ const LCF = { //LuniZunie's Custom Functions
             }
 
             const arrayValue = array[valueIndex];
-            if (!LCF.IsType.Number(arrayValue))
+            if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
 
             returnNumber = LCF.Math.Subtract(returnNumber, arrayValue);
@@ -1025,7 +1251,7 @@ const LCF = { //LuniZunie's Custom Functions
       Multiply: (...arrays) => {
         const firstArrayLength = arrays[0].length;
         switch(false) {
-          case LCF.IsType.Array(arrays[0]):
+          case LCF.Type.Array(arrays[0]):
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
@@ -1033,7 +1259,7 @@ const LCF = { //LuniZunie's Custom Functions
 
         arrays.forEach(array => {
           switch(false) {
-            case LCF.IsType.Array(array):
+            case LCF.Type.Array(array):
               throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
               throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
@@ -1051,7 +1277,7 @@ const LCF = { //LuniZunie's Custom Functions
             }
 
             const arrayValue = array[valueIndex];
-            if (!LCF.IsType.Number(arrayValue))
+            if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
 
             returnNumber *= arrayValue;
@@ -1065,7 +1291,7 @@ const LCF = { //LuniZunie's Custom Functions
       Divide: (...arrays) => {
         const firstArrayLength = arrays[0].length;
         switch(false) {
-          case LCF.IsType.Array(arrays[0]):
+          case LCF.Type.Array(arrays[0]):
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
@@ -1073,7 +1299,7 @@ const LCF = { //LuniZunie's Custom Functions
 
         arrays.forEach(array => {
           switch(false) {
-            case LCF.IsType.Array(array):
+            case LCF.Type.Array(array):
               throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
               throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
@@ -1091,7 +1317,7 @@ const LCF = { //LuniZunie's Custom Functions
             }
 
             const arrayValue = array[valueIndex];
-            if (!LCF.IsType.Number(arrayValue))
+            if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
 
             returnNumber /= arrayValue;
@@ -1105,7 +1331,7 @@ const LCF = { //LuniZunie's Custom Functions
       Power: (...arrays) => {
         const firstArrayLength = arrays[0].length;
         switch(false) {
-          case LCF.IsType.Array(arrays[0]):
+          case LCF.Type.Array(arrays[0]):
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
@@ -1113,7 +1339,7 @@ const LCF = { //LuniZunie's Custom Functions
 
         arrays.forEach(array => {
           switch(false) {
-            case LCF.IsType.Array(array):
+            case LCF.Type.Array(array):
               throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
               throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
@@ -1131,7 +1357,7 @@ const LCF = { //LuniZunie's Custom Functions
             }
 
             const arrayValue = array[valueIndex];
-            if (!LCF.IsType.Number(arrayValue))
+            if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
 
             returnNumber **= arrayValue;
@@ -1143,63 +1369,45 @@ const LCF = { //LuniZunie's Custom Functions
         return returnArray;
       }
     },
+    Maths: LCF.Array.Math,
     LimitValueType: (array, ...types) => {
-      if (!LCF.IsType.Array(array))
+      if (!LCF.Type.Array(array))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Array.LimitValueType".\n\nERROR: `;
 
-      const supportedTypes = ["function", "func", "date", "object", "obj", "array", "arr", "string", "str", "number", "num", "boolean", "bool", "null", "undefined", "undef", "empty", "html_element", "html_elmn", "css_color", "css_colour", "css_clr", "css_position", "css_pos"];
+      const allSupportedTypes = LCF.data.type.allSupported,
+            supportedTypes = LCF.data.type.supported,
+
+            mainTypes = [];
       types.forEach(type => {
         switch(false) {
-          case LCF.IsType.String(type):
+          case LCF.Type.String(type):
             throw `USER ERROR: Invalid data type sent to function: "LCF.Array.LimitValueType".\n\nERROR: [parameter_2, parameter_infinity) must be a String! Parameters passed: "${types}" (INDEX: ${types.indexOf(type)})`;
-          case supportedTypes.includes(type):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.LimitValueType".\n\nERROR: [parameter_2, parameter_infinity) must be one of the following Strings: "${supportedTypes.join(", ")}"! Parameters passed: "${types}" (INDEX: ${types.indexOf(type)})`;
+          case allSupportedTypes.includes(type):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.LimitValueType".\n\nERROR: [parameter_2, parameter_infinity) must be one of the following Strings: "${allSupportedTypes.join(", ")}"! Parameters passed: "${types}" (INDEX: ${types.indexOf(type)})`;
+          case Boolean(supportedTypes[type]):
+            Object.entries(supportedTypes).some(([mainType, subTypes]) => {
+              if (subTypes.includes(type)) {
+                mainTypes.push(mainType);
+
+                return true;
+              }
+            });
+            break;
+          default:
+            mainTypes.push(type);
+            break;
         }
       });
 
       return array.filter(value => {
-        return types.some(type => {
-          switch(type) {
-            case "function":
-            case "func":
-            case "string":
-            case "str":
-            case "number":
-            case "num":
-            case "boolean":
-            case "bool":
-              return (typeof value === type);
-            case "date":
-              return (value instanceof Date);
-            case "array":
-            case "arr":
-              return (value instanceof Array);
-            case "html_element":
-            case "html_elmn":
-              return (value instanceof HTMLElement);
-            case "null":
-              return (value === null);
-            case "undefined":
-            case "undef":
-              return (value === undefined);
-            case "empty":
-              return (value === null || value === undefined);
-            case "object":
-            case "obj":
-              return (value === Object(value));
-            case "css_color":
-            case "css_colour":
-            case "css_clr":
-              return LCF.IsType.CSS_Color(value);
-            case "css_position":
-            case "css_pos":
-              return LCF.IsType.CSS_Position(value);
-          }
+        const valueType = LCF.Type.Get(value);
+        return mainTypes.some(type => {
+          return (valueType === type);
         });
       });
     },
     IndexesOf: (array, ...values) => {
-      if (!LCF.IsType.Array(array))
+      if (!LCF.Type.Array(array))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Array.IndexesOf".\n\nERROR: parameter_1 must be an Array! Parameter passed: "${array}"`;
 
       const returnArray = [];
@@ -1217,13 +1425,13 @@ const LCF = { //LuniZunie's Custom Functions
   Number: {
     InRange: (numbers = [0], range = [0, 1], inclusive = [true, true], singleValue = true) => {
       inclusive = LCF.Array.LimitValueType(inclusive, "boolean");
-      if (!LCF.IsType.Array(inclusive) || !inclusive.length)
-        if (!LCF.IsType.Boolean(inclusive))
+      if (!LCF.Type.Array(inclusive) || !inclusive.length)
+        if (!LCF.Type.Boolean(inclusive))
           inclusive = [true, true];
         else
           inclusive = [inclusive, inclusive];
       else if (inclusive.length === 1)
-        if (!LCF.IsType.Boolean(inclusive))
+        if (!LCF.Type.Boolean(inclusive))
           inclusive = [true, true];
         else
           inclusive = [inclusive, true];
@@ -1231,10 +1439,10 @@ const LCF = { //LuniZunie's Custom Functions
         inclusive = [inclusive[0], inclusive[1]];
 
       range = LCF.Array.LimitValueType(range, "number");
-      if (!LCF.IsType.Array(range)) {
+      if (!LCF.Type.Array(range)) {
         range = +range;
 
-        if (!LCF.IsType.Number(range))
+        if (!LCF.Type.Number(range))
           range = [0, 1];
         else
           range = [range, Infinity];
@@ -1244,10 +1452,10 @@ const LCF = { //LuniZunie's Custom Functions
         range = [range[0], range[1]];
 
       numbers = LCF.Array.LimitValueType(numbers, "number");
-      if (!LCF.IsType.Array(numbers)) {
+      if (!LCF.Type.Array(numbers)) {
         numbers = +numbers;
 
-        if (!LCF.IsType.Number(numbers))
+        if (!LCF.Type.Number(numbers))
           numbers = [0];
         else
           numbers = [numbers];
@@ -1286,20 +1494,20 @@ const LCF = { //LuniZunie's Custom Functions
   },
   Gate: {
     Buffer: bool => { //seperate input from output (no use ? )
-      if (!LCF.IsType.Boolean(bool))
+      if (!LCF.Type.Boolean(bool))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Gates.Buffer".\n\nERROR: parameter_1 must be a Boolean! Parameter passed: "${bool}"`;
 
       return bool;
     },
     NOT: bool => { //opposite input
-      if (!LCF.IsType.Boolean(bool))
+      if (!LCF.Type.Boolean(bool))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Gates.NOT".\n\nERROR: parameter_1 must be a Boolean! Parameter passed: "${bool}"`;
 
       return !bool;
     },
     AND: (...bools) => { //all true inputs
       return bools.every(bool => {
-        if (!LCF.IsType.Boolean(bool))
+        if (!LCF.Type.Boolean(bool))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Gates.AND".\n\nERROR: [parameter_1, parameter_infinity) must be a Boolean! Parameters passed: "${bools}" (INDEX: ${bools.indexOf(bool)})`;
 
         return bool;
@@ -1307,7 +1515,7 @@ const LCF = { //LuniZunie's Custom Functions
     },
     OR: (...bools) => { //at least one true input
       return bools.some(bool => {
-        if (!LCF.IsType.Boolean(bool))
+        if (!LCF.Type.Boolean(bool))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Gates.OR".\n\nERROR: [parameter_1, parameter_infinity) must be a Boolean! Parameters passed: "${bools}" (INDEX: ${bools.indexOf(bool)})`;
 
         return bool;
@@ -1315,7 +1523,7 @@ const LCF = { //LuniZunie's Custom Functions
     },
     NAND: (...bools) => { //at least one false input
       return bools.some(bool => {
-        if (!LCF.IsType.Boolean(bool))
+        if (!LCF.Type.Boolean(bool))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Gates.NAND".\n\nERROR: [parameter_1, parameter_infinity) must be a Boolean! Parameters passed: "${bools}" (INDEX: ${bools.indexOf(bool)})`;
 
         return !bool;
@@ -1323,7 +1531,7 @@ const LCF = { //LuniZunie's Custom Functions
     },
     NOR: (...bools) => { //no true input
       return bools.every(bool => {
-        if (!LCF.IsType.Boolean(bool))
+        if (!LCF.Type.Boolean(bool))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Gates.NOR".\n\nERROR: [parameter_1, parameter_infinity) must be a Boolean! Parameters passed: "${bools}" (INDEX: ${bools.indexOf(bool)})`;
 
         return !bool;
@@ -1331,7 +1539,7 @@ const LCF = { //LuniZunie's Custom Functions
     },
     XOR: (...bools) => { //amount of trues is odd
       return Boolean(bools.reduce((trues, bool) => {
-        if (!LCF.IsType.Boolean(bool))
+        if (!LCF.Type.Boolean(bool))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Gates.XOR".\n\nERROR: [parameter_1, parameter_infinity) must be a Boolean! Parameters passed: "${bools}" (INDEX: ${bools.indexOf(bool)})`;
 
         trues += +bool;
@@ -1339,26 +1547,26 @@ const LCF = { //LuniZunie's Custom Functions
     },
     XNOR: (...bools) => { //amount of falses is odd
       return !(bools.reduce((trues, bool) => {
-        if (!LCF.IsType.Boolean(bool))
+        if (!LCF.Type.Boolean(bool))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Gates.XNOR".\n\nERROR: [parameter_1, parameter_infinity) must be a Boolean! Parameters passed: "${bools}" (INDEX: ${bools.indexOf(bool)})`;
 
         trues += +bool;
       }) % 2);
     }
   },
-  Characters: {
+  Character: {
     Number: (start = 0, end = 100) => { //both inclusive
       switch(false) {
-        case LCF.IsType.Number(start):
-          throw `USER ERROR: Invalid data type sent to function: "LCF.Charcaters.Number".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${start}"`;
-        case LCF.IsType.Number(end):
-          throw `USER ERROR: Invalid data type sent to function: "LCF.Charcaters.Number".\n\nERROR: parameter_2 must be a Number! Parameter passed: "${emd}"`;
+        case LCF.Type.Integer(start):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.Number".\n\nERROR: parameter_1 must be an Integer! Parameter passed: "${start}"`;
+        case LCF.Type.Integer(end):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.Number".\n\nERROR: parameter_2 must be an Integer! Parameter passed: "${emd}"`;
         case (end <= start):
-          throw `USER ERROR: Invalid data sent to function: "LCF.Charcaters.Number".\n\nERROR: parameter_2 cannot be greater than parameter_1! Parameter passed: "${parameter_2}" (GREATER THAN PARAMETER_1 [${parameter_1}])`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.Number".\n\nERROR: parameter_2 cannot be greater than parameter_1! Parameter passed: "${parameter_2}" (GREATER THAN PARAMETER_1 [${parameter_1}])`;
         case (start <= 2147483647): //31^2-1 (upper 32 bit integer limit)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Charcaters.Number".\n\nERROR: parameter_1 and parameter_2 must be between [-2147483648, 2147483648)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.Number".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [-2147483648, 2147483648)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
         case (end >= -2147483648): //-(31^2) (lower 32 bit integer limit)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Charcaters.Number".\n\nERROR: parameter_1 and parameter_2 must be between [-2147483648, 2147483648)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.Number".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [-2147483648, 2147483648)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
       }
 
       const numbers = [];
@@ -1369,79 +1577,114 @@ const LCF = { //LuniZunie's Custom Functions
     },
     Alphabet: (start = 1, end = 26) => { //both inclusive
       switch(false) {
-        case LCF.IsType.Number(start):
-          throw `USER ERROR: Invalid data type sent to function: "LCF.Charcaters.Alphabet".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${start}"`;
-        case LCF.IsType.Number(end):
-          throw `USER ERROR: Invalid data type sent to function: "LCF.Charcaters.Alphabet".\n\nERROR: parameter_2 must be a Number! Parameter passed: "${emd}"`;
+        case LCF.Type.Integer(start):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.Alphabet".\n\nERROR: parameter_1 must be a Integer! Parameter passed: "${start}"`;
+        case LCF.Type.Integer(end):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.Alphabet".\n\nERROR: parameter_2 must be a Integer! Parameter passed: "${emd}"`;
         case (end <= start):
-          throw `USER ERROR: Invalid data sent to function: "LCF.Charcaters.Alphabet".\n\nERROR: parameter_2 cannot be greater than parameter_1! Parameter passed: "${parameter_2}" (GREATER THAN PARAMETER_1 [${parameter_1}])`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.Alphabet".\n\nERROR: parameter_2 cannot be greater than parameter_1! Parameter passed: "${parameter_2}" (GREATER THAN PARAMETER_1 [${parameter_1}])`;
         case (start > 0):
-          throw `USER ERROR: Invalid data sent to function: "LCF.Charcaters.Alphabet".\n\nERROR: parameter_1 and parameter_2 must be between [1, 26]! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.Alphabet".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [1, 26]! Parameters passed: "${parameter_1}, ${parameter_2}"`;
         case (end <= 26):
-          throw `USER ERROR: Invalid data sent to function: "LCF.Charcaters.Alphabet".\n\nERROR: parameter_1 and parameter_2 must be between [1, 26]! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.Alphabet".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [1, 26]! Parameters passed: "${parameter_1}, ${parameter_2}"`;
       }
 
       const alphabet = [];
       for (let letter = 65 + start - 1;letter < 65 + end;letter++)
-        alphabet.push(String.fromCharCode(letter));
+        alphabet.concat([String.fromCharCode(letter)]); //concat is faster for some reason ?
 
       return alphabet;
     },
     Ascii: (start = 0, end = 127) => { //both inclusive
-      if (!LCF.IsType.Number(start, end))
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
-      else if (start < 0 || end > 127 || start > end)
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+      switch(false) {
+        case LCF.Type.Integer(start):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.Ascii".\n\nERROR: parameter_1 must be a Integer! Parameter passed: "${start}"`;
+        case LCF.Type.Integer(end):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.Ascii".\n\nERROR: parameter_2 must be a Integer! Parameter passed: "${emd}"`;
+        case (end <= start):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.Ascii".\n\nERROR: parameter_2 cannot be greater than parameter_1! Parameter passed: "${parameter_2}" (GREATER THAN PARAMETER_1 [${parameter_1}])`;
+        case (start > 0):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.Ascii".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [0, 128)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+        case (end <= 26):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.Ascii".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [0, 128)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+      }
 
       const ascii = [];
       for (let character = start;character <= end;character++)
-        ascii.push(String.fromCharCode(character));
+        ascii.concat([String.fromCharCode(character)]); //concat is faster for some reason ?
 
       return ascii;
     },
     ExtendedAscii: (start = 0, end = 255) => { //both inclusive
-      if (!LCF.IsType.Number(start, end))
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
-      else if (start < 0 || end > 255 || start > end)
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+      switch(false) {
+        case LCF.Type.Integer(start):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_1 must be a Integer! Parameter passed: "${start}"`;
+        case LCF.Type.Integer(end):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_2 must be a Integer! Parameter passed: "${emd}"`;
+        case (end <= start):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_2 cannot be greater than parameter_1! Parameter passed: "${parameter_2}" (GREATER THAN PARAMETER_1 [${parameter_1}])`;
+        case (start > 0):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [0, 256)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+        case (end < 256):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [0, 256)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+      }
 
       const extendedAscii = [];
       for (let character = start;character <= end;character++)
-        extendedAscii.push(String.fromCharCode(character));
+        extendedAscii.concat([String.fromCharCode(character)]); //concat is faster for some reason ?
 
       return extendedAscii;
     },
     Unicode: (start = 0, end = 100) => { //both inclusive
-      if (!LCF.IsType.Number(start, end))
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
-      else if (start < 0 || end > 149186 || start > end)
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+      switch(false) {
+        case LCF.Type.Integer(start):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_1 must be a Integer! Parameter passed: "${start}"`;
+        case LCF.Type.Integer(end):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_2 must be a Integer! Parameter passed: "${emd}"`;
+        case (end <= start):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_2 cannot be greater than parameter_1! Parameter passed: "${parameter_2}" (GREATER THAN PARAMETER_1 [${parameter_1}])`;
+        case (start > 0):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [0, 149186)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+        case (end < 149186): //max number of unicode characters **as of Unicode V15.0
+          throw `USER ERROR: Invalid data sent to function: "LCF.Character.ExtendedAscii".\n\nERROR: parameter_1 and parameter_2 must be an Integer between [0, 149186)! Parameters passed: "${parameter_1}, ${parameter_2}"`;
+      }
 
       const unicode = [];
       for (let character = start;character <= end;character++)
-        unicode.push(String.fromCharCode(character));
+        unicode.concat([String.fromCharCode(character)]); //concat is faster for some reason ?
 
       return unicode;
     }
   },
-  Elements: {
+  Char: LCF.Character,
+  Element: {
     GetBorderRadius: (element, borderRadius) => {
-      if (!LCF.IsType.Number(borderRadius))
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+      switch(false) {
+        case LCF.Type.HTML_Element(element):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Element.GetBorderRadius".\n\nERROR: parameter_1 must be an HTML Element! Parameter passed: "${element}"`;
+        case LCF.Type.Number(borderRadius):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Element.GetBorderRadius".\n\nERROR: parameter_2 must be a Number! Parameter passed: "${number}"`;
+      }
 
       return `${borderRadius}% / ${borderRadius * (element.clientWidth / element.clientHeight)}%`;
     },
-    GetTextWidth: (text, font, size) => {
-      if (!LCF.IsType.String(text))
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+    GetTextWidth: (text, fontFamily, fontSize) => {
+      switch(false) {
+        case LCF.Type.String(text):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Element.GetTextWidth".\n\nERROR: parameter_1 must be a String! Parameter passed: "${text}"`;
+        case LCF.Type.CSS_FontFamily(fontFamily):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Element.GetTextWidth".\n\nERROR: parameter_2 must be a CSS Font Family! Parameter passed: "${fontFamily}"`;
+        case LCF.Type.CSS_FontSize(fontSize):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Element.GetTextWidth".\n\nERROR: parameter_3 must be a CSS Font Size! Parameter passed: "${fontSize}"`;
+      }
 
       const span = document.createElement("span");
             span.innerHTML = text;
 
             span.classList.add("textWidth");
 
-            span.style.fontFamily = font;
-            span.style.fontSize = size;
+            span.style.fontFamily = fontFamily;
+            span.style.fontSize = fontSize;
 
       document.body.appendChild(span);
 
@@ -1451,57 +1694,71 @@ const LCF = { //LuniZunie's Custom Functions
       return textWidth;
     },
     Move: (element, newParent) => {
-      if (!LCF.IsType.HTML_Element(element, newParent))
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+      switch (false) {
+        case LCF.Type.HTML_Element(element):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Element.Move".\n\nERROR: parameter_1 must be an HTML Element! Parameter passed: "${element}"`;
+        case LCF.Type.HTML_Element(newParent):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Element.Move".\n\nERROR: parameter_2 must be an HTML Element! Parameter passed: "${newParent}"`;
+      }
 
       newParent.appendChild(structuredClone(element));
       element.remove();
     }
   },
+  Elmt: LCF.Element,
   Page: {
-    FadeTo: (newLocation, speed = 0.25) => {
-      const screen = document.createElement("screen");
-            screen.classList.add("screen");
+    Fade: {
+      To: (newLocation, speed = 0.25) => {
+        if (!LCF.Type.Number(speed))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Page.Fade.To".\n\nERROR: parameter_2 must be a Number! Parameter passed: "${speed}"`;
 
-      document.body.appendChild(screen);
+        const screen = document.createElement("screen");
+              screen.classList.add("screen");
 
-      screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
-      screen.onanimationend = event => {
-        if (screen === event.target)
-          location.href = newLocation;
+        document.body.appendChild(screen);
+
+        screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
+        screen.onanimationend = event => {
+          if (screen === event.target)
+            location.href = newLocation;
+        }
+      },
+      Out: (speed = 0.25) => {
+        if (!LCF.Type.Number(speed))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Page.Fade.Out".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${speed}"`;
+
+        const screen = document.createElement("screen");
+              screen.classList.add("screen");
+
+        document.body.appendChild(screen);
+
+        screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
+        screen.onanimationend = event => {
+          if (screen === event.target)
+            screen.remove();
+        }
+      },
+      In: (speed = 0.25) => {
+        if (!LCF.Type.Number(speed))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Page.Fade.In".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${speed}"`;
+
+        const screen = document.createElement("screen");
+              screen.classList.add("screen");
+
+        document.body.appendChild(screen);
+
+        screen.style.animation = `fadeOut ${speed}s linear 0s 1 normal forwards`;
+        screen.onanimationend = event => {
+          if (screen === event.target)
+            screen.remove();
+        };
       }
-    },
-
-    FadeOut: (speed = 0.25) => {
-      const screen = document.createElement("screen");
-            screen.classList.add("screen");
-
-      document.body.appendChild(screen);
-
-      screen.style.animation = `fadeIn ${speed}s linear 0s 1 normal forwards`;
-      screen.onanimationend = event => {
-        if (screen === event.target)
-          screen.remove();
-      }
-    },
-
-    FadeIn: (speed = 0.25) => {
-      const screen = document.createElement("screen");
-            screen.classList.add("screen");
-
-      document.body.appendChild(screen);
-
-      screen.style.animation = `fadeOut ${speed}s linear 0s 1 normal forwards`;
-      screen.onanimationend = event => {
-        if (screen === event.target)
-          screen.remove();
-      };
     }
   },
   Timer: {
-    Create: stopwatch => {
-      if (stopwatch && !LCF.IsType.Boolean(stopwatch))
-        throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+    Create: (stopwatch = true) => {
+      if (!LCF.Type.Boolean(stopwatch))
+        throw `USER ERROR: Invalid data type sent to function: "LCF.Timer.Create".\n\nERROR: parameter_1 must be a Boolean! Parameter passed: "${stopwatch}"`;
 
       const newTimer = new Timer(stopwatch);
 
@@ -1510,12 +1767,6 @@ const LCF = { //LuniZunie's Custom Functions
       return newTimer;
     }
   },
-  Sleep: milliseconds => {
-    if (!LCF.IsType.Number(milliseconds))
-      throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
-
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-  },
   data: {
     update: {
       start: true,
@@ -1523,9 +1774,102 @@ const LCF = { //LuniZunie's Custom Functions
       speed: 100,
       running: false,
       customFunctions: {},
-      textFitElements: {}
+      textFitElements: {},
+      lastBritishSpellingState: false
+    },
+    type: {
+      allSupported: null,
+      supported: {
+        function: ["func"],
+        date: [],
+        object: ["obj"],
+        array: ["arr"],
+        string: ["str"],
+        number: ["num"],
+        integer: ["int"],
+        safe_integer: ["safe_int"],
+        float: [],
+        finite: [],
+        boolean: ["bool"],
+        null: [],
+        undefined: ["undef"],
+        empty: [],
+        html_element: ["html_elmt"],
+        css_color: ["css_colour", "css_clr"],
+        css_position: ["css_pos"],
+        event: ["evnt"],
+        animation_event: ["anm_evnt"],
+        clipboard_event: ["cb_evnt"],
+        drag_event: ["drg_evnt"],
+        focus_event: ["fc_evnt"],
+        hash_change_event: ["hs_chg_evnt"],
+        input_event: ["inpt_evnt"],
+        keyboard_event: ["kb_evnt"],
+        mouse_event: ["mse_evnt"],
+        page_transition_event: ["pg_trans_evnt"],
+        pop_state_event: ["pop_st_evnt"],
+        progress_event: ["prg_evnt"],
+        storage_event: ["str_evnt"],
+        touch_event: ["tch_evnt"],
+        transition_event: ["trans_evnt"],
+        ui_event: ["ui_evnt"],
+        wheel_event: ["whl_evnt"],
+        error: ["err"],
+        eval_error: ["evl_err"],
+        range_error: ["rnge_err"],
+        reference_error: ["ref_err"],
+        syntax_error: ["syntx_err"],
+        type_error: ["typ_err"],
+        URI_error: ["URI_err"]
+      },
+      function_return: { //{ function to call, return value }
+        Function: "function",
+        Date: "date",
+        Object: "object",
+        Array: "array",
+        String: "string",
+        Number: "number",
+        Integer: "integer",
+        Float: "float",
+        Boolean: "boolean",
+        Null: "null",
+        Undefined: "undefined",
+        Empty: "empty",
+        HTML_Element: "html_element",
+        CSS_Color: (LCF.options.britishReturnValues) ? "css_colour" : "css_color",
+        CSS_Position: "css_position",
+        CSS_FontFamily: "css_fontFamily",
+        CSS_FontSize: "css_fontSize",
+        Event: "event",
+        AnimationEvent: "animation_event",
+        ClipboardEvent: "clipboard_event",
+        DragEvent: "drag_event",
+        FocusEvent: "focus_event",
+        HashChangeEvent: "hash_change_event",
+        InputEvent: "input_event",
+        KeyboardEvent: "keyboard_event",
+        MouseEvent: "mouse_event",
+        PageTransitionEvent: "page_transition_event",
+        PopStateEvent: "pop_state_event",
+        ProgressEvent: "progress_event",
+        StorageEvent: "storage_event",
+        TouchEvent: "touch_event",
+        TransitionEvent: "transition_event",
+        UIEvent: "ui_event",
+        WheelEvent: "wheel_event",
+        Error: "error",
+        EvalError: "eval_error",
+        RangeError: "range_error",
+        ReferenceError: "refrence_error",
+        SyntaxError: "syntax_error",
+        TypeError: "type_error",
+        URIError: "URI_error",
+      }
     },
     timers: []
+  },
+  options: {
+    britishReturnValues: false, //does not effect parameters passed, or functions called, only values returned.
   }
 };
 
@@ -1552,8 +1896,8 @@ class Timer {
     }
   }
   set time(time) {
-    if (!LCF.IsType.Number(time))
-      throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+    if (!LCF.Type.Number(time))
+      throw `USER ERROR: Invalid data type sent to variable: "time", in class: "Timer".\n\nERROR: Value passed must be a Number! Value passed: "${time}"`;
 
     if (this.stopwatch)
       this._clock = new Date().getTime() - time;
@@ -1579,8 +1923,8 @@ class Timer {
     return this._requestedDestruction;
   }
   addTime = time => {
-    if (!LCF.IsType.Number(time))
-      throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+    if (!LCF.Type.Number(time))
+      throw `USER ERROR: Invalid data type sent to function: "addTime", in class: "Timer".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${time}"`;
 
     if (this._stopwatch)
       this._clock -= time;
@@ -1588,8 +1932,8 @@ class Timer {
       this._clock += time;
   }
   removeTime = time => {
-    if (!LCF.IsType.Number(time))
-      throw `USER ERROR: Invalid data type sent to function: "LCF.".\n\nERROR: `;
+    if (!LCF.Type.Number(time))
+      throw `USER ERROR: Invalid data type sent to function: "removeTime", in class: "Timer".\n\nERROR: parameter_1 must be a Number! Parameter passed: "${time}"`;
 
     if (this._stopwatch)
       this._clock += time;
@@ -1626,9 +1970,4 @@ class Timer {
   }
 }
 
-if (LCF.data.update.start) {
-  LCF.data.update.start = false;
-  LCF.data.update.running = true;
-
-  LCF.data.update.interval = setInterval(LCF.Update.update, LCF.data.update.speed);
-}
+LCF.Startup();

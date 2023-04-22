@@ -1,7 +1,7 @@
 function ResizeElements(event) {
     //Page Title
     const titleContainer = document.getElementById("SiteTitleContainer");
-    titleContainer.style.borderRadius = LCF.Elements.GetBorderRadius(titleContainer, 10);
+    titleContainer.style.borderRadius = LCF.Element.GetBorderRadius(titleContainer, 10);
 
     let lowestFontSize = Infinity;
 
@@ -10,10 +10,10 @@ function ResizeElements(event) {
 
     const titleButtons = titleContainer.children;
     for (const button of titleButtons) {
-        button.style.borderRadius = LCF.Elements.GetBorderRadius(button, borderRadius);
+        button.style.borderRadius = LCF.Element.GetBorderRadius(button, borderRadius);
 
         let fontSize = button.clientHeight;
-        const maxWidth = LCF.Elements.GetTextWidth(button.innerHTML, fontFamily, `${fontSize}px`) + 50;
+        const maxWidth = LCF.Element.GetTextWidth(button.innerHTML, fontFamily, `${fontSize}px`) + 50;
         if (maxWidth > button.clientWidth)
             fontSize = fontSize * (button.clientWidth / maxWidth);
 
@@ -27,7 +27,7 @@ function ResizeElements(event) {
     }
 
     if (!event) {
-        LCF.Page.FadeIn();
+        LCF.Page.Fade.In();
         document.body.style.opacity = 1;
     }
 }

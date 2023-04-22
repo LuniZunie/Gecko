@@ -8,7 +8,7 @@
         <%- `<style>${include("/workspace/Gecko/global_files/CSS/GlobalStyles.css")}</style>` %>
         <%- `<style>${include("../CSS/Animations.css")}</style>` %>
         <%- `<style>${include("../CSS/Main_CSS.css")}</style>` %>
-        
+
         <!-- JavaScript -->
         <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/Global_Load_Event.js")}</script>` %>
         <%- `<script>${include("/workspace/Gecko/global_files/JavaScript/LCF.js")}</script>` %>
@@ -16,10 +16,10 @@
     </head>
     <body onload="ResizeElements();" style="opacity: 0;">
         <div id="SiteTitleContainer">
-            <a id="SiteTitle" class="custom-button" onclick="LCF.Page.FadeTo('/home')">Gecko</a>
-            <a id="SinglePlayer" class="custom-button" onclick="LCF.Page.FadeTo('/singleplayer')">Single Player</a>
-            <a id="FindGames" class="custom-button" onclick="LCF.Page.FadeTo('/game/find')">Find Games</a>
-            <a id="CreateGame" class="custom-button" onclick="LCF.Page.FadeTo('/game/create')">Create Game</a>
+            <a id="SiteTitle" class="custom-button" onclick="LCF.Page.Fade.To('/home')">Gecko</a>
+            <a id="SinglePlayer" class="custom-button" onclick="LCF.Page.Fade.To('/singleplayer')">Single Player</a>
+            <a id="FindGames" class="custom-button" onclick="LCF.Page.Fade.To('/game/find')">Find Games</a>
+            <a id="CreateGame" class="custom-button" onclick="LCF.Page.Fade.To('/game/create')">Create Game</a>
         </div>
     </body>
 </html>
