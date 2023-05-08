@@ -999,7 +999,7 @@ const LCF = { //LuniZunie's Custom Functions
             newArray.push(+value);
           });
 
-          returnArrays.concat(newArray);
+          returnArrays.push(newArray);
         });
 
         return returnArrays;
@@ -1019,7 +1019,7 @@ const LCF = { //LuniZunie's Custom Functions
             newArray.push(value.toString());
           });
 
-          returnArrays.concat(newArray);
+          returnArrays.push(newArray);
         });
 
         return returnArrays;
@@ -1039,7 +1039,7 @@ const LCF = { //LuniZunie's Custom Functions
             newArray.push(Boolean(value));
           });
 
-          returnArrays.concat(newArray);
+          returnArrays.push(newArray);
         });
 
         return returnArrays;
@@ -1066,18 +1066,18 @@ const LCF = { //LuniZunie's Custom Functions
         });
 
         const returnArray = [];
-        arrays.forEach((value, valueIndex) => {
+        arrays[0].forEach((value, valueIndex) => {
           let returnNumber = 0;
 
           arrays.forEach((array, arrayIndex) => {
-            if (!arrayIndex) {
-              returnNumber = arrayIndex;
-              return;
-            }
-
             const arrayValue = array[valueIndex];
             if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
+
+            if (!arrayIndex) {
+              returnNumber = arrayValue;
+              return;
+            }
 
             returnNumber = LCF.Math.Add(returnNumber, arrayValue);
           });
@@ -1096,7 +1096,7 @@ const LCF = { //LuniZunie's Custom Functions
             throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
         }
 
-        arrays.forEach(array => {
+        arrays[0].forEach(array => {
           switch(false) {
             case LCF.Type.Array(array):
               throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
@@ -1110,14 +1110,14 @@ const LCF = { //LuniZunie's Custom Functions
           let returnNumber = 0;
 
           arrays.forEach((array, arrayIndex) => {
-            if (!arrayIndex) {
-              returnNumber = arrayIndex;
-              return;
-            }
-
             const arrayValue = array[valueIndex];
             if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
+
+            if (!arrayIndex) {
+              returnNumber = arrayValue;
+              return;
+            }
 
             returnNumber = LCF.Math.Subtract(returnNumber, arrayValue);
           });
@@ -1146,18 +1146,18 @@ const LCF = { //LuniZunie's Custom Functions
         });
 
         const returnArray = [];
-        arrays.forEach((value, valueIndex) => {
+        arrays[0].forEach((value, valueIndex) => {
           let returnNumber = 0;
 
           arrays.forEach((array, arrayIndex) => {
-            if (!arrayIndex) {
-              returnNumber = arrayIndex;
-              return;
-            }
-
             const arrayValue = array[valueIndex];
             if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
+
+            if (!arrayIndex) {
+              returnNumber = arrayValue;
+              return;
+            }
 
             returnNumber *= arrayValue;
           });
@@ -1186,18 +1186,18 @@ const LCF = { //LuniZunie's Custom Functions
         });
 
         const returnArray = [];
-        arrays.forEach((value, valueIndex) => {
+        arrays[0].forEach((value, valueIndex) => {
           let returnNumber = 0;
 
           arrays.forEach((array, arrayIndex) => {
-            if (!arrayIndex) {
-              returnNumber = arrayIndex;
-              return;
-            }
-
             const arrayValue = array[valueIndex];
             if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
+
+            if (!arrayIndex) {
+              returnNumber = arrayValue;
+              return;
+            }
 
             returnNumber /= arrayValue;
           });
@@ -1226,18 +1226,18 @@ const LCF = { //LuniZunie's Custom Functions
         });
 
         const returnArray = [];
-        arrays.forEach((value, valueIndex) => {
+        arrays[0].forEach((value, valueIndex) => {
           let returnNumber = 0;
 
           arrays.forEach((array, arrayIndex) => {
-            if (!arrayIndex) {
-              returnNumber = arrayIndex;
-              return;
-            }
-
             const arrayValue = array[valueIndex];
             if (!LCF.Type.Number(arrayValue))
               throw `USER ERROR: Invalid data type sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Array values! Parameter passed: "${array}" (INDEX: ${valueIndex})`;
+
+            if (!arrayIndex) {
+              returnNumber = arrayValue;
+              return;
+            }
 
             returnNumber **= arrayValue;
           });
@@ -1251,18 +1251,19 @@ const LCF = { //LuniZunie's Custom Functions
     Maths: LCF.Array.Math,
     LimitValueType: (array, ...types) => {
       if (!LCF.Type.Array(array))
-        throw `USER ERROR: Invalid data type sent to function: "LCF.Array.LimitValueType".\n\nERROR: `;
+        throw `USER ERROR: Invalid data type sent to function: "LCF.Array.LimitValueType".\n\nERROR: parameter_1 (array) must be an Array! Parameter passed: "${array}"  (TYPE: "${LCF.Type.Get(array)}")`;
 
       const allSupportedTypes = LCF.data.type.allSupported,
             supportedTypes = LCF.data.type.supported,
 
             mainTypes = [];
+
       types.forEach(type => {
         switch(false) {
           case LCF.Type.String(type):
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.LimitValueType".\n\nERROR: [parameter_2, parameter_infinity) must be a String! Parameters passed: "${types}" (INDEX: ${types.indexOf(type)})`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.LimitValueType".\n\nERROR: [parameter_2, parameter_infinity) (...types) must be a String! Parameters passed: "${types}" (INDEX: ${types.indexOf(type)})`;
           case allSupportedTypes.includes(type):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.LimitValueType".\n\nERROR: [parameter_2, parameter_infinity) must be one of the following Strings: "${allSupportedTypes.join(", ")}"! Parameters passed: "${types}" (INDEX: ${types.indexOf(type)})`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.LimitValueType".\n\nERROR: [parameter_2, parameter_infinity) (...types) must be one of the following Strings: "${allSupportedTypes.join(", ")}"! Parameters passed: "${types}" (INDEX: ${types.indexOf(type)})`;
           case Boolean(supportedTypes[type]):
             Object.entries(supportedTypes).some(([mainType, subTypes]) => {
               if (subTypes.includes(type)) {
@@ -1301,6 +1302,329 @@ const LCF = { //LuniZunie's Custom Functions
       return returnArray;
     }
   },
+  Object: {
+    ConvertTo: {
+      Number: (...objects) => {
+        if (!objects.length)
+          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Number"! ERROR: At least one Object must be passed!`;
+
+        let returnObjects = [];
+        objects.forEach(object => {
+          if (!LCF.Type.Object(object))
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.ConvertTo.Number"! ERROR: All parameters (...objects) passed must be an Object! Parameters passed: "${objects}" (INDEX: "${objects.indexOf(object)}") (TYPE: "${LCF.Type.Get(object)}")`;
+
+          const newObject = {};
+          Object.entries(object).forEach(([key, value]) => {
+            newObject[key] = +value;
+          });
+
+          returnObjects.push(newObject);
+        });
+
+        return returnObjects;
+      },
+      Num: LCF.Object.ConvertTo.Number,
+      String: (...objects) => {
+        if (!objects.length)
+          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.String"! ERROR: At least one Object must be passed!`;
+
+        let returnObjects = [];
+        objects.forEach(object => {
+          if (!LCF.Type.Object(object))
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.ConvertTo.String"! ERROR: All parameters (...objects) passed must be an Object! Parameters passed: "${objects}" (INDEX: "${objects.indexOf(object)}") (TYPE: "${LCF.Type.Get(object)}")`;
+
+          const newObject = {};
+          Object.entries(object).forEach(([key, value]) => {
+            newObject[key] = +value;
+          });
+
+          returnObjects.push(newObject);
+        });
+
+        return returnObjects;
+      },
+      Str: LCF.Object.ConvertTo.String,
+      Boolean: (...objects) => {
+        if (!objects.length)
+          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Boolean"! ERROR: At least one Object must be passed!`;
+
+        let returnObjects = [];
+        objects.forEach(object => {
+          if (!LCF.Type.Object(object))
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.ConvertTo.Boolean"! ERROR: All parameters (...objects) passed must be an Object! Parameters passed: "${objects}" (INDEX: "${objects.indexOf(object)}") (TYPE: "${LCF.Type.Get(object)}")`;
+
+          const newObject = {};
+          Object.entries(object).forEach(([key, value]) => {
+            newObject[key] = +value;
+          });
+
+          returnObjects.push(newObject);
+        });
+
+        return returnObjects;
+      },
+      Bool: LCF.Object.ConvertTo.Boolean
+    },
+    Math: {
+      Add: (...objects) => {
+        const firstObjectLength = Obkect.keys(objects[0]).length;
+        switch(false) {
+          case LCF.Type.Object(objects[0]):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+          case firstObjectLength:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+        }
+
+        objects.forEach(object => {
+          switch(false) {
+            case LCF.Type.Object(object):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+            case (Object.keys(object).length === firstObjectLength):
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+          }
+        });
+
+        const returnObject = {};
+        Object.entries(objects[0]).forEach(([value, key]) => {
+          let returnNumber = 0;
+          let firstObject = true;
+
+          Object.values(objects).forEach(object => {
+            const objectValue = object[key];
+            if (!LCF.Type.Number(objectValue))
+              throw `USER ERROR: Invalid data type sent to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Object values! Parameter passed: "${object}" (KEY: ${key})`;
+
+            if (firstObject) {
+              returnNumber = objectValue;
+
+              firstObject = false;
+              return;
+            }
+
+            returnNumber = LCF.Math.Add(returnNumber, objectValue);
+          });
+
+          returnObject.push(returnNumber);
+        });
+
+        return returnObject;
+      },
+      Subtract: (...objects) => {
+        const firstObjectLength = Obkect.keys(objects[0]).length;
+        switch(false) {
+          case LCF.Type.Object(objects[0]):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+          case firstObjectLength:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+        }
+
+        objects.forEach(object => {
+          switch(false) {
+            case LCF.Type.Object(object):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+            case (Object.keys(object).length === firstObjectLength):
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+          }
+        });
+
+        const returnObject = {};
+        Object.entries(objects[0]).forEach(([value, key]) => {
+          let returnNumber = 0;
+          let firstObject = true;
+
+          Object.values(objects).forEach(object => {
+            const objectValue = object[key];
+            if (!LCF.Type.Number(objectValue))
+              throw `USER ERROR: Invalid data type sent to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Object values! Parameter passed: "${object}" (KEY: ${key})`;
+
+            if (firstObject) {
+              returnNumber = objectValue;
+
+              firstObject = false;
+              return;
+            }
+
+            returnNumber = LCF.Math.Subtract(returnNumber, objectValue);
+          });
+
+          returnObject.push(returnNumber);
+        });
+
+        return returnObject;
+      },
+      Multiply: (...objects) => {
+        const firstObjectLength = Obkect.keys(objects[0]).length;
+        switch(false) {
+          case LCF.Type.Object(objects[0]):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+          case firstObjectLength:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+        }
+
+        objects.forEach(object => {
+          switch(false) {
+            case LCF.Type.Object(object):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+            case (Object.keys(object).length === firstObjectLength):
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+          }
+        });
+
+        const returnObject = {};
+        Object.entries(objects[0]).forEach(([value, key]) => {
+          let returnNumber = 0;
+          let firstObject = true;
+
+          Object.values(objects).forEach(object => {
+            const objectValue = object[key];
+            if (!LCF.Type.Number(objectValue))
+              throw `USER ERROR: Invalid data type sent to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Object values! Parameter passed: "${object}" (KEY: ${key})`;
+
+            if (firstObject) {
+              returnNumber = objectValue;
+
+              firstObject = false;
+              return;
+            }
+
+            returnNumber *= objectValue;
+          });
+
+          returnObject.push(returnNumber);
+        });
+
+        return returnObject;
+      },
+      Divide: (...objects) => {
+        const firstObjectLength = Obkect.keys(objects[0]).length;
+        switch(false) {
+          case LCF.Type.Object(objects[0]):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+          case firstObjectLength:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.DIvide".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+        }
+
+        objects.forEach(object => {
+          switch(false) {
+            case LCF.Type.Object(object):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+            case (Object.keys(object).length === firstObjectLength):
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+          }
+        });
+
+        const returnObject = {};
+        Object.entries(objects[0]).forEach(([value, key]) => {
+          let returnNumber = 0;
+          let firstObject = true;
+
+          Object.values(objects).forEach(object => {
+            const objectValue = object[key];
+            if (!LCF.Type.Number(objectValue))
+              throw `USER ERROR: Invalid data type sent to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Object values! Parameter passed: "${object}" (KEY: ${key})`;
+
+            if (firstObject) {
+              returnNumber = objectValue;
+
+              firstObject = false;
+              return;
+            }
+
+            returnNumber /= objectValue;
+          });
+
+          returnObject.push(returnNumber);
+        });
+
+        return returnObject;
+      },
+      Power: (...objects) => {
+        const firstObjectLength = Obkect.keys(objects[0]).length;
+        switch(false) {
+          case LCF.Type.Object(objects[0]):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+          case firstObjectLength:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+        }
+
+        objects.forEach(object => {
+          switch(false) {
+            case LCF.Type.Object(object):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+            case (Object.keys(object).length === firstObjectLength):
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+          }
+        });
+
+        const returnObject = {};
+        Object.entries(objects[0]).forEach(([value, key]) => {
+          let returnNumber = 0;
+          let firstObject = true;
+
+          Object.values(objects).forEach(object => {
+            const objectValue = object[key];
+            if (!LCF.Type.Number(objectValue))
+              throw `USER ERROR: Invalid data type sent to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) can only contain Numbers as Object values! Parameter passed: "${object}" (KEY: ${key})`;
+
+            if (firstObject) {
+              returnNumber = objectValue;
+
+              firstObject = false;
+              return;
+            }
+
+            returnNumber **= objectValue;
+          });
+
+          returnObject.push(returnNumber);
+        });
+
+        return returnObject;
+      }
+    },
+    LimitValueType: (object, ...types) => {
+      if (!LCF.Type.Object(object))
+        throw `USER ERROR: Invalid data type sent to function: "LCF.Object.LimitValueType".\n\nERROR: parameter_1 (object) must be an Object! Parameter passed: "${object}"  (TYPE: "${LCF.Type.Get(object)}")`;
+
+      const allSupportedTypes = LCF.data.type.allSupported,
+            supportedTypes = LCF.data.type.supported,
+
+            mainTypes = [];
+
+      types.forEach(type => {
+        switch(false) {
+          case LCF.Type.String(type):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.LimitValueType".\n\nERROR: [parameter_2, parameter_infinity) (...types) must be a String! Parameters passed: "${types}" (INDEX: ${types.indexOf(type)})`;
+          case allSupportedTypes.includes(type):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.LimitValueType".\n\nERROR: [parameter_2, parameter_infinity) (...types) must be one of the following Strings: "${allSupportedTypes.join(", ")}"! Parameters passed: "${types}" (INDEX: ${types.indexOf(type)})`;
+          case Boolean(supportedTypes[type]):
+            Object.entries(supportedTypes).some(([mainType, subTypes]) => {
+              if (subTypes.includes(type)) {
+                mainTypes.push(mainType);
+
+                return true;
+              }
+            });
+            break;
+          default:
+            mainTypes.push(type);
+            break;
+        }
+      });
+
+      const tempObject = {};
+      Object.entries(object).forEach(([key, value]) => {
+        const valueType = LCF.Type.Get(value);
+        if (mainTypes.some(type => {
+          return (valueType === type);
+        }))
+          tempObject[key] = value;
+      });
+
+      return tempObject;
+    }
+  },
+  Obj: LCF.Object,
   Number: {
     InRange: (numbers = [0], range = [0, 1], inclusive = [true, true], singleValue = true) => {
       inclusive = LCF.Array.LimitValueType(inclusive, "boolean");
