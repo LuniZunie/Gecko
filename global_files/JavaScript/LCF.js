@@ -1582,6 +1582,7 @@ const LCF = { //LuniZunie's Custom Functions
         return returnObject;
       }
     },
+    Maths: LCF.Object.Math,
     LimitValueType: (object, ...types) => {
       if (!LCF.Type.Object(object))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Object.LimitValueType".\n\nERROR: parameter_1 (object) must be an Object! Parameter passed: "${object}"  (TYPE: "${LCF.Type.Get(object)}")`;
