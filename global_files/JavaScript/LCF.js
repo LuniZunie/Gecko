@@ -824,6 +824,24 @@ const LCF = { //LuniZunie's Custom Functions
     Hex_Bin: LCF.Math.HexadecimalToBinary
   },
   Maths: LCF.Math,
+  Physics: {
+    ElasticCollision: (mass_1, velocity_initial_1, mass_2, velocity_initial_2) => {
+      switch (false) {
+        case LCF.Type.Number(mass_1):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_1 (mass_1) must be a Number! Parameter passed: "${mass_1}" (TYPE: "${LCF.Type.Get(mass_1)}")`;
+        case LCF.Type.Number(velocity_initial_1):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_2 (velocity_initial_1) must be a Number! Parameter passed: "${velocity_initial_1}" (TYPE: "${LCF.Type.Get(velocity_initial_1)}")`;
+        case LCF.Type.Number(mass_2):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_3 (mass_2) must be a Number! Parameter passed: "${mass_2}" (TYPE: "${LCF.Type.Get(mass_2)}")`;
+        case LCF.Type.Number(velocity_initial_2):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Window.Alert".\n\nERROR: parameter_4 (velocity_initial_2) must be a Number! Parameter passed: "${velocity_initial_2}" (TYPE: "${LCF.Type.Get(velocity_initial_2)}")`;
+      }
+
+      //m1*v1i + m2*v2i = m1*v1f + m2*v2f
+
+      //v1f = (m1-m2)/(m1+m2)v1i + (2m2/m1+m2)v2i
+    }
+  },
   Type: {
     Get: value => {
       const returnType = [];
@@ -1623,6 +1641,21 @@ const LCF = { //LuniZunie's Custom Functions
       });
 
       return tempObject;
+    },
+    KeysOf: (object, ...values) => {
+      if (!LCF.Type.Object(object))
+        throw `USER ERROR: Invalid data type sent to function: "LCF.Object.KeysOf".\n\nERROR: parameter_1 must be an Object! Parameter passed: "${object}"`;
+
+        const returnObject = {};
+        Object.entries(object).forEach(([key, value]) => {
+          values.forEach(valueToCheck => {
+            returnObject[valueToCheck] ??= [];
+            if (value === valueToCheck)
+              returnObject[valueToCheck].push(key);
+          });
+        });
+
+        return returnObject;
     }
   },
   Obj: LCF.Object,
