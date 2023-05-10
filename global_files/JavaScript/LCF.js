@@ -840,6 +840,7 @@ const LCF = { //LuniZunie's Custom Functions
       //m1*v1i + m2*v2i = m1*v1f + m2*v2f
 
       //v1f = (m1-m2)/(m1+m2)v1i + (2m2/m1+m2)v2i
+      //v2f = (2m1/m1+m2)v1i + (m2-m1)/(m1+m2)v2i
     }
   },
   Type: {
