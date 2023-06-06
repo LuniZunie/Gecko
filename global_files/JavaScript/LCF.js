@@ -533,27 +533,99 @@ const LCF = { //LuniZunie's Custom Functions
 
         return Object.entries(object)[Math.floor(Math.random() * Object.keys(object).length)];
       },
-      Weighted: (min, max, standardDeviation, mean, returnAmounts) => { //prob doesn't work
+      Weighted: (points, returnAmounts, mergeAlgorithm = "average", negativeAlgorithm = "zero") => { //prob doesn't work
         switch(false) {
-          case LCF.Type.Number(min):
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (min) must be a Number! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
-          case LCF.Type.Number(max):
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_2 (max) must be a Number! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
-          case min < max:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (min) can not be greater than parameter_2 (max)! Parameters passed: "${min}" (min), "${max}" (max)`;
-          case LCF.Type.Number(standardDeviation):
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_3 (standardDeviation) must be a Number! Parameter passed: "${standardDeviation}" (TYPE: "${LCF.Type.Get(standardDeviation)}")`;
-          case LCF.Type.Number(mean):
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_4 (mean) must be a Number! Parameter passed: "${mean}" (TYPE: "${LCF.Type.Get(mean)}")`;
+          case LCF.Type.Array(points):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) must be an Array! Parameter passed: "${points}" (TYPE: "${LCF.Type.Get(points)}")`;
           case LCF.Type.Number(returnAmounts):
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_5 (returnAmounts) must be a Number! Parameter passed: "${returnAmounts}" (TYPE: "${LCF.Type.Get(returnAmounts)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_2 (returnAmounts) must be a Number! Parameter passed: "${returnAmounts}" (TYPE: "${LCF.Type.Get(returnAmounts)}")`;
+          case LCF.Type.String(mergeAlgorithm):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_3 (mergeAlgorithm) must be a String! Parameter passed: "${mergeAlgorithm}" (TYPE: "${LCF.Type.Get(mergeAlgorithm)}")`;
+          case LCF.Type.String(negativeAlgorithm):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_4 (negativeAlgorithm) must be a String! Parameter passed: "${negativeAlgorithm}" (TYPE: "${LCF.Type.Get(negativeAlgorithm)}")`;
+          case ["average, max, min, add, subtract, multiply, divide"].includes(mergeAlgorithm):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_3 (mergeAlgorithm) must be one of the following strings: "average, max, min, add, subtract, multiply, divide"! Parameter passed: "${mergeAlgorithm}"`;
+          case ["zero, remove, absolute, shift"].includes(negativeAlgorithm):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_4 (negativeAlgorithm) must be one of the following strings: "zero, remove, absolute, shift"! Parameter passed: "${negativeAlgorithm}"`;
         }
 
-        let weights = [];
+        const extremes = {
+          min: Math.min(points.forEach(point => {
+            if (LCF.Type.Number(point?.min))
+              return point.min;
 
-        const increment = (max - min) / returnAmounts;
-        for (let x = min;x < max;x += increment)
-	        weights.push(1/(standardDeviation*(2*Math.PI)**(1/2))*Math.E**(((x-mean)/standardDeviation)**2/-2));
+            return Infinity;
+          })),
+          max: Math.max(points.forEach(point => {
+            if (LCF.Type.Number(point?.max))
+              return point.max;
+
+            return -Infinity;
+          }))
+        };
+        const increment = (extremes.max - extremes.min) / returnAmounts;
+
+        let pointWeights = [];
+        points.forEach((point, index) => {
+          if (!LCF.Type.Object(point))
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) can only contain Objects as values! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(point)}")`;
+
+          const min = point.min,
+            max = point.max,
+            mean = point.mean,
+            standardDeviation = point.standardDeviation,
+            inverse = point.inverse ?? false;
+
+          const pointKeys = Object.keys(points);
+          switch(false) {
+            case [4, 5].includes(pointKeys.length):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) must contain 4 or 5 values! Parameter passed: "${points}" (OBJECT_LENGTH: "${Object.keys(points).length}")`;
+            case pointKeys.includes("min"):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) must contain Objects with the key: "min"! Parameter passed: "${points}" (INDEX: "${index}")`;
+            case pointKeys.includes("max"):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) must contain Objects with the key: "max"! Parameter passed: "${points}" (INDEX: "${index}")`;
+            case pointKeys.includes("mean"):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) must contain Objects with the key: "mean"! Parameter passed: "${points}" (INDEX: "${index}")`;
+            case pointKeys.includes("standardDeviation"):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) must contain Objects with the key: "standardDeviation"! Parameter passed: "${points}" (INDEX: "${index}")`;
+
+            case LCF.Type.Number(min):
+              throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of min in Object in parameter_1 (points) must be a Number! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
+            case LCF.Type.Number(max):
+              throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of max in Object in parameter_1 (points) must be a Number! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
+            case min < max:
+              throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of min in Object in parameter_1 (points) cannot be greater than value of max in Object in parameter_3 (points)! Parameter passed: "${points}" (INDEX: "${index}")`;
+            case LCF.Type.Number(mean):
+              throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of mean in Object in parameter_1 (points) must be a Number! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(mean)}")`;
+            case LCF.Type.Number(standardDeviation):
+              throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of standardDeviation in Object in parameter_1 (points) must be a Number! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(standardDeviation)}")`;
+          }
+
+          if (pointKeys.length === 5) {
+            switch(false) {
+              case pointKeys.includes("inverse"):
+                throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Unknown key in Object in parameter_1 (points)! Parameter passed: "${points}" (INDEX: "${index}") (KEY: "${pointKeys.filter(key => !["standardDeviation","mean","inverse"].includes(key))}")`;
+              case LCF.Type.Boolean(inverse):
+                throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of inverse in Object in parameter_1 (points) must be a Boolean! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(inverse)}")`;
+            }
+          }
+
+          pointWeights[index] = [];
+          for (let x = extremes.min;x < extremes.max;x += increment) {
+            if (x < min)
+              pointWeights[index].push(undefined);
+            else if (x < max)
+              pointWeights[index].push(1/(standardDeviation*(2*Math.PI)**(1/2))*Math.E**(((x-mean)/standardDeviation)**2/-2));
+            else
+              pointWeights[index].push(undefined);
+          }
+
+          const maxWeight = Math.max(...pointWeights);
+          if (inverse)
+            pointWeights[index] = pointWeights[index].forEach(value => maxWeight - value);
+        });
+
+        let weights = [];
 
         const totalWeight = weights.reduce((total, value) => total + value);
 
@@ -566,7 +638,7 @@ const LCF = { //LuniZunie's Custom Functions
 	        threshold += weights[i];
 
           if (unweightedRandom <= threshold) {
-    	      weightedRandom = i + min;
+    	      weightedRandom = i + extremes.min;
             break;
           }
         }
