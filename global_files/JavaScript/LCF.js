@@ -511,6 +511,66 @@ const LCF = { //LuniZunie's Custom Functions
 
       return +returnNumber.toFixed(maxDecimals); //remove end decimals
     },
+    Random: {
+      Pseudo: function*(seed) {
+        let index = 1;
+	      while(true) {
+		      yield Math.abs(Math.sin(index + seed)) % 0.0001 * 10000;
+          index++;
+          while(index + seed === 0 || !((index + seed) % Math.PI))
+            index++;
+        }
+      },
+      Weighted: () => {
+
+      },
+      Integer: (min, max, inclusive = [true, false]) => {
+        if (!LCF.Type.Integer(min))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_1 (min) must be an Integer! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
+        else if (!LCF.Type.Integer(max))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_2 (max) must be an Integer! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
+        else if (min > max)
+          throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_1 (min) can not be greater than parameter_2 (max)! Parameters passed: "${min}" (min), "${max}" (max)`;
+        else if (inclusive.length !== 2)
+          throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_3 (inclusive) must contain 2 boolean values! Parameter passed: "${inclusive}" (ARRAY_LENGTH: "${inclusive.length}")`;
+
+        switch (inclusive) {
+          case [false, false]:
+            return Math.floor(Math.random() * (max - min - 1) + min + 1);
+          case [true, false]:
+            return Math.floor(Math.random() * (max - min) + min);
+          case [false, true]:
+            return Math.floor(Math.random() * (max - min) + min + 1);
+          case [true, true]:
+            return Math.floor(Math.random() * (max - min + 1) + min);
+          default:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_3 (inclusive) must contain 2 Boolean values! Parameter passed: "${inclusive}"`;
+        }
+      },
+      Float: (min, max, inclusive = [true, false]) => { //set up inclusive stuff
+        if (!LCF.Type.Float(min))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_1 (min) must be a Float! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
+        else if (!LCF.Type.Float(max))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_2 (max) must be a Float! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
+        else if (min > max)
+          throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_1 (min) can not be greater than parameter_2 (max)! Parameters passed: "${min}" (min), "${max}" (max)`;
+        else if (inclusive.length !== 2)
+          throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_3 (inclusive) must contain 2 boolean values! Parameter passed: "${inclusive}" (ARRAY_LENGTH: "${inclusive.length}")`;
+
+        switch (inclusive) {
+          case [false, false]:
+            return Math.random() * (max - min - 1) + min + 1;
+          case [true, false]:
+            return Math.random() * (max - min) + min;
+          case [false, true]:
+            return Math.random() * (max - min) + min + 1;
+          case [true, true]:
+            return Math.random() * (max - min + 1) + min;
+          default:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_3 (inclusive) must contain 2 Boolean values! Parameter passed: "${inclusive}"`;
+        }
+      }
+    },
     Random: (random = true, weights = []) => { //random = min, weights = max for random number
       if (LCF.Type.Boolean(random)) {
         const totalWeight = weights.reduce((sum, value) => sum + value, 0);
@@ -563,7 +623,7 @@ const LCF = { //LuniZunie's Custom Functions
       if (!LCF.Type.Array(dimensions))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 (dimensions) must be an Array! Parameter passed: "${dimensions}" (TYPE: "${LCF.Type.Get(dimensions)}")`;
       else if (!dimensions.length)
-        throw `USER ERROR: Invalid data to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 (dimensions) cannot be an empty array! Parameter passed: "${dimensions}"`;
+        throw `USER ERROR: Invalid data to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 (dimensions) cannot be an empty array! Parameter passed: "${dimensions}" (ARRAY_LENGTH: "${dimensions.length}")`;
 
       const returnCoords = {},
             dimensionLetters = ["x", "y", "z", "w"]; //W is commonly seen as the "4th" spacial dimension
@@ -572,7 +632,7 @@ const LCF = { //LuniZunie's Custom Functions
         if (!LCF.Type.Array(dimension))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 (dimensions) can only contain Arrays with 2 Number values! Parameter passed: "${dimensions}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(dimensions)}")`;
         else if (dimension.length !== 2)
-          throw `USER ERROR: Invalid data to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 (dimensions) can only contain Arrays with 2 Number values! Parameter passed: "${dimensions}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(dimensions)}")`;
+          throw `USER ERROR: Invalid data to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 (dimensions) can only contain Arrays with 2 Number values! Parameter passed: "${dimensions}" (INDEX: "${index}") (ARRAY_LENGTH: "${dimension.length}")`;
 
         if (!LCF.Type.Number(+dimension[0], +dimension[1]))
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.RandomCoordinates".\n\nERROR: parameter_1 (dimensions) can only contain Arrays with 2 Number values! Parameter passed: "${dimensions}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(dimensions)}")`;
@@ -589,9 +649,9 @@ const LCF = { //LuniZunie's Custom Functions
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Distance".\n\nERROR: parameter_2 (second_coordinate) must be an Array! Parameter passed: "${secondCoordinate}" (TYPE: "${LCF.Type.Get(secondCoordinate)}")`;
 
       if (firstCoordinate.length !== 2)
-        throw `USER ERROR: Invalid data sent to function: "LCF.Math.Distance".\n\nERROR: parameter_1 (first_coordinate) must contain 2 values! Parameter passed: "${firstCoordinate}"`;
+        throw `USER ERROR: Invalid data sent to function: "LCF.Math.Distance".\n\nERROR: parameter_1 (first_coordinate) must contain 2 values! Parameter passed: "${firstCoordinate} (ARRAY_LENGTH: "${firstCoordinate.length}")"`;
       else if (secondCoordinate.length !== 2)
-        throw `USER ERROR: Invalid data sent to function: "LCF.Math.Distance".\n\nERROR: parameter_2 (second_coordinate) must contain 2 values! Parameter passed: "${secondCoordinate}"`;
+        throw `USER ERROR: Invalid data sent to function: "LCF.Math.Distance".\n\nERROR: parameter_2 (second_coordinate) must contain 2 values! Parameter passed: "${secondCoordinate} (ARRAY_LENGTH: "${secondCoordinate.length}")"`;
 
       const [x1, y1] = firstCoordinate,
             [x2, y2] = secondCoordinate;
@@ -615,10 +675,10 @@ const LCF = { //LuniZunie's Custom Functions
       else if (!LCF.Type.Array(secondCoordinate))
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_2 (second_coordinate) must be an Array! Parameter passed: "${secondCoordinate}" (TYPE: "${LCF.Type.Get(secondCoordinate)}")`;
 
-      if (firstCoordinate.length !== 2)
-        throw `USER ERROR: Invalid data sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_1 (first_coordinate) must contain 2 values! Parameter passed: "${firstCoordinate}"`;
+        if (firstCoordinate.length !== 2)
+        throw `USER ERROR: Invalid data sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_1 (first_coordinate) must contain 2 values! Parameter passed: "${firstCoordinate} (ARRAY_LENGTH: "${firstCoordinate.length}")"`;
       else if (secondCoordinate.length !== 2)
-        throw `USER ERROR: Invalid data sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_2 (second_coordinate) must contain 2 values! Parameter passed: "${secondCoordinate}"`;
+        throw `USER ERROR: Invalid data sent to function: "LCF.Math.CoordinatesInArea".\n\nERROR: parameter_2 (second_coordinate) must contain 2 values! Parameter passed: "${secondCoordinate} (ARRAY_LENGTH: "${secondCoordinate.length}")"`;
 
       const [x1, y1] = firstCoordinate,
             [x2, y2] = secondCoordinate;
@@ -663,9 +723,9 @@ const LCF = { //LuniZunie's Custom Functions
         throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Slope".\n\nERROR: parameter_2 (second_coordinate) must be an Array! Parameter passed: "${secondCoordinate}" (TYPE: "${LCF.Type.Get(secondCoordinate)}")`;
 
       if (firstCoordinate.length !== 2)
-        throw `USER ERROR: Invalid data sent to function: "LCF.Math.Slope".\n\nERROR: parameter_1 (first_coordinate) must contain 2 values! Parameter passed: "${firstCoordinate}"`;
+        throw `USER ERROR: Invalid data sent to function: "LCF.Math.Slope".\n\nERROR: parameter_1 (first_coordinate) must contain 2 values! Parameter passed: "${firstCoordinate} (ARRAY_LENGTH: "${firstCoordinate.length}")"`;
       else if (secondCoordinate.length !== 2)
-        throw `USER ERROR: Invalid data sent to function: "LCF.Math.Slope".\n\nERROR: parameter_2 (second_coordinate) must contain 2 values! Parameter passed: "${secondCoordinate}"`;
+        throw `USER ERROR: Invalid data sent to function: "LCF.Math.Slope".\n\nERROR: parameter_2 (second_coordinate) must contain 2 values! Parameter passed: "${secondCoordinate} (ARRAY_LENGTH: "${secondCoordinate.length}")"`;
 
       const [x1, y1] = firstCoordinate,
             [x2, y2] = secondCoordinate;
@@ -1006,12 +1066,12 @@ const LCF = { //LuniZunie's Custom Functions
     ConvertTo: {
       Number: (...arrays) => {
         if (!arrays.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.Number"! ERROR: At least one Array must be passed!`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.Number"! ERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (ARRAY_LENGTH: "${arrays.length}")`;
 
         let returnArrays = [];
         arrays.forEach(array => {
           if (!LCF.Type.Array(array))
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Number"! ERROR: All parameters (...arrays) passed must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Number"! ERROR: [parameter_1, parameter_infinity) (...arrays) passed must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
 
           const newArray = [];
           array.forEach(value => {
@@ -1026,12 +1086,12 @@ const LCF = { //LuniZunie's Custom Functions
       Num: LCF.Array.ConvertTo.Number,
       String: (...arrays) => {
         if (!arrays.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.String"! ERROR: At least one Array must be passed!`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.String"! ERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (ARRAY_LENGTH: "${arrays.length}")`;
 
         let returnArrays = [];
         arrays.forEach(array => {
           if (!LCF.Type.Array(array))
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.String"! ERROR: All parameters (...arrays) passed must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.String"! ERROR: [parameter_1, parameter_infinity) (...arrays) passed must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
 
           const newArray = [];
           array.forEach(value => {
@@ -1046,12 +1106,12 @@ const LCF = { //LuniZunie's Custom Functions
       Str: LCF.Array.ConvertTo.String,
       Boolean: (...arrays) => {
         if (!arrays.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.Boolean"! ERROR: At least one Array must be passed!`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.Boolean"! ERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (ARRAY_LENGTH: "${arrays.length}")`;
 
         let returnArrays = [];
         arrays.forEach(array => {
           if (!LCF.Type.Array(array))
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Boolean"! ERROR: All parameters (...arrays) passed must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Boolean"! ERROR: [parameter_1, parameter_infinity) (...arrays) passed must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
 
           const newArray = [];
           array.forEach(value => {
@@ -1070,17 +1130,17 @@ const LCF = { //LuniZunie's Custom Functions
         const firstArrayLength = arrays[0].length;
         switch(false) {
           case LCF.Type.Array(arrays[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Add".\n\nERROR: parameter_1 (...arrays[0]) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (INDEX: 0) (ARRAY_LENGTH: "${arrays.length}")`;
         }
 
         arrays.forEach(array => {
           switch(false) {
             case LCF.Type.Array(array):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Add".\n\nERROR: [parameter_2, parameter_infinity) (...arrays) must be the same length as parameter_1 (...arrays[0])! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)}) (ARRAY_LENGTH: "${array.length}")`;
           }
         });
 
@@ -1110,17 +1170,17 @@ const LCF = { //LuniZunie's Custom Functions
         const firstArrayLength = arrays[0].length;
         switch(false) {
           case LCF.Type.Array(arrays[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: parameter_1 (...arrays[0]) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (INDEX: 0) (ARRAY_LENGTH: "${arrays.length}")`;
         }
 
-        arrays[0].forEach(array => {
+        arrays.forEach(array => {
           switch(false) {
             case LCF.Type.Array(array):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Subtract".\n\nERROR: [parameter_2, parameter_infinity) (...arrays) must be the same length as parameter_1 (...arrays[0])! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)}) (ARRAY_LENGTH: "${array.length}")`;
           }
         });
 
@@ -1150,17 +1210,17 @@ const LCF = { //LuniZunie's Custom Functions
         const firstArrayLength = arrays[0].length;
         switch(false) {
           case LCF.Type.Array(arrays[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Multiply".\n\nERROR: parameter_1 (...arrays[0]) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (INDEX: 0) (ARRAY_LENGTH: "${arrays.length}")`;
         }
 
         arrays.forEach(array => {
           switch(false) {
             case LCF.Type.Array(array):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Multiply".\n\nERROR: [parameter_2, parameter_infinity) (...arrays) must be the same length as parameter_1 (...arrays[0])! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)}) (ARRAY_LENGTH: "${array.length}")`;
           }
         });
 
@@ -1190,17 +1250,17 @@ const LCF = { //LuniZunie's Custom Functions
         const firstArrayLength = arrays[0].length;
         switch(false) {
           case LCF.Type.Array(arrays[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Divide".\n\nERROR: parameter_1 (...arrays[0]) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (INDEX: 0) (ARRAY_LENGTH: "${arrays.length}")`;
         }
 
         arrays.forEach(array => {
           switch(false) {
             case LCF.Type.Array(array):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Divide".\n\nERROR: [parameter_2, parameter_infinity) (...arrays) must be the same length as parameter_1 (...arrays[0])! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)}) (ARRAY_LENGTH: "${array.length}")`;
           }
         });
 
@@ -1230,17 +1290,17 @@ const LCF = { //LuniZunie's Custom Functions
         const firstArrayLength = arrays[0].length;
         switch(false) {
           case LCF.Type.Array(arrays[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Power".\n\nERROR: parameter_1 (...arrays[0]) must be an Array! Parameters passed: "${arrays}" (INDEX: 0)`;
           case firstArrayLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (INDEX: 0) (ARRAY_LENGTH: "${arrays.length}")`;
         }
 
         arrays.forEach(array => {
           switch(false) {
             case LCF.Type.Array(array):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) (...arrays) must be an Array! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
             case (array.length === firstArrayLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Array.Math.Power".\n\nERROR: [parameter_2, parameter_infinity) (...arrays) must be the same length as parameter_1 (...arrays[0])! Parameters passed: "${arrays}" (INDEX: ${arrays.indexOf(array)}) (ARRAY_LENGTH: "${array.length}")`;
           }
         });
 
@@ -1325,12 +1385,12 @@ const LCF = { //LuniZunie's Custom Functions
     ConvertTo: {
       Number: (...objects) => {
         if (!objects.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Number"! ERROR: At least one Object must be passed!`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Number"! ERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Array! Parameters passed: "${objects}" (ARRAY_LENGTH: "${objects.length}")`;
 
         let returnObjects = [];
         objects.forEach(object => {
           if (!LCF.Type.Object(object))
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.ConvertTo.Number"! ERROR: All parameters (...objects) passed must be an Object! Parameters passed: "${objects}" (INDEX: "${objects.indexOf(object)}") (TYPE: "${LCF.Type.Get(object)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.ConvertTo.Number"! ERROR: [parameter_1, parameter_infinity) (...objects) must be an Object! Parameters passed: "${objects}" (INDEX: "${objects.indexOf(object)}") (TYPE: "${LCF.Type.Get(object)}")`;
 
           const newObject = {};
           Object.entries(object).forEach(([key, value]) => {
@@ -1345,12 +1405,12 @@ const LCF = { //LuniZunie's Custom Functions
       Num: LCF.Object.ConvertTo.Number,
       String: (...objects) => {
         if (!objects.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.String"! ERROR: At least one Object must be passed!`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.String"! ERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Array! Parameters passed: "${objects}" (ARRAY_LENGTH: "${objects.length}")`;
 
         let returnObjects = [];
         objects.forEach(object => {
           if (!LCF.Type.Object(object))
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.ConvertTo.String"! ERROR: All parameters (...objects) passed must be an Object! Parameters passed: "${objects}" (INDEX: "${objects.indexOf(object)}") (TYPE: "${LCF.Type.Get(object)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.ConvertTo.String"! ERROR: [parameter_1, parameter_infinity) (...objects) must be an Object! Parameters passed: "${objects}" (INDEX: "${objects.indexOf(object)}") (TYPE: "${LCF.Type.Get(object)}")`;
 
           const newObject = {};
           Object.entries(object).forEach(([key, value]) => {
@@ -1365,12 +1425,12 @@ const LCF = { //LuniZunie's Custom Functions
       Str: LCF.Object.ConvertTo.String,
       Boolean: (...objects) => {
         if (!objects.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Boolean"! ERROR: At least one Object must be passed!`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Boolean"! ERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Array! Parameters passed: "${objects}" (ARRAY_LENGTH: "${objects.length}")`;
 
         let returnObjects = [];
         objects.forEach(object => {
           if (!LCF.Type.Object(object))
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.ConvertTo.Boolean"! ERROR: All parameters (...objects) passed must be an Object! Parameters passed: "${objects}" (INDEX: "${objects.indexOf(object)}") (TYPE: "${LCF.Type.Get(object)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Object.ConvertTo.Boolean"! ERROR: [parameter_1, parameter_infinity) (...objects) must be an Object! Parameters passed: "${objects}" (INDEX: "${objects.indexOf(object)}") (TYPE: "${LCF.Type.Get(object)}")`;
 
           const newObject = {};
           Object.entries(object).forEach(([key, value]) => {
@@ -1386,20 +1446,20 @@ const LCF = { //LuniZunie's Custom Functions
     },
     Math: {
       Add: (...objects) => {
-        const firstObjectLength = Obkect.keys(objects[0]).length;
+        const firstObjectLength = Object.keys(objects[0]).length;
         switch(false) {
           case LCF.Type.Object(objects[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Add".\n\nERROR: parameter_1 (...objects[0]) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
           case firstObjectLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Object! Parameters passed: "${objects}" (INDEX: 0) (OBJECT_LENGTH: "${objects.length}")`;
         }
 
         objects.forEach(object => {
           switch(false) {
             case LCF.Type.Object(object):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) (...objects) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
             case (Object.keys(object).length === firstObjectLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Add".\n\nERROR: [parameter_2, parameter_infinity) (...objects) must be the same length as parameter_1 (...objects[0])! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)}) (OBJECT_LENGTH: "${object.length}")`;
           }
         });
 
@@ -1429,20 +1489,20 @@ const LCF = { //LuniZunie's Custom Functions
         return returnObject;
       },
       Subtract: (...objects) => {
-        const firstObjectLength = Obkect.keys(objects[0]).length;
+        const firstObjectLength = Object.keys(objects[0]).length;
         switch(false) {
           case LCF.Type.Object(objects[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Subtract".\n\nERROR: parameter_1 (...objects[0]) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
           case firstObjectLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Object! Parameters passed: "${objects}" (INDEX: 0) (OBJECT_LENGTH: "${objects.length}")`;
         }
 
         objects.forEach(object => {
           switch(false) {
             case LCF.Type.Object(object):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) (...objects) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
             case (Object.keys(object).length === firstObjectLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Subtract".\n\nERROR: [parameter_2, parameter_infinity) (...objects) must be the same length as parameter_1 (...objects[0])! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)}) (OBJECT_LENGTH: "${object.length}")`;
           }
         });
 
@@ -1472,20 +1532,20 @@ const LCF = { //LuniZunie's Custom Functions
         return returnObject;
       },
       Multiply: (...objects) => {
-        const firstObjectLength = Obkect.keys(objects[0]).length;
+        const firstObjectLength = Object.keys(objects[0]).length;
         switch(false) {
           case LCF.Type.Object(objects[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Multiply".\n\nERROR: parameter_1 (...objects[0]) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
           case firstObjectLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Object! Parameters passed: "${objects}" (INDEX: 0) (OBJECT_LENGTH: "${objects.length}")`;
         }
 
         objects.forEach(object => {
           switch(false) {
             case LCF.Type.Object(object):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) (...objects) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
             case (Object.keys(object).length === firstObjectLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Multiply".\n\nERROR: [parameter_2, parameter_infinity) (...objects) must be the same length as parameter_1 (...objects[0])! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)}) (OBJECT_LENGTH: "${object.length}")`;
           }
         });
 
@@ -1515,20 +1575,20 @@ const LCF = { //LuniZunie's Custom Functions
         return returnObject;
       },
       Divide: (...objects) => {
-        const firstObjectLength = Obkect.keys(objects[0]).length;
+        const firstObjectLength = Object.keys(objects[0]).length;
         switch(false) {
           case LCF.Type.Object(objects[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Divide".\n\nERROR: parameter_1 (...objects[0]) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
           case firstObjectLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.DIvide".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Object! Parameters passed: "${objects}" (INDEX: 0) (OBJECT_LENGTH: "${objects.length}")`;
         }
 
         objects.forEach(object => {
           switch(false) {
             case LCF.Type.Object(object):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) (...objects) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
             case (Object.keys(object).length === firstObjectLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Divide".\n\nERROR: [parameter_2, parameter_infinity) (...objects) must be the same length as parameter_1 (...objects[0])! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)}) (OBJECT_LENGTH: "${object.length}")`;
           }
         });
 
@@ -1558,20 +1618,20 @@ const LCF = { //LuniZunie's Custom Functions
         return returnObject;
       },
       Power: (...objects) => {
-        const firstObjectLength = Obkect.keys(objects[0]).length;
+        const firstObjectLength = Object.keys(objects[0]).length;
         switch(false) {
           case LCF.Type.Object(objects[0]):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Power".\n\nERROR: parameter_1 (...objects[0]) must be an Object! Parameters passed: "${objects}" (INDEX: 0)`;
           case firstObjectLength:
-            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: 0)`;
+            throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Object! Parameters passed: "${objects}" (INDEX: 0) (OBJECT_LENGTH: "${objects.length}")`;
         }
 
         objects.forEach(object => {
           switch(false) {
             case LCF.Type.Object(object):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data sent to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) (...objects) must be an Object! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
             case (Object.keys(object).length === firstObjectLength):
-              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_1, parameter_infinity) must have at least one value! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)})`;
+              throw `USER ERROR: Invalid data to function: "LCF.Object.Math.Power".\n\nERROR: [parameter_2, parameter_infinity) (...objects) must be the same length as parameter_1 (...objects[0])! Parameters passed: "${objects}" (INDEX: ${objects.indexOf(object)}) (OBJECT_LENGTH: "${object.length}")`;
           }
         });
 
