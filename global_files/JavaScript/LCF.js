@@ -521,18 +521,69 @@ const LCF = { //LuniZunie's Custom Functions
             index++;
         }
       },
-      Weighted: () => {
+      Array: function(array) {
+        if (!LCF.Type.Array(array))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Array".\n\nERROR: parameter_1 (array) must be an Array! Parameter passed: "${array}" (TYPE: "${LCF.Type.Get(array)}")`;
 
+        return array[Math.floor(Math.random() * array.length)];
+      },
+      Object: function(object) {
+        if (!LCF.Type.Object(object))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Object".\n\nERROR: parameter_1 (object) must be an Object! Parameter passed: "${object}" (TYPE: "${LCF.Type.Get(object)}")`;
+
+        return Object.entries(object)[Math.floor(Math.random() * Object.keys(object).length)];
+      },
+      Weighted: (min, max, standardDeviation, mean, returnAmounts) => { //prob doesn't work
+        switch(false) {
+          case LCF.Type.Number(min):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (min) must be a Number! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
+          case LCF.Type.Number(max):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_2 (max) must be a Number! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
+          case min < max:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (min) can not be greater than parameter_2 (max)! Parameters passed: "${min}" (min), "${max}" (max)`;
+          case LCF.Type.Number(standardDeviation):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_3 (standardDeviation) must be a Number! Parameter passed: "${standardDeviation}" (TYPE: "${LCF.Type.Get(standardDeviation)}")`;
+          case LCF.Type.Number(mean):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_4 (mean) must be a Number! Parameter passed: "${mean}" (TYPE: "${LCF.Type.Get(mean)}")`;
+          case LCF.Type.Number(returnAmounts):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_5 (returnAmounts) must be a Number! Parameter passed: "${returnAmounts}" (TYPE: "${LCF.Type.Get(returnAmounts)}")`;
+        }
+
+        let weights = [];
+
+        const increment = (max - min) / returnAmounts;
+        for (let x = min;x < max;x += increment)
+	        weights.push(1/(standardDeviation*(2*Math.PI)**(1/2))*Math.E**(((x-mean)/standardDeviation)**2/-2));
+
+        const totalWeight = weights.reduce((total, value) => total + value);
+
+        let unweightedRandom = Math.random() * totalWeight,
+            weightedRandom,
+            threshold = 0;
+
+        const weightsLength = weights.length;
+        for (let i = 0;i < weightsLength;i++) {
+	        threshold += weights[i];
+
+          if (unweightedRandom <= threshold) {
+    	      weightedRandom = i + min;
+            break;
+          }
+        }
+
+        return weightedRandom;
       },
       Integer: (min, max, inclusive = [true, false]) => {
-        if (!LCF.Type.Integer(min))
-          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_1 (min) must be an Integer! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
-        else if (!LCF.Type.Integer(max))
-          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_2 (max) must be an Integer! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
-        else if (min > max)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_1 (min) can not be greater than parameter_2 (max)! Parameters passed: "${min}" (min), "${max}" (max)`;
-        else if (inclusive.length !== 2)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_3 (inclusive) must contain 2 boolean values! Parameter passed: "${inclusive}" (ARRAY_LENGTH: "${inclusive.length}")`;
+        switch(false) {
+          case LCF.Type.Integer(min):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_1 (min) must be an Integer! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
+          case LCF.Type.Integer(max):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_2 (max) must be an Integer! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
+          case min < max:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_1 (min) can not be greater than parameter_2 (max)! Parameters passed: "${min}" (min), "${max}" (max)`;
+          case inclusive.length === 2:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_3 (inclusive) must contain 2 boolean values! Parameter passed: "${inclusive}" (ARRAY_LENGTH: "${inclusive.length}")`;
+        }
 
         switch (inclusive) {
           case [false, false]:
@@ -547,25 +598,28 @@ const LCF = { //LuniZunie's Custom Functions
             throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Integer".\n\nERROR: parameter_3 (inclusive) must contain 2 Boolean values! Parameter passed: "${inclusive}"`;
         }
       },
-      Float: (min, max, inclusive = [true, false]) => { //set up inclusive stuff
-        if (!LCF.Type.Float(min))
-          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_1 (min) must be a Float! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
-        else if (!LCF.Type.Float(max))
-          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_2 (max) must be a Float! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
-        else if (min > max)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_1 (min) can not be greater than parameter_2 (max)! Parameters passed: "${min}" (min), "${max}" (max)`;
-        else if (inclusive.length !== 2)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_3 (inclusive) must contain 2 boolean values! Parameter passed: "${inclusive}" (ARRAY_LENGTH: "${inclusive.length}")`;
+      Float: (min, max, inclusive = [true, false]) => {
+        switch(false) {
+          case LCF.Type.Float(min):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_1 (min) must be a Float! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
+          case LCF.Type.Float(max):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_2 (max) must be a Float! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
+          case min < max:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_1 (min) can not be greater than parameter_2 (max)! Parameters passed: "${min}" (min), "${max}" (max)`;
+          case inclusive.length === 2:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_3 (inclusive) must contain 2 boolean values! Parameter passed: "${inclusive}" (ARRAY_LENGTH: "${inclusive.length}")`;
+        }
 
+        const modifier = 0.1**18;
         switch (inclusive) {
           case [false, false]:
-            return Math.random() * (max - min - 1) + min + 1;
+            return Math.random() * (max - min - modifier) + min + modifier;
           case [true, false]:
             return Math.random() * (max - min) + min;
           case [false, true]:
-            return Math.random() * (max - min) + min + 1;
+            return Math.random() * (max - min) + min + modifier;
           case [true, true]:
-            return Math.random() * (max - min + 1) + min;
+            return Math.random() * (max - min + modifier) + min;
           default:
             throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Float".\n\nERROR: parameter_3 (inclusive) must contain 2 Boolean values! Parameter passed: "${inclusive}"`;
         }
