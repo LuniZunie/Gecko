@@ -511,6 +511,214 @@ const LCF = { //LuniZunie's Custom Functions
 
       return +returnNumber.toFixed(maxDecimals); //remove end decimals
     },
+    NormalDistribution: () => {
+      switch(false) {
+        case LCF.Type.Array(points):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_1 (points) must be an Array! Parameter passed: "${points}" (TYPE: "${LCF.Type.Get(points)}")`;
+        case LCF.Type.Number(returnAmounts):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_2 (returnAmounts) must be a Number! Parameter passed: "${returnAmounts}" (TYPE: "${LCF.Type.Get(returnAmounts)}")`;
+        case LCF.Type.String(mergeAlgorithm):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_3 (mergeAlgorithm) must be a String! Parameter passed: "${mergeAlgorithm}" (TYPE: "${LCF.Type.Get(mergeAlgorithm)}")`;
+        case LCF.Type.String(negativeAlgorithm):
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_4 (negativeAlgorithm) must be a String! Parameter passed: "${negativeAlgorithm}" (TYPE: "${LCF.Type.Get(negativeAlgorithm)}")`;
+        case ["average, min, max, add, subtract, multiply, divide"].includes(mergeAlgorithm):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_3 (mergeAlgorithm) must be one of the following strings: "average, min, max, add, subtract, multiply, divide"! Parameter passed: "${mergeAlgorithm}"`;
+        case ["zero, remove, absolute, shift"].includes(negativeAlgorithm):
+          throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_4 (negativeAlgorithm) must be one of the following strings: "zero, remove, absolute, shift"! Parameter passed: "${negativeAlgorithm}"`;
+        case 2**31 < returnAmounts:
+          throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_2 (returnAmounts) must be less than the 32 bit integer limit (2^31-1 or 2147483647)! Parameter passed: "${returnAmounts}"`;
+        case 0 < returnAmounts:
+          throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_2 (returnAmounts) must be greater than 0! Parameter passed: "${returnAmounts}"`;
+      }
+
+      const extremes = {
+        min: Math.min(points.map(point => {
+          if (LCF.Type.Number(point?.min))
+            return point.min;
+
+          return Infinity;
+        })),
+        max: Math.max(points.map(point => {
+          if (LCF.Type.Number(point?.max))
+            return point.max;
+
+          return -Infinity;
+        }))
+      };
+      const increment = (extremes.max - extremes.min) / returnAmounts;
+
+      const pointWeights = [];
+      points.forEach((point, index) => {
+        if (!LCF.Type.Object(point))
+          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_1 (points) can only contain Objects as values! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(point)}")`;
+
+        const min = point.min,
+          max = point.max,
+          mean = point.mean,
+          standardDeviation = point.standardDeviation,
+          shift = point.shift ?? 0,
+          inverse = point.inverse ?? false;
+
+        const pointKeys = Object.keys(points);
+        switch(false) {
+          case [4, 5, 6].includes(pointKeys.length):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_1 (points) must contain 4-6 values! Parameter passed: "${points}" (OBJECT_LENGTH: "${Object.keys(points).length}")`;
+          case pointKeys.includes("min"):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_1 (points) must contain Objects with the key: "min"! Parameter passed: "${points}" (INDEX: "${index}")`;
+          case pointKeys.includes("max"):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_1 (points) must contain Objects with the key: "max"! Parameter passed: "${points}" (INDEX: "${index}")`;
+          case pointKeys.includes("mean"):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_1 (points) must contain Objects with the key: "mean"! Parameter passed: "${points}" (INDEX: "${index}")`;
+          case pointKeys.includes("standardDeviation"):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_1 (points) must contain Objects with the key: "standardDeviation"! Parameter passed: "${points}" (INDEX: "${index}")`;
+
+          case LCF.Type.Number(min):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Value of min in Object in parameter_1 (points) must be a Number! Parameter passed: "${min}" (TYPE: "${LCF.Type.Get(min)}")`;
+          case LCF.Type.Number(max):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Value of max in Object in parameter_1 (points) must be a Number! Parameter passed: "${max}" (TYPE: "${LCF.Type.Get(max)}")`;
+          case min < max:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Value of min in Object in parameter_1 (points) cannot be greater than value of max in Object in parameter_3 (points)! Parameter passed: "${points}" (INDEX: "${index}")`;
+          case LCF.Type.Number(mean):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Value of mean in Object in parameter_1 (points) must be a Number! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(mean)}")`;
+          case LCF.Type.Number(standardDeviation):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Value of standardDeviation in Object in parameter_1 (points) must be a Number! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(standardDeviation)}")`;
+        }
+
+        switch (pointKeys.length) {
+          case 5:
+            switch(true) {
+              case (!pointKeys.includes("shift") && !pointKeys.includes("inverse")):
+                throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Unknown key in Object in parameter_1 (points)! Parameter passed: "${points}" (INDEX: "${index}") (KEY(S): "${pointKeys.filter(key => !["min","max","standardDeviation","mean","shift","inverse"].includes(key))}")`;
+              case (pointKeys.includes("shift") && !LCF.Type.Number(shift)):
+                throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Value of shift in Object in parameter_1 (points) must be a Number! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(shift)}")`;
+              case (pointKeys.includes("inverse") && !LCF.Type.Boolean(inverse)):
+                throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Value of inverse in Object in parameter_1 (points) must be a Boolean! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(inverse)}")`;
+            }
+            break;
+          case 6:
+            switch(false) {
+              case (pointKeys.includes("shift") && pointKeys.includes("inverse")):
+                throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Unknown key in Object in parameter_1 (points)! Parameter passed: "${points}" (INDEX: "${index}") (KEY(S): "${pointKeys.filter(key => !["min","max","standardDeviation","mean","shift","inverse"].includes(key))}")`;
+              case LCF.Type.Number(shift):
+                throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Value of shift in Object in parameter_1 (points) must be a Number! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(shift)}")`;
+              case LCF.Type.Boolean(inverse):
+                throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: Value of inverse in Object in parameter_1 (points) must be a Boolean! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(inverse)}")`;
+            }
+            break;
+        }
+
+        pointWeights[index] = [];
+        for (let x = extremes.min;x < extremes.max;x += increment) {
+          if (x < min)
+            pointWeights[index].push(undefined);
+          else if (x < max)
+            pointWeights[index].push(1/(standardDeviation*(2*Math.PI)**(1/2))*Math.E**(((x-mean)/standardDeviation)**2/-2))+shift;
+          else
+            pointWeights[index].push(undefined);
+        }
+
+        const maxWeight = Math.max(...pointWeights);
+        if (inverse)
+          pointWeights[index] = pointWeights[index].map(value => maxWeight - value);
+      });
+
+      let weights = [];
+      const innerLoopAmount = pointWeights.length,
+            outerLoopAmount = pointWeights[0].length;
+
+      for (let i = 0;i < outerLoopAmount;i++) {
+        let sum,
+            iterations,
+            lowest,
+            highest;
+
+        switch(mergeAlgorithm) {
+          case "average":
+          case "add":
+            sum = 0;
+            iterations = 0;
+
+            for (let k = 0;k < innerLoopAmount;k++) {
+              if (!LCF.Type.Undefined(pointWeights[k][i])) {
+                sum += pointWeights[k][i];
+                iterations++;
+              }
+            }
+
+            switch(mergeAlgorithm) {
+              case "average":
+                weights.push(sum / iterations);
+                break;
+              case "add":
+                weights.push(sum);
+                break;
+            }
+            break;
+          case "min":
+            lowest = pointWeights[0][i];
+            for (let k = 1;k < innerLoopAmount;k++)
+              lowest = Math.min(pointWeights[k][i] ?? Infinity, lowest);
+
+            weights.push(lowest);
+            break;
+          case "max":
+            highest = -pointWeights[0][i];
+            for (let k = 1;k < innerLoopAmount;k++)
+              highest = Math.max(pointWeights[k][i] ?? -Infinity, highest);
+
+            weights.push(highest);
+            break;
+          case "subtract":
+            sum = pointWeights[0][i];
+            for (let k = 1;k < innerLoopAmount;k++)
+              sum -= pointWeights[k][i] ?? 0;
+
+            weights.push(sum);
+            break;
+          case "multiply":
+            sum = pointWeights[0][i];
+            for (let k = 1;k < innerLoopAmount;k++)
+              sum *= pointWeights[k][i] ?? 1;
+
+            weights.push(sum);
+            break;
+          case "divide":
+            sum = pointWeights[0][i];
+            for (let k = 1;k < innerLoopAmount;k++) {
+              if (pointWeights[k][i] === 0) {
+                sum = 0;
+                break;
+              }
+
+              sum /= pointWeights[k][i] ?? 1;
+            }
+
+            weights.push(sum);
+            break;
+        }
+      }
+
+      const lowestValue = Infinity;
+      weights = weights.forEach(weight => {
+        if (weight < 0) {
+          switch (negativeAlgorithm) {
+            case "zero":
+            case "remove":
+              return 0;
+            case "absolute":
+              return Math.abs(weight);
+            case "shift":
+              lowestValue = Math.min(weight, lowestValue);
+              break;
+          }
+        }
+      });
+
+      if (negativeAlgorithm === "shift")
+        weights = weights.map(weight => weight - lowestValue);
+
+      return weights;
+    },
     Random: {
       Pseudo: function*(seed) {
         let index = 1;
@@ -547,25 +755,26 @@ const LCF = { //LuniZunie's Custom Functions
             throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_3 (mergeAlgorithm) must be one of the following strings: "average, min, max, add, subtract, multiply, divide"! Parameter passed: "${mergeAlgorithm}"`;
           case ["zero, remove, absolute, shift"].includes(negativeAlgorithm):
             throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_4 (negativeAlgorithm) must be one of the following strings: "zero, remove, absolute, shift"! Parameter passed: "${negativeAlgorithm}"`;
+          case 2**31 < returnAmounts:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_2 (returnAmounts) must be less than the 32 bit integer limit (2^31-1 or 2147483647)! Parameter passed: "${returnAmounts}"`;
+          case 0 < returnAmounts:
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_2 (returnAmounts) must be greater than 0! Parameter passed: "${returnAmounts}"`;
         }
 
         const extremes = {
-          min: Math.min(points.forEach(point => {
+          min: Math.min(points.map(point => {
             if (LCF.Type.Number(point?.min))
               return point.min;
 
             return Infinity;
           })),
-          max: Math.max(points.forEach(point => {
+          max: Math.max(points.map(point => {
             if (LCF.Type.Number(point?.max))
               return point.max;
 
             return -Infinity;
           }))
         };
-        const increment = (extremes.max - extremes.min) / returnAmounts;
-
-        const pointWeights = [];
         points.forEach((point, index) => {
           if (!LCF.Type.Object(point))
             throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) can only contain Objects as values! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(point)}")`;
@@ -574,12 +783,13 @@ const LCF = { //LuniZunie's Custom Functions
             max = point.max,
             mean = point.mean,
             standardDeviation = point.standardDeviation,
+            shift = point.shift ?? 0,
             inverse = point.inverse ?? false;
 
           const pointKeys = Object.keys(points);
           switch(false) {
-            case [4, 5].includes(pointKeys.length):
-              throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) must contain 4 or 5 values! Parameter passed: "${points}" (OBJECT_LENGTH: "${Object.keys(points).length}")`;
+            case [4, 5, 6].includes(pointKeys.length):
+              throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) must contain 4-6 values! Parameter passed: "${points}" (OBJECT_LENGTH: "${Object.keys(points).length}")`;
             case pointKeys.includes("min"):
               throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) must contain Objects with the key: "min"! Parameter passed: "${points}" (INDEX: "${index}")`;
             case pointKeys.includes("max"):
@@ -601,124 +811,31 @@ const LCF = { //LuniZunie's Custom Functions
               throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of standardDeviation in Object in parameter_1 (points) must be a Number! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(standardDeviation)}")`;
           }
 
-          if (pointKeys.length === 5) {
-            switch(false) {
-              case pointKeys.includes("inverse"):
-                throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Unknown key in Object in parameter_1 (points)! Parameter passed: "${points}" (INDEX: "${index}") (KEY: "${pointKeys.filter(key => !["standardDeviation","mean","inverse"].includes(key))}")`;
-              case LCF.Type.Boolean(inverse):
-                throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of inverse in Object in parameter_1 (points) must be a Boolean! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(inverse)}")`;
-            }
-          }
-
-          pointWeights[index] = [];
-          for (let x = extremes.min;x < extremes.max;x += increment) {
-            if (x < min)
-              pointWeights[index].push(undefined);
-            else if (x < max)
-              pointWeights[index].push(1/(standardDeviation*(2*Math.PI)**(1/2))*Math.E**(((x-mean)/standardDeviation)**2/-2));
-            else
-              pointWeights[index].push(undefined);
-          }
-
-          const maxWeight = Math.max(...pointWeights);
-          if (inverse)
-            pointWeights[index] = pointWeights[index].forEach(value => maxWeight - value);
-        });
-
-        let weights = [];
-        const innerLoopAmount = pointWeights.length,
-              outerLoopAmount = pointWeights[0].length;
-
-        for (let i = 0;i < outerLoopAmount;i++) {
-          let sum,
-              iterations,
-              lowest,
-              highest;
-
-          switch(mergeAlgorithm) {
-            case "average":
-            case "add":
-              sum = 0;
-              iterations = 0;
-
-              for (let k = 0;k < innerLoopAmount;k++) {
-                if (pointWeights[innerLoopAmount][outerLoopAmount]) {
-                  sum += pointWeights[innerLoopAmount][outerLoopAmount];
-                  iterations++;
-                }
-              }
-
-              switch(mergeAlgorithm) {
-                case "average":
-                  weights.push(sum / iterations);
-                  break;
-                case "add":
-                  weights.push(sum);
-                  break;
+          switch (pointKeys.length) {
+            case 5:
+              switch(true) {
+                case (!pointKeys.includes("shift") && !pointKeys.includes("inverse")):
+                  throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Unknown key in Object in parameter_1 (points)! Parameter passed: "${points}" (INDEX: "${index}") (KEY(S): "${pointKeys.filter(key => !["min","max","standardDeviation","mean","shift","inverse"].includes(key))}")`;
+                case (pointKeys.includes("shift") && !LCF.Type.Number(shift)):
+                  throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of shift in Object in parameter_1 (points) must be a Number! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(shift)}")`;
+                case (pointKeys.includes("inverse") && !LCF.Type.Boolean(inverse)):
+                  throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of inverse in Object in parameter_1 (points) must be a Boolean! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(inverse)}")`;
               }
               break;
-            case "min":
-              lowest = Infinity;
-              for (let k = 0;k < innerLoopAmount;k++)
-                lowest = Math.min(pointWeights[innerLoopAmount][outerLoopAmount] ?? Infinity, lowest);
-
-              weights.push(lowest);
-              break;
-            case "max":
-              highest = -Infinity;
-              for (let k = 0;k < innerLoopAmount;k++)
-                highest = Math.max(pointWeights[innerLoopAmount][outerLoopAmount] ?? -Infinity, highest);
-
-              weights.push(highest);
-              break;
-            case "subtract":
-              sum = 0;
-              for (let k = 0;k < innerLoopAmount;k++)
-                sum -= pointWeights[innerLoopAmount][outerLoopAmount] ?? 0;
-
-              weights.push(sum);
-              break;
-            case "multiply":
-              sum = 0;
-              for (let k = 0;k < innerLoopAmount;k++)
-                sum *= pointWeights[innerLoopAmount][outerLoopAmount] ?? 1;
-
-              weights.push(sum);
-              break;
-            case "divide":
-              sum = 0;
-              for (let k = 0;k < innerLoopAmount;k++) {
-                if (pointWeights[innerLoopAmount][outerLoopAmount] === 0) {
-                  sum = 0;
-                  break;
-                }
-
-                sum /= pointWeights[innerLoopAmount][outerLoopAmount] ?? 1;
+            case 6:
+              switch(false) {
+                case (pointKeys.includes("shift") && pointKeys.includes("inverse")):
+                  throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Unknown key in Object in parameter_1 (points)! Parameter passed: "${points}" (INDEX: "${index}") (KEY(S): "${pointKeys.filter(key => !["min","max","standardDeviation","mean","shift","inverse"].includes(key))}")`;
+                case LCF.Type.Number(shift):
+                  throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of shift in Object in parameter_1 (points) must be a Number! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(shift)}")`;
+                case LCF.Type.Boolean(inverse):
+                  throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: Value of inverse in Object in parameter_1 (points) must be a Boolean! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(inverse)}")`;
               }
-
-              weights.push(sum);
               break;
-          }
-        }
-
-        const lowestValue = Infinity;
-        weights = weights.forEach(weight => {
-          if (weight < 0) {
-            switch (negativeAlgorithm) {
-              case "zero":
-              case "remove":
-                return 0;
-              case "absolute":
-                return Math.abs(weight);
-              case "shift":
-                lowestValue = Math.min(weight, lowestValue);
-                break;
-            }
           }
         });
 
-        if (negativeAlgorithm === "shift")
-          weights = weights.forEach(weight => weight + lowestValue);
+        const weights = LCF.Math.NormalDistribution(points, returnAmounts, mergeAlgorithm, negativeAlgorithm);
 
         const totalWeight = weights.reduce((total, value) => total + value);
 
