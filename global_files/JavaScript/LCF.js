@@ -543,8 +543,8 @@ const LCF = { //LuniZunie's Custom Functions
             throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_3 (mergeAlgorithm) must be a String! Parameter passed: "${mergeAlgorithm}" (TYPE: "${LCF.Type.Get(mergeAlgorithm)}")`;
           case LCF.Type.String(negativeAlgorithm):
             throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_4 (negativeAlgorithm) must be a String! Parameter passed: "${negativeAlgorithm}" (TYPE: "${LCF.Type.Get(negativeAlgorithm)}")`;
-          case ["average, max, min, add, subtract, multiply, divide"].includes(mergeAlgorithm):
-            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_3 (mergeAlgorithm) must be one of the following strings: "average, max, min, add, subtract, multiply, divide"! Parameter passed: "${mergeAlgorithm}"`;
+          case ["average, min, max, add, subtract, multiply, divide"].includes(mergeAlgorithm):
+            throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_3 (mergeAlgorithm) must be one of the following strings: "average, min, max, add, subtract, multiply, divide"! Parameter passed: "${mergeAlgorithm}"`;
           case ["zero, remove, absolute, shift"].includes(negativeAlgorithm):
             throw `USER ERROR: Invalid data sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_4 (negativeAlgorithm) must be one of the following strings: "zero, remove, absolute, shift"! Parameter passed: "${negativeAlgorithm}"`;
         }
@@ -565,7 +565,7 @@ const LCF = { //LuniZunie's Custom Functions
         };
         const increment = (extremes.max - extremes.min) / returnAmounts;
 
-        let pointWeights = [];
+        const pointWeights = [];
         points.forEach((point, index) => {
           if (!LCF.Type.Object(point))
             throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Weighted".\n\nERROR: parameter_1 (points) can only contain Objects as values! Parameter passed: "${points}" (INDEX: "${index}") (TYPE: "${LCF.Type.Get(point)}")`;
@@ -626,6 +626,99 @@ const LCF = { //LuniZunie's Custom Functions
         });
 
         let weights = [];
+        const innerLoopAmount = pointWeights.length,
+              outerLoopAmount = pointWeights[0].length;
+
+        for (let i = 0;i < outerLoopAmount;i++) {
+          let sum,
+              iterations,
+              lowest,
+              highest;
+
+          switch(mergeAlgorithm) {
+            case "average":
+            case "add":
+              sum = 0;
+              iterations = 0;
+
+              for (let k = 0;k < innerLoopAmount;k++) {
+                if (pointWeights[innerLoopAmount][outerLoopAmount]) {
+                  sum += pointWeights[innerLoopAmount][outerLoopAmount];
+                  iterations++;
+                }
+              }
+
+              switch(mergeAlgorithm) {
+                case "average":
+                  weights.push(sum / iterations);
+                  break;
+                case "add":
+                  weights.push(sum);
+                  break;
+              }
+              break;
+            case "min":
+              lowest = Infinity;
+              for (let k = 0;k < innerLoopAmount;k++)
+                lowest = Math.min(pointWeights[innerLoopAmount][outerLoopAmount] ?? Infinity, lowest);
+
+              weights.push(lowest);
+              break;
+            case "max":
+              highest = -Infinity;
+              for (let k = 0;k < innerLoopAmount;k++)
+                highest = Math.max(pointWeights[innerLoopAmount][outerLoopAmount] ?? -Infinity, highest);
+
+              weights.push(highest);
+              break;
+            case "subtract":
+              sum = 0;
+              for (let k = 0;k < innerLoopAmount;k++)
+                sum -= pointWeights[innerLoopAmount][outerLoopAmount] ?? 0;
+
+              weights.push(sum);
+              break;
+            case "multiply":
+              sum = 0;
+              for (let k = 0;k < innerLoopAmount;k++)
+                sum *= pointWeights[innerLoopAmount][outerLoopAmount] ?? 1;
+
+              weights.push(sum);
+              break;
+            case "divide":
+              sum = 0;
+              for (let k = 0;k < innerLoopAmount;k++) {
+                if (pointWeights[innerLoopAmount][outerLoopAmount] === 0) {
+                  sum = 0;
+                  break;
+                }
+
+                sum /= pointWeights[innerLoopAmount][outerLoopAmount] ?? 1;
+              }
+
+              weights.push(sum);
+              break;
+          }
+        }
+
+        const lowestValue = Infinity;
+        weights = weights.forEach(weight => {
+          if (weight < 0) {
+            switch (negativeAlgorithm) {
+              case "zero":
+              case "remove":
+                return 0;
+              case "absolute":
+                return Math.abs(weight);
+              case "shift":
+                lowestValue = Math.min(weight, lowestValue);
+                break;
+            }
+          }
+        });
+
+        if (negativeAlgorithm === "shift")
+          weights = weights.forEach(weight => weight + lowestValue);
 
         const totalWeight = weights.reduce((total, value) => total + value);
 
