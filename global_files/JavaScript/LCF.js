@@ -1244,14 +1244,17 @@ const LCF = { //LuniZunie's Custom Functions
   Type: {
     Get: value => {
       const returnType = [];
-      if (Object.entries(LCF.data.type.function_return).forEach(([key, type]) => {
+      if (Object.entries(LCF.data.type.function_return).map(([key, type]) => {
         try {
-          if (LCF.Type[key](value))
+          if (LCF.Type[key](value)) {
             returnType.push(type);
+
+            return true;
+          }
         } catch (error) {
-          throw `SCRIPT ERROR: ${error}.\n\nThis error is not your fault! Please report this on our GitHub page by sending a screenshot of this error in an issue report!`;
+          throw `SCRIPT ERROR: ${error} (FUNCTION: LCF.Type.Get).\n\nThis error is not your fault! Please report this on our GitHub page by sending a screenshot of this error in an issue report!`;
         }
-      }))
+      }).length)
         return returnType;
       else
         return typeof value;
@@ -1282,6 +1285,8 @@ const LCF = { //LuniZunie's Custom Functions
     Float: (...values) => values.every(value => Number.isFloat(value)),
 
     Finite: (...values) => values.every(value => Number.isFinite(value)),
+
+    Infinite: (...values) => values.every(value => !Number.isFinite(value)),
 
     Boolean: (...values) => values.every(value => typeof value === "boolean"),
     Bool: LCF.Type.Boolean,
@@ -1404,12 +1409,12 @@ const LCF = { //LuniZunie's Custom Functions
     ConvertTo: {
       Number: (...arrays) => {
         if (!arrays.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.Number"! ERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (ARRAY_LENGTH: "${arrays.length}")`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.Number"! ERROR: At least one parameter must be passed!`;
 
         let returnArrays = [];
         arrays.forEach(array => {
           if (!LCF.Type.Array(array))
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Number"! ERROR: [parameter_1, parameter_infinity) (...arrays) passed must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Number"! ERROR: [parameter_1, parameter_infinity) (...arrays) must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
 
           const newArray = [];
           array.forEach(value => {
@@ -1424,12 +1429,12 @@ const LCF = { //LuniZunie's Custom Functions
       Num: LCF.Array.ConvertTo.Number,
       String: (...arrays) => {
         if (!arrays.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.String"! ERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (ARRAY_LENGTH: "${arrays.length}")`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.String"! ERROR: At least one parameter must be passed!`;
 
         let returnArrays = [];
         arrays.forEach(array => {
           if (!LCF.Type.Array(array))
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.String"! ERROR: [parameter_1, parameter_infinity) (...arrays) passed must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.String"! ERROR: [parameter_1, parameter_infinity) (...arrays) must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
 
           const newArray = [];
           array.forEach(value => {
@@ -1444,12 +1449,12 @@ const LCF = { //LuniZunie's Custom Functions
       Str: LCF.Array.ConvertTo.String,
       Boolean: (...arrays) => {
         if (!arrays.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.Boolean"! ERROR: [parameter_1, parameter_infinity) (...arrays) cannot be an empty Array! Parameters passed: "${arrays}" (ARRAY_LENGTH: "${arrays.length}")`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Array.ConvertTo.Boolean"! ERROR: At least one parameter must be passed!`;
 
         let returnArrays = [];
         arrays.forEach(array => {
           if (!LCF.Type.Array(array))
-            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Boolean"! ERROR: [parameter_1, parameter_infinity) (...arrays) passed must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Array.ConvertTo.Boolean"! ERROR: [parameter_1, parameter_infinity) (...arrays) must be an Array! Parameters passed: "${arrays}" (INDEX: "${arrays.indexOf(array)}") (TYPE: "${LCF.Type.Get(array)}")`;
 
           const newArray = [];
           array.forEach(value => {
@@ -1723,7 +1728,7 @@ const LCF = { //LuniZunie's Custom Functions
     ConvertTo: {
       Number: (...objects) => {
         if (!objects.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Number"! ERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Array! Parameters passed: "${objects}" (ARRAY_LENGTH: "${objects.length}")`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Number"! ERROR: At least one parameter must be passed!`;
 
         let returnObjects = [];
         objects.forEach(object => {
@@ -1743,7 +1748,7 @@ const LCF = { //LuniZunie's Custom Functions
       Num: LCF.Object.ConvertTo.Number,
       String: (...objects) => {
         if (!objects.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.String"! ERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Array! Parameters passed: "${objects}" (ARRAY_LENGTH: "${objects.length}")`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.String"! ERROR: At least one parameter must be passed!`;
 
         let returnObjects = [];
         objects.forEach(object => {
@@ -1763,7 +1768,7 @@ const LCF = { //LuniZunie's Custom Functions
       Str: LCF.Object.ConvertTo.String,
       Boolean: (...objects) => {
         if (!objects.length)
-          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Boolean"! ERROR: [parameter_1, parameter_infinity) (...objects) cannot be an empty Array! Parameters passed: "${objects}" (ARRAY_LENGTH: "${objects.length}")`;
+          throw `USER ERROR: Invalid data sent to function: "LCF.Object.ConvertTo.Boolean"! ERROR: At least one parameter must be passed!`;
 
         let returnObjects = [];
         objects.forEach(object => {
@@ -2059,7 +2064,7 @@ const LCF = { //LuniZunie's Custom Functions
   },
   Obj: LCF.Object,
   Number: {
-    InRange: (numbers = [0], range = [0, 1], inclusive = [true, true], singleValue = true) => {
+    InRange: (numbers = [0], range = [0, 1], inclusive = [true, true], singleValue = true) => { //TODO: fix
       inclusive = LCF.Array.LimitValueType(inclusive, "boolean");
       if (!LCF.Type.Array(inclusive) || !inclusive.length)
         if (!LCF.Type.Boolean(inclusive))
