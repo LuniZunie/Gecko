@@ -511,7 +511,7 @@ const LCF = { //LuniZunie's Custom Functions
 
       return +returnNumber.toFixed(maxDecimals); //remove end decimals
     },
-    NormalDistribution: () => {
+    NormalDistribution: (points, returnAmounts, mergeAlgorithm = "average") => {
       switch(false) {
         case LCF.Type.Array(points):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_1 (points) must be an Array! Parameter passed: "${points}" (TYPE: "${LCF.Type.Get(points)}")`;
@@ -519,12 +519,8 @@ const LCF = { //LuniZunie's Custom Functions
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_2 (returnAmounts) must be a Number! Parameter passed: "${returnAmounts}" (TYPE: "${LCF.Type.Get(returnAmounts)}")`;
         case LCF.Type.String(mergeAlgorithm):
           throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_3 (mergeAlgorithm) must be a String! Parameter passed: "${mergeAlgorithm}" (TYPE: "${LCF.Type.Get(mergeAlgorithm)}")`;
-        case LCF.Type.String(negativeAlgorithm):
-          throw `USER ERROR: Invalid data type sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_4 (negativeAlgorithm) must be a String! Parameter passed: "${negativeAlgorithm}" (TYPE: "${LCF.Type.Get(negativeAlgorithm)}")`;
         case ["average, min, max, add, subtract, multiply, divide"].includes(mergeAlgorithm):
           throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_3 (mergeAlgorithm) must be one of the following strings: "average, min, max, add, subtract, multiply, divide"! Parameter passed: "${mergeAlgorithm}"`;
-        case ["zero, remove, absolute, shift"].includes(negativeAlgorithm):
-          throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_4 (negativeAlgorithm) must be one of the following strings: "zero, remove, absolute, shift"! Parameter passed: "${negativeAlgorithm}"`;
         case 2**31 < returnAmounts:
           throw `USER ERROR: Invalid data sent to function: "LCF.Math.NormalDistribution".\n\nERROR: parameter_2 (returnAmounts) must be less than the 32 bit integer limit (2^31-1 or 2147483647)! Parameter passed: "${returnAmounts}"`;
         case 0 < returnAmounts:
@@ -698,32 +694,19 @@ const LCF = { //LuniZunie's Custom Functions
         }
       }
 
-      const lowestValue = Infinity;
-      weights = weights.forEach(weight => {
-        if (weight < 0) {
-          switch (negativeAlgorithm) {
-            case "zero":
-            case "remove":
-              return 0;
-            case "absolute":
-              return Math.abs(weight);
-            case "shift":
-              lowestValue = Math.min(weight, lowestValue);
-              break;
-          }
-        }
-      });
-
-      if (negativeAlgorithm === "shift")
-        weights = weights.map(weight => weight - lowestValue);
-
       return weights;
     },
     Random: {
-      Pseudo: function*(seed) {
-        let index = 1;
+      Pseudo: function*(seed, index = 1) {
+        switch(false) {
+          case LCF.Type.Number(seed):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Pseudo".\n\nERROR: parameter_1 (seed) must be a Number! Parameter passed: "${seed}" (TYPE: "${LCF.Type.Get(seed)}")`;
+          case LCF.Type.Number(index):
+            throw `USER ERROR: Invalid data type sent to function: "LCF.Math.Random.Pseudo".\n\nERROR: parameter_2 (index) must be a Number! Parameter passed: "${index}" (TYPE: "${LCF.Type.Get(index)}")`;
+        }
+
 	      while(true) {
-		      yield Math.abs(Math.sin(index + seed)) % 0.0001 * 10000;
+		      yield {random: Math.abs(Math.sin(index + seed)) % 0.0001 * 10000, index: index, seed: seed};
           index++;
           while(index + seed === 0 || !((index + seed) % Math.PI))
             index++;
@@ -762,13 +745,13 @@ const LCF = { //LuniZunie's Custom Functions
         }
 
         const extremes = {
-          min: Math.min(points.map(point => {
+          min: Math.min(...points.map(point => {
             if (LCF.Type.Number(point?.min))
               return point.min;
 
             return Infinity;
           })),
-          max: Math.max(points.map(point => {
+          max: Math.max(...points.map(point => {
             if (LCF.Type.Number(point?.max))
               return point.max;
 
@@ -835,7 +818,26 @@ const LCF = { //LuniZunie's Custom Functions
           }
         });
 
-        const weights = LCF.Math.NormalDistribution(points, returnAmounts, mergeAlgorithm, negativeAlgorithm);
+        let weights = LCF.Math.NormalDistribution(points, returnAmounts, mergeAlgorithm);
+        const lowestValue = Infinity;
+        weights = weights.map(weight => {
+          if (weight < 0) {
+            switch (negativeAlgorithm) {
+              case "zero":
+              case "remove":
+                return 0;
+              case "absolute":
+                return Math.abs(weight);
+              case "shift":
+                lowestValue = Math.min(weight, lowestValue);
+            }
+          }
+
+          return weight;
+        });
+
+        if (negativeAlgorithm === "shift")
+          weights = weights.map(weight => weight - lowestValue);
 
         const totalWeight = weights.reduce((total, value) => total + value);
 
